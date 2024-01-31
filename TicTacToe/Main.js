@@ -21,6 +21,10 @@ function startGame() {
         gameLayer.updateGameState(state);
     });
 
+    socket.on("turnTimer", function (secondsLeft) {
+        gameLayer.updateTurnTimer(secondsLeft);
+    });
+
     setInterval(loop, 1000 / 30);
 }
 

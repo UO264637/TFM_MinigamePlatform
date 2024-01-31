@@ -3,6 +3,7 @@ class GameLayer extends Layer {
   constructor() {
     super();
     this.start();
+    this.turnTimer = 0;
   }
 
   start() {
@@ -61,13 +62,12 @@ class GameLayer extends Layer {
       }
     }
 
-    this.status.value = "";
     switch (state.result.status) {
       case Statuses.WAITING:
         this.status.value = "Esperando jugadores...";
         break;
       case Statuses.PLAYING:
-        this.status.value = "Turno de " + state.currentPlayer.playerName;
+        this.currentPlayer = state.currentPlayer.playerName;
         break;
       case Statuses.DRAW:
         this.status.value = "Empate!";
@@ -90,5 +90,9 @@ class GameLayer extends Layer {
       this.player2.value =
         state.players[1].symbol + ": " + state.players[1].playerName;
     }
+  }
+
+  updateTurnTimer(secondsLeft) {
+    this.status.value = "Turno de " + this.currentPlayer + ": " + secondsLeft + "s...";
   }
 }
