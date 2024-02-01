@@ -1,12 +1,5 @@
 // Lista re recursos a precargar 
 var images = {
-    jugador : "res/jugador.png",
-    fondo : "res/fondo.png",
-    enemigo : "res/enemigo.png",
-    enemigo_movimiento : "res/enemigo_movimiento.png",
-    disparo_jugador : "res/disparo_jugador.png",
-    disparo_enemigo : "res/disparo_enemigo.png",
-    icono_puntos : "res/icono_puntos.png",
     tttButton : "res/empty.png",
     board : "res/board.png",
     X : "res/X.png",

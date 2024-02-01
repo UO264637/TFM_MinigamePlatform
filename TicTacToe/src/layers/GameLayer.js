@@ -19,6 +19,7 @@ class GameLayer extends Layer {
     this.player1 = new Text(0, canvas.width * 0.07, canvas.height * 0.47);
     this.player2 = new Text(0, canvas.width * 0.07, canvas.height * 0.53);
     this.status = new CenteredText(0, canvas.width * 0.5, canvas.height * 0.1);
+    this.status.value = "";
   }
 
   paint() {
@@ -48,7 +49,6 @@ class GameLayer extends Layer {
             });
             break;
           }
-
         }
       }
     }

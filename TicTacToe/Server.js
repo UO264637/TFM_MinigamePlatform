@@ -50,12 +50,9 @@ io.on('connection', function (connection) {
     connection.on("addPlayer", function (data) {
         addPlayer(connection.id, data);
     });
+    
     connection.on("action", function (data) {
         action(connection.id, data);
-    });
-
-    connection.on("rematch", function () {
-        rematch(connection.id);
     });
 
     connection.on("disconnect", function () {
