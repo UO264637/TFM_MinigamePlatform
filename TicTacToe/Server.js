@@ -13,9 +13,6 @@ const io = require("socket.io")(server, {
     }
 });
 
-var total = 0;
-var turnTimer = 0;
-
 const Statuses = {
     WAITING: "waiting",
     PLAYING: "playing",
@@ -23,14 +20,8 @@ const Statuses = {
     WIN: "win",
 };
 
-let gameState = {
-    board: new Array(9).fill(null),
-    currentPlayer: null,
-    players: [],
-    result: {
-        status: Statuses.WAITING,
-    },
-};
+let games = {};
+let nextGameId = 0;
 
 const winPatterns = [
     [0, 1, 2],
@@ -43,124 +34,137 @@ const winPatterns = [
     [2, 4, 6],
 ];
 
-io.on('connection', function (connection) {
-    console.log('Client connected:', connection.id);
+function initializeGameState() {
+    return {
+        board: new Array(9).fill(null),
+        currentPlayer: null,
+        players: [],
+        result: {
+            status: Statuses.WAITING,
+        }
+    };
+}
+
+io.on('connection', function (socket) {
+    console.log('Client connected:', socket.id);
     turnTimer = null;
 
-    connection.on("addPlayer", function (data) {
-        addPlayer(connection.id, data);
-    });
-    
-    connection.on("action", function (data) {
-        action(connection.id, data);
+    socket.on("joinGame", function (data) {
+        joinGame(socket.id, data);
     });
 
-    connection.on("disconnect", function () {
-        disconnect(connection.id);
+    socket.on("action", function (data) {
+        action(socket.id, data);
+    });
+
+    socket.on("disconnect", function () {
+        disconnect(socket.id);
     });
 
 });
 
-function addPlayer(socketId, data) {
-    console.log('Player added:', data.playerName);
+function joinGame(socketId, data) {
+    let gameId = findWaitingRoom();
 
-    const numberOfPlayers = gameState.players.length;
-    if (numberOfPlayers >= 2) {
-        return;
-    }
+    if (gameId != -1) {
+        console.log('Room ' + gameId +" (2/2): "+ data.playerName + " joined");
 
-    let nextSymbol = "X";
-    if (numberOfPlayers === 1) {
-        if (gameState.players[0].symbol === "X") {
-            nextSymbol = "O";
-        }
-    }
+        let symbols = ["X", "O"];
+        let symbol = Math.round(Math.random());
+        const newPlayer = {
+            playerName: data.playerName,
+            id: socketId,
+            symbol: symbols[symbol],
+        };
 
-    const newPlayer = {
-        playerName: data.playerName,
-        id: socketId,
-        symbol: nextSymbol,
-    };
+        games[gameId].state.players[0].symbol = symbols[1 - symbol]
+        games[gameId].state.players.push(newPlayer);
+        games[gameId].state.currentPlayer =  games[gameId].state.players[Math.round(Math.random())];
+        games[gameId].state.result.status = Statuses.PLAYING;
 
-    gameState.players.push(newPlayer);
-    if (gameState.players.length === 2) {
-        console.log('Two players');
-        gameState.result.status = Statuses.PLAYING;
-        gameState.currentPlayer = newPlayer;
-        startTurnTimer();
+        startTurnTimer(gameId);
+        updateGameState(gameId)
     }
     else {
-        console.log('One player');
+        nextGameId++;
+        console.log('Room ' + nextGameId +" (1/2): "+ data.playerName + " joined");
+
+        games[nextGameId] = {
+            state: initializeGameState(),
+            turnTimer: 0
+        };
+
+        const newPlayer = {
+            playerName: data.playerName,
+            id: socketId,
+            symbol: "",
+        };
+
+        games[nextGameId].state.players.push(newPlayer);
+        updateGameState(nextGameId)
     }
-    io.emit("gameState", gameState);
+
 }
 
 function action(socketId, data) {
-    console.log("action");
+    const gameId = getGameId(socketId);
+
     if (
-        gameState.result.status === Statuses.PLAYING &&
-        gameState.currentPlayer.id === socketId
+        games[gameId].state.result.status === Statuses.PLAYING &&
+        games[gameId].state.currentPlayer.id === socketId
     ) {
-        const player = gameState.players.find((p) => p.id === socketId);
-        if (gameState.board[data.gridIndex] == null) {
-            gameState.board[data.gridIndex] = player;
-            gameState.currentPlayer = gameState.players.find((p) => p !== player);
+        console.log("\t"+ games[gameId].state.currentPlayer.playerName + " action");
 
-            clearInterval(turnTimer);
+        const player = games[gameId].state.players.find((p) => p.id === socketId);
+        if (games[gameId].state.board[data.gridIndex] == null) {
+            games[gameId].state.board[data.gridIndex] = player;
+            games[gameId].state.currentPlayer = games[gameId].state.players.find((p) => p !== player);
 
-            if (!checkForEndOfGame()) {         
-                startTurnTimer();
+            clearInterval(games[gameId].turnTimer);
+
+            if (!checkForEndOfGame(gameId)) {
+                startTurnTimer(gameId);
             }
         }
     }
-    io.emit("gameState", gameState);
-}
-
-function resetGame() {
-    console.log("reset");
-    gameState.board = new Array(9).fill(null);
-
-    if (gameState.players.length === 2) {
-        gameState.result.status = Statuses.PLAYING;
-        const randPlayer = Math.floor(Math.random() * gameState.players.length);
-        gameState.currentPlayer = gameState.players[randPlayer];
-    } else {
-        gameState.result.status = Statuses.WAITING;
-        gameState.currentPlayer = null;
-    }
+    updateGameState(gameId)
 }
 
 function disconnect(socketId) {
     console.log('Client disconnected:', socketId);
+    
+    const gameId = getGameId(socketId);
+    if (gameId != -1) {
 
-    gameState.players = gameState.players.filter((p) => p.id != socketId);
-    if (gameState.players !== 2) {
-        clearInterval(turnTimer);
-        resetGame();
-        io.emit("gameState", gameState);
+        games[gameId].state.players = games[gameId].state.players.filter((p) => p.id != socketId);
+        games[gameId].state.result.status = Statuses.WIN;
+        games[gameId].state.result.winner = games[gameId].state.players[0];
+        clearInterval(games[gameId].turnTimer);
+
+        updateGameState(gameId);        
     }
 }
 
-function checkForEndOfGame() {
+function checkForEndOfGame(gameId) {
     // Check for a win
-    gameState.players.forEach((player) => {
+    games[gameId].state.players.forEach((player) => {
         winPatterns.forEach((seq) => {
             if (
-                gameState.board[seq[0]] == player &&
-                gameState.board[seq[1]] == player &&
-                gameState.board[seq[2]] == player
+                games[gameId].state.board[seq[0]] == player &&
+                games[gameId].state.board[seq[1]] == player &&
+                games[gameId].state.board[seq[2]] == player
             ) {
-                gameState.result.status = Statuses.WIN;
-                gameState.result.winner = player;
+                games[gameId].state.result.status = Statuses.WIN;
+                games[gameId].state.result.winner = player;
             }
         });
     });
 
     // Check for a draw
-    if (gameState.result.status != Statuses.WIN) {
-        const emptyBlock = gameState.board.indexOf(null);
+    if (games[gameId].state.result.status != Statuses.WIN) {
+        const emptyBlock = games[gameId].state.board.indexOf(null);
         if (emptyBlock == -1) {
-            gameState.result.status = Statuses.DRAW;
+            games[gameId].state.result.status = Statuses.DRAW;
             return true;
         }
     }
@@ -171,47 +175,47 @@ function checkForEndOfGame() {
     return false;
 }
 
-function startTurnTimer() {
+function startTurnTimer(gameId) {
     let secondsLeft = 16;
 
-    turnTimer = setInterval(() => {
+    games[gameId].turnTimer = setInterval(() => {
         secondsLeft--;
-        io.emit('turnTimer', secondsLeft);
+
+        io.to(games[gameId].state.players[0].id).emit('turnTimer', secondsLeft);
+        io.to(games[gameId].state.players[1].id).emit('turnTimer', secondsLeft);
 
         if (secondsLeft <= 0) {
-            console.log("timeOut");
-
-            handleTurnTimeout();
+            handleTurnTimeout(gameId);
             secondsLeft = 15;
         }
 
     }, 1000);
 }
 
-function handleTurnTimeout() {
-    const randomEmptyIndex = getRandomEmptyIndex(gameState.board);
+function handleTurnTimeout(gameId) {
+    const randomEmptyIndex = getRandomEmptyIndex(games[gameId].state.board);
 
     if (randomEmptyIndex !== -1) {
-        const currentPlayer = gameState.currentPlayer;
-        gameState.board[randomEmptyIndex] = currentPlayer;
+        const currentPlayer = games[gameId].state.currentPlayer;
+        games[gameId].state.board[randomEmptyIndex] = currentPlayer;
     }
 
-    clearInterval(turnTimer);
-    if (!checkForEndOfGame()) {
-        startTurnTimer();
-        switchPlayer();
+    clearInterval(games[gameId].turnTimer);
+    if (!checkForEndOfGame(gameId)) {
+        startTurnTimer(gameId);
+        switchPlayer(gameId);
     } else {
-        io.emit("gameState", gameState);
+        updateGameState(gameId)
     }
 }
 
 
-function switchPlayer() {
-    gameState.currentPlayer = gameState.players.find(
-        (p) => p !== gameState.currentPlayer
+function switchPlayer(gameId) {
+    games[gameId].state.currentPlayer = games[gameId].state.players.find(
+        (p) => p !== games[gameId].state.currentPlayer
     );
 
-    io.emit("gameState", gameState);
+    updateGameState(gameId)
 }
 
 function getRandomEmptyIndex(board) {
@@ -229,6 +233,33 @@ function getRandomEmptyIndex(board) {
 
     const randomIndex = Math.floor(Math.random() * emptyIndices.length);
     return emptyIndices[randomIndex];
+}
+
+function findWaitingRoom() {
+    for (const gameId in games) {
+        const gameState = games[gameId].state;
+        if (gameState.result.status == Statuses.WAITING) {
+            return gameId;
+        }
+    }
+    return -1;
+}
+
+function getGameId(socketId) {
+    for (const gameId in games) {
+        const gameState = games[gameId].state;
+        const playerIndex = gameState.players.findIndex(player => player.id === socketId);
+        if (playerIndex !== -1) {
+            return gameId;
+        }
+    }
+    return -1;
+}
+
+function updateGameState(gameId) {
+    for (const player of games[gameId].state.players) {
+        io.to(player.id).emit('gameState', games[gameId].state);
+    }
 }
 
 server.listen(3000, () => {

@@ -67,7 +67,7 @@ function initWebSocket() {
     const playerName = urlParams.get('playerName');
     console.log(playerName);
 
-    socket.emit("addPlayer", {
+    socket.emit("joinGame", {
         playerName: playerName,
     });
 }
