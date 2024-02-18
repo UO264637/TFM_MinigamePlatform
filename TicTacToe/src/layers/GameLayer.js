@@ -35,7 +35,6 @@ class GameLayer extends Layer {
   }
 
   calculateTaps(taps) {
-
     for (let i = 0; i < 9; i++) {
       this.board[i].pressed = false;
     }

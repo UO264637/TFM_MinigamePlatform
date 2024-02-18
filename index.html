@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Juegos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Juegos</h1>
+
+    <ul id="gamesList">
+        <!-- La lista de juegos se mostrará aquí -->
+    </ul>
+
+    <form id="joinForm" onsubmit="joinGame(event)" style="display: none;">
+        <input type="text" id="gameId" readonly required>
+        <label for="playerNameJoin">Introduce tu nombre:</label>
+        <input type="text" id="playerNameJoin" required>
+        <button onclick="toggleForm()">Volver</button>
+        <button type="submit">Aceptar</button>
+    </form>
+
+    <form id="createForm" onsubmit="createNewGame(event)">
+        <label for="playerNameCreate">Nombre del Jugador:</label>
+        <input type="text" id="playerNameCreate" required>
+        <button type="submit">Crear Juego</button>
+    </form>
+
+    <button onclick="createNewGame()">Crear Nuevo Juego</button>
+
+    <script>
+        // Función para cargar la lista de juegos al cargar la página
+        window.onload = function() {
+            loadGamesList();
+        };
+
+        // Función para cargar la lista de juegos desde el servidor
+        function loadGamesList() {
+            fetch('http://localhost:3000/api/activeGames')
+                .then(response => response.json())
+                .then(data => {
+                    const gamesList = document.getElementById('gamesList');
+
+                    // Limpiar la lista antes de agregar nuevos elementos
+                    gamesList.innerHTML = '';
+
+                    data.forEach(game => {
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `${game.players.join(' vs ')} - ${game.status}`;
+                        
+                        const joinButton = document.createElement('button');
+                        joinButton.textContent = 'Unirse';
+                        joinButton.addEventListener('click', () => {
+                        toggleForm();
+                        const gameId = document.getElementById('gameId');
+                        gameId.value=game.gameId
+                        });
+
+                        listItem.appendChild(joinButton);
+                        gamesList.appendChild(listItem);
+                    });
+                })
+                .catch(error => console.error('Error al cargar la lista de juegos:', error));
+        }
+
+        function toggleForm() {
+            const joinForm = document.getElementById('joinForm');
+            const gamesList = document.getElementById('gamesList');
+
+            joinForm.style.display = joinForm.style.display === 'none' ? 'block' : 'none';
+            gamesList.style.display = gamesList.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // ... (otro código)
+
+        // Función para unirse a un juego con el nombre del jugador
+        function joinGame(event) {
+            event.preventDefault();
+            const gameId = document.getElementById('gameId').value;
+            const playerName = document.getElementById('playerNameJoin').value;
+
+            window.location.href = `./TicTacToe/index.html?gameId=${gameId}&playerName=${playerName}`;
+        }
+
+        // Función para crear un nuevo juego con el nombre del jugador
+        function createNewGame(event) {
+            event.preventDefault();
+            const playerName = document.getElementById('playerNameCreate').value;
+
+            // Realiza una solicitud POST al servidor para crear una nueva partida
+            fetch('http://localhost:3000/api/createGame', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ playerName }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Redirige al usuario a la página del juego con el ID obtenido
+                console.log(data)
+                window.location.href = `./TicTacToe/index.html?gameId=${data.gameId}&playerName=${playerName}`;
+            })
+            .catch(error => console.error('Error al crear un nuevo juego:', error));
+        }
+    </script>
+</body>
+</html>

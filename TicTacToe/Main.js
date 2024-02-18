@@ -65,9 +65,10 @@ function resize() {
 function initWebSocket() {
     const urlParams = new URLSearchParams(window.location.search);
     const playerName = urlParams.get('playerName');
-    console.log(playerName);
+    const gameId = urlParams.get('gameId');
 
     socket.emit("joinGame", {
         playerName: playerName,
+        gameId: gameId,
     });
 }

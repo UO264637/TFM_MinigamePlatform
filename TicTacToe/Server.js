@@ -34,6 +34,30 @@ const winPatterns = [
     [2, 4, 6],
 ];
 
+app.get('/api/activeGames', (req, res) => {
+    const activeGames = Object.keys(games).map((gameId) => {
+        return {
+            gameId: gameId,
+            players: games[gameId].state.players.map((player) => player.playerName),
+            status: games[gameId].state.result.status,
+        };
+    });
+
+    res.json(activeGames);
+});
+
+app.post('/api/createGame', (req, res) => {
+    nextGameId++;
+        console.log('Room ' + nextGameId +" created");
+
+        games[nextGameId] = {
+            state: initializeGameState(),
+            turnTimer: 0
+        };
+
+    res.json({ gameId: nextGameId });
+});
+
 function initializeGameState() {
     return {
         board: new Array(9).fill(null),
@@ -64,9 +88,10 @@ io.on('connection', function (socket) {
 });
 
 function joinGame(socketId, data) {
-    let gameId = findWaitingRoom();
+    let gameId = data.gameId;
+    let nPlayers = games[gameId].state.players.length;
 
-    if (gameId != -1) {
+    if (nPlayers === 1) {
         console.log('Room ' + gameId +" (2/2): "+ data.playerName + " joined");
 
         let symbols = ["X", "O"];
@@ -85,14 +110,8 @@ function joinGame(socketId, data) {
         startTurnTimer(gameId);
         updateGameState(gameId)
     }
-    else {
-        nextGameId++;
-        console.log('Room ' + nextGameId +" (1/2): "+ data.playerName + " joined");
-
-        games[nextGameId] = {
-            state: initializeGameState(),
-            turnTimer: 0
-        };
+    else if (nPlayers === 0){
+        console.log('Room ' + gameId +" (1/2): "+ data.playerName + " joined");
 
         const newPlayer = {
             playerName: data.playerName,
@@ -100,8 +119,8 @@ function joinGame(socketId, data) {
             symbol: "",
         };
 
-        games[nextGameId].state.players.push(newPlayer);
-        updateGameState(nextGameId)
+        games[gameId].state.players.push(newPlayer);
+        updateGameState(gameId)
     }
 
 }
