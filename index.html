@@ -23,56 +23,56 @@
 <body>
     <h1>Lista de Juegos</h1>
 
-    <ul id="gamesList">
+    <ul id="roomsList">
         <!-- La lista de juegos se mostrará aquí -->
     </ul>
 
-    <form id="joinForm" onsubmit="joinGame(event)" style="display: none;">
-        <input type="text" id="gameId" readonly required>
+    <form id="joinForm" onsubmit="joinRoom(event)" style="display: none;">
+        <input type="text" id="roomId" readonly required>
         <label for="playerNameJoin">Introduce tu nombre:</label>
         <input type="text" id="playerNameJoin" required>
         <button onclick="toggleForm()">Volver</button>
         <button type="submit">Aceptar</button>
     </form>
 
-    <form id="createForm" onsubmit="createNewGame(event)">
+    <form id="createForm" onsubmit="createNewRoom(event)">
         <label for="playerNameCreate">Nombre del Jugador:</label>
         <input type="text" id="playerNameCreate" required>
         <button type="submit">Crear Juego</button>
     </form>
 
-    <button onclick="createNewGame()">Crear Nuevo Juego</button>
+    <button onclick="createNewRoom()">Crear Nuevo Juego</button>
 
     <script>
         // Función para cargar la lista de juegos al cargar la página
         window.onload = function() {
-            loadGamesList();
+            loadRoomsList();
         };
 
         // Función para cargar la lista de juegos desde el servidor
-        function loadGamesList() {
-            fetch('http://localhost:3000/api/activeGames')
+        function loadRoomsList() {
+            fetch('http://localhost:3000/api/activeRooms')
                 .then(response => response.json())
                 .then(data => {
-                    const gamesList = document.getElementById('gamesList');
+                    const roomsList = document.getElementById('roomsList');
 
                     // Limpiar la lista antes de agregar nuevos elementos
-                    gamesList.innerHTML = '';
+                    roomsList.innerHTML = '';
 
-                    data.forEach(game => {
+                    data.forEach(room => {
                         const listItem = document.createElement('li');
-                        listItem.innerHTML = `${game.players.join(' vs ')} - ${game.status}`;
+                        listItem.innerHTML = `${room.players.join(' vs ')} - ${room.status}`;
                         
                         const joinButton = document.createElement('button');
                         joinButton.textContent = 'Unirse';
                         joinButton.addEventListener('click', () => {
                         toggleForm();
-                        const gameId = document.getElementById('gameId');
-                        gameId.value=game.gameId
+                        const roomId = document.getElementById('roomId');
+                        roomId.value=room.roomId
                         });
 
                         listItem.appendChild(joinButton);
-                        gamesList.appendChild(listItem);
+                        roomsList.appendChild(listItem);
                     });
                 })
                 .catch(error => console.error('Error al cargar la lista de juegos:', error));
@@ -80,30 +80,30 @@
 
         function toggleForm() {
             const joinForm = document.getElementById('joinForm');
-            const gamesList = document.getElementById('gamesList');
+            const roomsList = document.getElementById('roomsList');
 
             joinForm.style.display = joinForm.style.display === 'none' ? 'block' : 'none';
-            gamesList.style.display = gamesList.style.display === 'none' ? 'block' : 'none';
+            roomsList.style.display = roomsList.style.display === 'none' ? 'block' : 'none';
         }
 
         // ... (otro código)
 
         // Función para unirse a un juego con el nombre del jugador
-        function joinGame(event) {
+        function joinRoom(event) {
             event.preventDefault();
-            const gameId = document.getElementById('gameId').value;
+            const roomId = document.getElementById('roomId').value;
             const playerName = document.getElementById('playerNameJoin').value;
 
-            window.location.href = `./TicTacToe/index.html?gameId=${gameId}&playerName=${playerName}`;
+            window.location.href = `./TicTacToe/index.html?roomId=${roomId}&playerName=${playerName}`;
         }
 
         // Función para crear un nuevo juego con el nombre del jugador
-        function createNewGame(event) {
+        function createNewRoom(event) {
             event.preventDefault();
             const playerName = document.getElementById('playerNameCreate').value;
 
             // Realiza una solicitud POST al servidor para crear una nueva partida
-            fetch('http://localhost:3000/api/createGame', {
+            fetch('http://localhost:3000/api/createRoom', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -114,7 +114,7 @@
             .then(data => {
                 // Redirige al usuario a la página del juego con el ID obtenido
                 console.log(data)
-                window.location.href = `./TicTacToe/index.html?gameId=${data.gameId}&playerName=${playerName}`;
+                window.location.href = `./TicTacToe/index.html?roomId=${data.roomId}&playerName=${playerName}`;
             })
             .catch(error => console.error('Error al crear un nuevo juego:', error));
         }

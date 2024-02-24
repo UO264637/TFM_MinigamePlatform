@@ -23,6 +23,8 @@ const Statuses = {
 let games = {};
 let nextGameId = 0;
 
+const roomModule = require('./RoomManager');
+
 const winPatterns = [
     [0, 1, 2],
     [3, 4, 5],
