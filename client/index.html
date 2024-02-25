@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Lista de Juegos</title>
+</head>
+<body>
+    <h1>Lista de Juegos</h1>
+
+    <section>
+        <article>
+            <h2>Nueva sala</h2>   
+            <form id="createForm" onsubmit="createNewRoom(event)">
+                <label for="playerNameCreate">Elige un apodo:</label>
+                <input type="text" id="playerNameCreate" required>
+                <button type="submit">Crear sala</button>
+            </form>
+        </article>
+        <article>
+            <h2>Salas existentes</h2>
+            <ul id="roomsList">
+
+            </ul>
+            <form id="joinForm" onsubmit="joinRoom(event)" style="display: none;">
+                <input type="text" id="roomId" readonly required style="display: none;">
+                <label for="playerNameJoin">Elige un apodo:</label>
+                <input type="text" id="playerNameJoin" required>
+                <button onclick="toggleForm()">Volver</button>
+                <button type="submit">Aceptar</button>
+            </form>
+        </article>
+    </section>
+    <script src="script.js"></script>
+</body>
+</html>
