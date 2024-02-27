@@ -10,3 +10,5 @@ const Statuses = {
     DRAW: "draw",
     WIN: "win",
   };
+
+var socketUrl = "http://localhost:3000";

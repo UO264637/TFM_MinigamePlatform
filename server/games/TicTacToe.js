@@ -1,9 +1,4 @@
-const Statuses = {
-    WAITING: "waiting",
-    PLAYING: "playing",
-    DRAW: "draw",
-    WIN: "win",
-};
+const { BaseGame, Statuses } = require('./BaseGame');
 
 const winPatterns = [
     [0, 1, 2],
@@ -16,9 +11,11 @@ const winPatterns = [
     [2, 4, 6],
 ];
 
-class TicTacToe {
+const symbols = ["X", "O"];
+
+class TicTacToe extends BaseGame {
     constructor(io) {
-        this.io = io;
+        super(io);
     }
 
     initializeGameState(room) {
@@ -33,13 +30,35 @@ class TicTacToe {
         room.state = state;
     }
 
-    handleGameStart(room, socketId, data) {
-        let symbols = ["X", "O"];
-        let symbol = Math.round(Math.random());
+    handleJoinGame(room, socketId, data) {
+        let nPlayers = room.state.players.length;
 
-        room.state.players[0].symbol = symbols[symbol]
-        room.state.players[1].symbol = symbols[1 - symbol]
-        room.state.currentPlayer = room.state.players[Math.round(Math.random())];
+        const newPlayer = {
+            playerName: data.playerName,
+            id: socketId
+        };
+
+        if (nPlayers === 0) {
+            console.log('Room ' + data.roomId + " (1/2): " + data.playerName + " joined");
+            room.state.players.push(newPlayer);
+
+            let symbol = Math.round(Math.random());
+            room.state.players[0].symbol = symbols[symbol];
+        }
+        else if (nPlayers === 1) {
+            console.log('Room ' + data.roomId + " (2/2): " + data.playerName + " joined");
+            room.state.players.push(newPlayer);
+
+            let symbol = symbols.find(symbol => symbol !== room.state.players[0].symbol); // X or O
+            room.state.players[1].symbol = symbol;
+            
+            this.handleGameStart(room, socketId, data);
+        }
+        this.updateGameState(room);
+    }
+
+    handleGameStart(room, socketId, data) {
+        room.state.currentPlayer = room.state.players.find(player => player.symbol === "X")
         room.state.result.status = Statuses.PLAYING;
 
         this.startTurnTimer(room);
@@ -62,13 +81,7 @@ class TicTacToe {
                 }
             }
         }
-    }
-
-    handleDisconnect(room, socketId) {
-        room.state.players = room.state.players.filter((p) => p.id != socketId);
-        room.state.result.status = Statuses.WIN;
-        room.state.result.winner = room.state.players[0];
-        clearInterval(room.turnTimer);
+        this.updateGameState(room);
     }
 
     checkForEndOfGame(room) {
@@ -85,7 +98,7 @@ class TicTacToe {
                 }
             });
         });
-    
+
         // Check for a draw
         if (room.state.result.status != Statuses.WIN) {
             const emptyBlock = room.state.board.indexOf(null);
@@ -97,35 +110,18 @@ class TicTacToe {
         else {
             return true;
         }
-    
+
         return false;
     }
 
-    startTurnTimer(room) {
-        let secondsLeft = 16;
-    
-        room.turnTimer = setInterval(() => {
-            secondsLeft--;
-    
-            this.io.to(room.state.players[0].id).emit('turnTimer', secondsLeft);
-            this.io.to(room.state.players[1].id).emit('turnTimer', secondsLeft);
-    
-            if (secondsLeft <= 0) {
-                this.handleTurnTimeout(room);
-                secondsLeft = 15;
-            }
-    
-        }, 1000);
-    }
-    
     handleTurnTimeout(room) {
         const randomEmptyIndex = this.getRandomEmptyIndex(room.state.board);
-    
+
         if (randomEmptyIndex !== -1) {
             const currentPlayer = room.state.currentPlayer;
             room.state.board[randomEmptyIndex] = currentPlayer;
         }
-    
+
         clearInterval(room.turnTimer);
         if (!this.checkForEndOfGame(room)) {
             this.startTurnTimer(room);
@@ -134,37 +130,30 @@ class TicTacToe {
             this.updateGameState(room)
         }
     }
-    
-    
+
     switchPlayer(room) {
         room.state.currentPlayer = room.state.players.find(
             (p) => p !== room.state.currentPlayer
         );
-    
+
         this.updateGameState(room)
     }
-    
+
     getRandomEmptyIndex(board) {
         const emptyIndices = [];
-    
+
         for (let i = 0; i < board.length; i++) {
             if (board[i] === null) {
                 emptyIndices.push(i);
             }
         }
-    
+
         if (emptyIndices.length === 0) {
             return -1;
         }
-    
+
         const randomIndex = Math.floor(Math.random() * emptyIndices.length);
         return emptyIndices[randomIndex];
-    }
-
-    updateGameState(room) {    
-        for (const player of room.state.players) {
-            this.io.to(player.id).emit('gameState', room.state);
-        }
     }
 }
 

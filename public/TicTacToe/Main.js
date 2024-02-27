@@ -8,9 +8,11 @@ var gameLayer;
 
 // Controles
 var controls = {};
-const socket = io("http://localhost:3000", {
-  transports: ["websocket"],
-});
+
+// Socket.io
+socket = io(socketUrl, {
+    transports: ["websocket"],
+  });
 
 // Inicio capas y bucle del juego
 function startGame() {

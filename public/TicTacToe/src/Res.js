@@ -7,6 +7,7 @@ var images = {
 };
 
 var imageRutes = Object.values(images);
+
 loadImages(0);
 
 function loadImages(index){

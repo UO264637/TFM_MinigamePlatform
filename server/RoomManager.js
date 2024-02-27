@@ -8,6 +8,16 @@ class RoomManager {
         return this.rooms[roomId];
     }
 
+    getRoomBySocketId(socketId) {
+        let roomId = this.getRoomId(socketId);
+
+        if (roomId != -1) {
+            return this.rooms[roomId];
+        }
+
+        return null;
+    }
+
     getWaitingRooms() {
         const waitingRooms = Object.keys(this.rooms)
             .filter(roomId => this.rooms[roomId].state.result.status == 'waiting')
