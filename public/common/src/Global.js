@@ -11,4 +11,4 @@ const Statuses = {
     WIN: "win",
   };
 
-var socketUrl = "http://localhost:3000";
+var socketUrl = "https://tfm-minigame-platform-backend-c0zyll94u.vercel.app";
