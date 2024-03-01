@@ -8,7 +8,7 @@ var server = http.createServer(app);
 
 const io = require("socket.io")(server, {
     cors: {
-        origin: "https://tfm-minigame-platform-fbmn4kcxs-carmens-projects-d4b17162.vercel.app",
+        origin: "*",
         methods: ["GET", "POST"]
     }
 });
