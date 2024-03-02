@@ -8,25 +8,19 @@ var gameLayer;
 
 // Controles
 var controls = {};
-
-// Socket.io
-socket = io(baseUrl, {
-    transports: ["websocket"],
-  });
+const socket = io("http://localhost:3000", {
+  transports: ["websocket"],
+});
 
 // Inicio capas y bucle del juego
 function startGame() {
-    initWebSocket();
+    //initWebSocket();
     gameLayer = new GameLayer();
 
-    socket.on("gameState", function (state) {
+/*     socket.on("gameState", function (state) {
         gameLayer.updateGameState(state);
     });
-
-    socket.on("turnTimer", function (secondsLeft) {
-        gameLayer.updateTurnTimer(secondsLeft);
-    });
-
+ */
     setInterval(loop, 1000 / 30);
 }
 
@@ -48,19 +42,22 @@ function updateTaps() {
     }
 }
 
+
 // Cambio de escalado
 window.addEventListener('load', resize, false);
 window.addEventListener('resize', resize, false);
 
 function resize() {
-    console.log("Resize")
+    canvas.width = originalCanvasWidth;
+    canvas.height = originalCanvasHeight;
+
     var widthScaling = parseFloat(window.innerWidth / canvas.width);
     var heightScaling = parseFloat(window.innerHeight / canvas.height);
 
     minScale = Math.min(widthScaling, heightScaling);
 
-    canvas.width = canvas.width * minScale;
-    canvas.height = canvas.height * minScale;
+    canvas.width *= minScale;
+    canvas.height *= minScale;
 
     context.scale(minScale, minScale);
 }
