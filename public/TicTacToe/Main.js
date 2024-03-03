@@ -10,7 +10,7 @@ var gameLayer;
 var controls = {};
 
 // Socket.io
-socket = io(baseUrl, {
+socket = io("http://tfm-minigame-platform-backend.vercel.app", {
     transports: ["websocket"],
   });
 
