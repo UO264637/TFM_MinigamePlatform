@@ -53,14 +53,16 @@ window.addEventListener('load', resize, false);
 window.addEventListener('resize', resize, false);
 
 function resize() {
-    console.log("Resize")
+    canvas.width = originalCanvasWidth;
+    canvas.height = originalCanvasHeight;
+
     var widthScaling = parseFloat(window.innerWidth / canvas.width);
     var heightScaling = parseFloat(window.innerHeight / canvas.height);
 
     minScale = Math.min(widthScaling, heightScaling);
 
-    canvas.width = canvas.width * minScale;
-    canvas.height = canvas.height * minScale;
+    canvas.width *= minScale;
+    canvas.height *= minScale;
 
     context.scale(minScale, minScale);
 }

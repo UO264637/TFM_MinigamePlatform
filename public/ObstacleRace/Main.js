@@ -42,7 +42,6 @@ function updateTaps() {
     }
 }
 
-
 // Cambio de escalado
 window.addEventListener('load', resize, false);
 window.addEventListener('resize', resize, false);

@@ -3,7 +3,7 @@ window.onload = function() {
 };
 
 function loadRoomsList() {
-    fetch('http://localhost:3000/api/waitingRooms')
+    fetch(baseUrl + '/api/waitingRooms')
         .then(response => response.json())
         .then(data => {
             const roomsList = document.getElementById('roomsList');
@@ -48,7 +48,7 @@ function createNewRoom(event) {
     event.preventDefault();
     const playerName = document.getElementById('playerNameCreate').value;
 
-    fetch('http://localhost:3000/api/createRoom', {
+    fetch(baseUrl + '/api/createRoom', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
