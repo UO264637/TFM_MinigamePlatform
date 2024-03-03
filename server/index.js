@@ -5,12 +5,13 @@ const cors = require('cors');
 var app = express();
 app.use(cors());
 app.use('/api/waitingRooms', cors());
+app.use(express.json());
 
 var server = http.createServer(app);
 
 const io = require("socket.io")(server, {
     cors: {
-        origin: ["http://localhost:3000","https://tfm-minigame-platform.vercel.app"],
+        origin: ["http://localhost:3000", "https://tfm-minigame-platform.vercel.app"],
         methods: ["GET", "POST"],
         credentials: true,
     }
@@ -18,9 +19,11 @@ const io = require("socket.io")(server, {
 
 const roomManager = require('./RoomManager');
 const TicTacToe = require('./games/TicTacToe');
+const ObstacleRace = require('./games/ObstacleRace');
 
 games = {
-    "TICTACTOE": new TicTacToe(io)
+    "TicTacToe": new TicTacToe(io),
+    "ObstacleRace": new ObstacleRace(io),
 }
 
 app.get('/api/waitingRooms', (req, res) => {
@@ -30,11 +33,12 @@ app.get('/api/waitingRooms', (req, res) => {
 });
 
 app.post('/api/createRoom', (req, res) => {
-    const roomId = roomManager.createRoom("TICTACTOE");
-    const room = roomManager.getRoom(roomId);
+    const { gameType } = req.body;
 
-    room.game = games["TICTACTOE"];
-    room.game.initializeGameState(room);
+    if (!gameType || !games[gameType]) {
+        return res.status(400).json({ error: 'gameType is not valid' });
+    }
+    const roomId = roomManager.createRoom(gameType);
 
     res.json({ roomId: roomId });
 });
@@ -78,7 +82,7 @@ function disconnect(socketId) {
     const room = roomManager.getRoomBySocketId(socketId);
 
     if (room != null && room.game != null) {
-        room.game.handleDisconnect(room, socketId);      
+        room.game.handleDisconnect(room, socketId);
     }
 }
 

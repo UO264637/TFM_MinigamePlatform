@@ -72,3 +72,7 @@ form {
     align-items: center;
     justify-content: center;
 }
+
+.TicTacToe {
+    background-color: aquamarine;
+}

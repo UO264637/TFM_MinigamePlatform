@@ -12,6 +12,7 @@ function loadRoomsList() {
             data.forEach(room => {
                 const listItem = document.createElement('li');
                 listItem.innerHTML = `${room.players.join(' vs ')} - ${room.status}`;
+                listItem.classList.add(room.gameType);
                 
                 const joinButton = document.createElement('button');
                 joinButton.textContent = 'Unirse';
@@ -48,12 +49,14 @@ function createNewRoom(event) {
     event.preventDefault();
     const playerName = document.getElementById('playerNameCreate').value;
 
+    const gameType = 'TicTacToe';
+
     fetch(baseUrl + '/api/createRoom', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ playerName }),
+        body: JSON.stringify({ gameType: gameType }),
     })
     .then(response => response.json())
     .then(data => {

@@ -23,6 +23,7 @@ class RoomManager {
             .filter(roomId => this.rooms[roomId].state.result.status == 'waiting')
             .map(roomId => ({
                 roomId: roomId,
+                gameType: this.rooms[roomId].gameType,
                 players: this.rooms[roomId].state.players.map(player => player.playerName),
                 status: this.rooms[roomId].state.result.status,
             }));
@@ -44,11 +45,16 @@ class RoomManager {
     createRoom(gameType) {
         this.nextRoomId++;
 
-        this.rooms[this.nextRoomId] = {
+        let room = {
             gameType: gameType,
             state: null,
             turnTimer: 0
         };
+
+        room.game = games[gameType];
+        room.game.initializeGameState(room);
+
+        this.rooms[this.nextRoomId] = room;
 
         return this.nextRoomId;
     }

@@ -18,7 +18,7 @@ const PlayerStatuses = {
 };
 
 
-var baseUrl = "https://tfm-minigame-platform-backend.vercel.app";
+var baseUrl = "http://localhost:3000";
 
 var originalCanvasWidth = 1280;
 var originalCanvasHeight = 720;

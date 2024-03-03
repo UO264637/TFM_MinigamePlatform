@@ -30,34 +30,15 @@ class TicTacToe extends BaseGame {
         room.state = state;
     }
 
-    handleJoinGame(room, socketId, data) {
-        let nPlayers = room.state.players.length;
-
-        const newPlayer = {
-            playerName: data.playerName,
-            id: socketId
-        };
-
-        if (nPlayers === 0) {
-            console.log('Room ' + data.roomId + " (1/2): " + data.playerName + " joined");
-            room.state.players.push(newPlayer);
-
-            let symbol = Math.round(Math.random());
-            room.state.players[0].symbol = symbols[symbol];
-        }
-        else if (nPlayers === 1) {
-            console.log('Room ' + data.roomId + " (2/2): " + data.playerName + " joined");
-            room.state.players.push(newPlayer);
-
-            let symbol = symbols.find(symbol => symbol !== room.state.players[0].symbol); // X or O
-            room.state.players[1].symbol = symbol;
-            
-            this.handleGameStart(room, socketId, data);
-        }
-        this.updateGameState(room);
+    handleOnePlayer(room, socketId, data) {
+        let symbol = Math.round(Math.random());
+        room.state.players[0].symbol = symbols[symbol];
     }
 
     handleGameStart(room, socketId, data) {
+        let symbol = symbols.find(symbol => symbol !== room.state.players[0].symbol); // X or O
+        room.state.players[1].symbol = symbol;
+
         room.state.currentPlayer = room.state.players.find(player => player.symbol === "X")
         room.state.result.status = Statuses.PLAYING;
 

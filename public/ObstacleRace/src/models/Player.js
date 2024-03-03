@@ -21,6 +21,13 @@ class Player extends Model {
     update() {
         this.animation.update();
 
+        if (this.hitsBottom == true){
+            this.inTheAir = false;
+        } else {
+            this.inTheAir = true;
+        }
+    
+
         switch (this.estado) {
             case PlayerStatuses.IDLE:
                 this.animation = this.idleA;
@@ -43,4 +50,12 @@ class Player extends Model {
         this.yv = direction * 3;
     }
 
+    jump(){
+        if ( !this.inTheAir ) {
+            this.yv = -16;
+            this.inTheAir = true;
+        }
+    
+    }
+    
 }

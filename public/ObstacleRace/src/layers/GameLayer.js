@@ -6,11 +6,13 @@ class GameLayer extends Layer {
   }
 
   start() {
-    this.space = new Space(0);
+    this.space = new Space(1);
 
     this.player = new Player(50, 50);
     this.space.addDinamicCorp(this.player);
-    this.background = new Background(images.board, originalCanvasWidth * 0.5, originalCanvasHeight * 0.5);
+    this.background = new Background(images.background, originalCanvasWidth * 0.5, originalCanvasHeight * 0.5);
+    var floor = new Background(images.floor, originalCanvasWidth * 0.5, originalCanvasHeight-50);
+    this.space.addStaticCorp(floor);
     
     this.obstacles = [];
     var obstacle1 = new Obstacle(350,50);
@@ -88,15 +90,8 @@ class GameLayer extends Layer {
 
     // Eje Y
     if (controls.moveY > 0) {
-      this.player.moveY(-1);
-
-    } else if (controls.moveY < 0) {
-      this.player.moveY(1);
-
-    } else {
-      this.player.moveY(0);
+      this.player.jump();
     }
-
   }
 
   calculateTaps(taps) {

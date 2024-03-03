@@ -1,11 +1,11 @@
 // Lista re recursos a precargar 
 var images = {
-    tttButton : "res/empty.png",
-    board : "res/board.png",
+    background : "res/background.png",
     player : "res/player.png",
     obstacle : "res/obstacle.png",
     idle_player: "res/idle_player.png",
-    running_player: "res/running_player.png"
+    running_player: "res/running_player.png",
+    floor: "res/floor.png",
 };
 
 var imageRutes = Object.values(images);

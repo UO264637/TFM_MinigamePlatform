@@ -22,22 +22,26 @@ class BaseGame {
             console.log('Room ' + data.roomId + " (1/2): " + data.playerName + " joined");
 
             room.state.players.push(newPlayer);
+
+            this.handleOnePlayer(room, socketId, data);
             this.updateGameState(room);
         }
-
         else if (nPlayers === 1) {
             console.log('Room ' + data.roomId + " (2/2): " + data.playerName + " joined");
 
             room.state.players.push(newPlayer);
 
             this.handleGameStart(room, socketId, data);
+            this.updateGameState(room);
         }
+    }
+
+    handleOnePlayer(room, socketId, data) {
+
     }
 
     handleGameStart(room, socketId, data) {
         room.state.result.status = Statuses.PLAYING;
-
-        this.updateGameState(room);
     }
 
     handleDisconnect(room, socketId) {

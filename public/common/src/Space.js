@@ -40,6 +40,8 @@ class Space {
                 this.dynamic[i].yv = 20;
             }
 
+            this.dynamic[i].hitsBottom = false;
+
             //derecha
             this.moveRight(i);
             this.moveLeft(i);
@@ -52,7 +54,6 @@ class Space {
 
     moveRight(i) {
         if (this.dynamic[i].xv > 0) {
-            console.log("a")
             var possibleMovement = this.dynamic[i].xv;
             // El mejor "idealmente" xv partimos de ese
 
@@ -173,6 +174,7 @@ class Space {
                         // La distancia es MENOR que nuestro movimiento posible
                         // Tenemos que actualizar el movimiento posible a uno menor
                         possibleMovement = staticTop - dynamicDown;
+                        this.dynamic[i].hitsBottom = true;
                     }
                 }
             }
