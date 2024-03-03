@@ -1,9 +1,11 @@
 var express = require('express')
 var http = require('http');
+const cors = require('cors');
 
 var app = express();
-const cors = require('cors');
 app.use(cors());
+app.use('/api/waitingRooms', cors());
+
 var server = http.createServer(app);
 
 const io = require("socket.io")(server, {
