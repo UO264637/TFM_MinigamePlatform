@@ -11,7 +11,8 @@ var server = http.createServer(app);
 const io = require("socket.io")(server, {
     cors: {
         origin: ["http://localhost:3000","https://tfm-minigame-platform.vercel.app"],
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST"],
+        credentials: true,
     }
 });
 

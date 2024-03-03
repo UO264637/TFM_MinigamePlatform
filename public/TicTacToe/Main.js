@@ -10,8 +10,9 @@ var gameLayer;
 var controls = {};
 
 // Socket.io
-socket = io("http://tfm-minigame-platform-backend.vercel.app", {
+socket = io(baseUrl, {
     transports: ["websocket"],
+    withCredentials: true,
   });
 
 // Inicio capas y bucle del juego
