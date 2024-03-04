@@ -9,44 +9,44 @@ html {
 }
 
 body {
-    border-style: solid;
-    border-width: 1px;
-    border-color: #442800;
-    
-    height: 70%;
-    margin: 7.5% 20% 10% 20%;
-    padding: 5%;
+    margin: 0;
 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 7.5px;
 }
 
 header{
-    background-color: #262626;
+    background-color: #442800;
     width: 100%;
     height: 15vh;
     min-height: 90px;
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
-
-    
 
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+h1 {
+    color: white;
+}
+
+h2 {
+    margin-bottom: 0;
+}
+
 section {
     height: 100%;
-    width: 100%;
-    padding: 10px;
+    width: calc(100% - 15px);
     border-style: solid;
     border-width: 1px;
     border-color: #442800;
 
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 10px;
@@ -55,14 +55,39 @@ section {
 article {
     height: 100%;
     width: 100%;
+    padding: 10px;
     min-height: 100%;
     border-style: solid;
     border-width: 1px;
-    border-color: #442800;;
+    border-color: #442800;
 
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+ul {
+    margin: 0px;
+    list-style: none;
+    padding: 0;
+}
+
+#gameList {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+#gameList li{
+    width: 150px;
+    height: 200px;
+    padding: 5px;
+    border-radius: 5px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 form {
@@ -75,4 +100,13 @@ form {
 
 .TicTacToe {
     background-color: aquamarine;
+}
+
+.ObstacleRace {
+    background-color: pink;
+}
+
+.selected {
+    font-weight: bold;
+    border-color: black;
 }

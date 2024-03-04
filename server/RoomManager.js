@@ -51,9 +51,6 @@ class RoomManager {
             turnTimer: 0
         };
 
-        room.game = games[gameType];
-        room.game.initializeGameState(room);
-
         this.rooms[this.nextRoomId] = room;
 
         return this.nextRoomId;

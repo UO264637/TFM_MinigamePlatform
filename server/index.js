@@ -1,13 +1,13 @@
-var express = require('express')
-var http = require('http');
+const express = require('express')
+const http = require('http');
 const cors = require('cors');
 
-var app = express();
+const app = express();
 app.use(cors());
 app.use('/api/waitingRooms', cors());
 app.use(express.json());
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
 const io = require("socket.io")(server, {
     cors: {
@@ -21,10 +21,16 @@ const roomManager = require('./RoomManager');
 const TicTacToe = require('./games/TicTacToe');
 const ObstacleRace = require('./games/ObstacleRace');
 
-games = {
+const games = {
     "TicTacToe": new TicTacToe(io),
     "ObstacleRace": new ObstacleRace(io),
 }
+
+app.get('/api/gameTypes', (req, res) => {
+    const gameTypes = Object.keys(games);
+
+    res.json(gameTypes);
+});
 
 app.get('/api/waitingRooms', (req, res) => {
     const waitingRooms = roomManager.getWaitingRooms();
@@ -39,13 +45,16 @@ app.post('/api/createRoom', (req, res) => {
         return res.status(400).json({ error: 'gameType is not valid' });
     }
     const roomId = roomManager.createRoom(gameType);
+    const room = roomManager.getRoom(roomId);
+
+    room.game = games[gameType];
+    room.game.initializeGameState(room);
 
     res.json({ roomId: roomId });
 });
 
 io.on('connection', function (socket) {
     console.log('Client connected:', socket.id);
-    turnTimer = null;
 
     socket.on("joinGame", function (data) {
         joinGame(socket.id, data);
@@ -81,7 +90,7 @@ function disconnect(socketId) {
     console.log('Client disconnected:', socketId);
     const room = roomManager.getRoomBySocketId(socketId);
 
-    if (room != null && room.game != null) {
+    if (room?.game != null) {
         room.game.handleDisconnect(room, socketId);
     }
 }

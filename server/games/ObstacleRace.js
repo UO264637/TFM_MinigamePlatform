@@ -1,12 +1,9 @@
 const { BaseGame, Statuses } = require('./BaseGame');
 
 class ObstacleRace extends BaseGame {
-    constructor(io) {
-        super(io);
-    }
 
     initializeGameState(room) {
-        const obstacles = Array.from({ length: 20 }, Math.random())
+        const obstacles = Array.from({ length: 20 }, () => Math.floor(Math.random()))
 
         const state = {
             obstacles: obstacles,
@@ -47,12 +44,7 @@ class ObstacleRace extends BaseGame {
             }
         });
 
-        if (room.state.result.status == Statuses.WIN) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return room.state.result.status == Statuses.WIN;
     }
 }
 
