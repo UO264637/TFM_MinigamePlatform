@@ -63,12 +63,11 @@ function createRoomElement(room) {
   div.innerHTML = "Sala " + room.roomId;
 
   listItem.appendChild(listHeader);
-  listItem.appendChild(p);  
+  listItem.appendChild(p);
   listItem.appendChild(div);
   listItem.classList.add(room.gameType);
 
   listItem.addEventListener("click", () => {
-    toggleForm();
     window.location.href = `./joinRoom.html?gameType=${room.gameType}&roomId=${room.roomId}`;
   });
 
@@ -105,3 +104,33 @@ function createNewRoom(event) {
     })
     .catch((error) => console.error("Error creating new room:", error));
 }
+
+function filterRooms() {
+  const filterValue = document.getElementById("filter").value.toLowerCase();
+  const roomList = document.getElementById("roomList");
+  const rooms = roomList.getElementsByTagName("li");
+
+  for (const room of rooms) {
+    let roomName = room.querySelector("h3").textContent.toLowerCase().replace("- waiting", "");
+    let roomDescription = room.querySelector("p").textContent.toLowerCase();
+    let roomNumber = room.querySelector("div").textContent.toLowerCase().replace("sala ", "");
+
+    let displayStyle =
+      roomName.includes(filterValue) ||
+      roomDescription.includes(filterValue) ||
+      roomNumber.includes(filterValue)
+        ? "block"
+        : "none";
+
+    room.style.display = displayStyle;
+  }
+}
+
+const gameList = document.getElementById('gameList');
+
+    gameList.addEventListener('wheel', function (event) {
+      if (gameList.scrollWidth > gameList.clientWidth) {
+        gameList.scrollLeft += event.deltaY;
+        event.preventDefault();
+      }
+    });

@@ -28,21 +28,12 @@
         <hgroup>
           <h2>Salas existentes</h2>
           <form>
-            <input type="text" id="filter"/>
+            <input type="text" id="filter" oninput="filterRooms()"/>
             <button type="submit">Filtrar</button>
           </form>
         </hgroup>
 
         <ul id="roomList"></ul>
-
-        <form id="joinForm" onsubmit="joinRoom(event)" style="display: none">
-          <input type="text" id="roomId" readonly required style="display: none"/>
-          <input type="text" id="gameType" readonly required style="display: none"/>
-          <label for="playerNameJoin">Elige un apodo:</label>
-          <input type="text" id="playerNameJoin" required />
-          <button onclick="toggleForm()">Volver</button>
-          <button type="submit">Aceptar</button>
-        </form>
       </section>
     </main>
     <script src="./common/src/Global.js"></script>
