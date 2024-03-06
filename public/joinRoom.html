@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+    <link rel="stylesheet" href="style.css" >
+    <title>Arkame Games</title>
+  </head>
+
+  <body>
+    <header>
+      <a href="index.html"><h1>Ar<b>kame</b>Games</h1></a>
+    </header>
+
+    <main>
+      <section class="mini">
+        <h2>Unirse a la sala</h2>
+
+        <form id="joinForm" onsubmit="joinRoom(event)">
+          <input type="text" id="roomId" readonly required style="display: none">
+          <label for="playerNameJoin">Elige un apodo</label>
+          <input type="text" id="playerNameJoin" required >
+          <button type="submit">Aceptar</button>          
+        </form>
+        <a href="index.html">Volver</a>
+      </section>
+
+      
+    </main>
+    <script src="./common/src/Global.js"></script>
+    <script src="joinRoom.js"></script>
+  </body>
+</html>
