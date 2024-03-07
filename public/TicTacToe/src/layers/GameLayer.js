@@ -16,6 +16,7 @@ class GameLayer extends Layer {
     }
 
     this.background = new Background(images.board, canvas.width * 0.5, canvas.height * 0.5);
+    //this.turnIndicator = new Background(images.turnIndicator, canvas.width * 0.5, canvas.height * 0.5);
     this.player1 = new Text(0, canvas.width * 0.07, canvas.height * 0.47);
     this.player2 = new Text(0, canvas.width * 0.07, canvas.height * 0.53);
     this.status = new CenteredText(0, canvas.width * 0.5, canvas.height * 0.1);
@@ -39,10 +40,10 @@ class GameLayer extends Layer {
       this.board[i].pressed = false;
     }
 
-    for (var k = 0; k < taps.length; k++) {
+    for (const tap of taps) {
       for (let i = 0; i < 9; i++) {
-        if (this.board[i].containsPoint(taps[k].x, taps[k].y)) {
-          if (taps[k].type == tapType.start) {
+        if (this.board[i].containsPoint(tap.x, tap.y)) {
+          if (tap.type == tapType.start) {
             socket.emit("action", {
               gridIndex: i,
             });
@@ -66,13 +67,20 @@ class GameLayer extends Layer {
         this.status.value = "Esperando jugadores...";
         break;
       case Statuses.PLAYING:
-        this.currentPlayer = state.currentPlayer.playerName;
+        if (state.currentPlayer.id == socketId) {
+          this.currentTurn = "Tu turno! "
+          //this.turnIndicator.paint();
+        }
+        else {
+          let opponent = state.players.find((p) => p.id != socketId).playerName;
+          this.currentTurn = "Turno de " + opponent +": ";
+        }
         break;
       case Statuses.DRAW:
         this.status.value = "Empate!";
         break;
       case Statuses.WIN:
-        this.status.value = "Ha ganado " + state.result.winner.playerName + "!";
+        this.status.value = "Ha ganado " + state.result.winner.playerName + "! ";
         break;
       default:
         break;
@@ -92,6 +100,6 @@ class GameLayer extends Layer {
   }
 
   updateTurnTimer(secondsLeft) {
-    this.status.value = "Turno de " + this.currentPlayer + ": " + secondsLeft + "s...";
+    this.status.value = this.currentTurn + secondsLeft + "s...";
   }
 }

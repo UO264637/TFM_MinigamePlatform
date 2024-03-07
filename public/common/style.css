@@ -1,0 +1,53 @@
+@font-face {
+  font-family: "RetroGaming";
+  src: local("RetroGaming"),
+    url("../common/res/RetroGaming.ttf") format("truetype");
+}
+* {
+  color: #5f4724;
+  font-family: sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  background-color: #ddd5d5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+header {
+  background-color: #e8e1d5;
+  width: 100%;
+  height: 90px;
+  box-shadow: 0px 5px 5px 0px rgb(0 0 0 / 0.2);
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+header a {
+  text-decoration: none;
+}
+
+h1 {
+  font-family: "RetroGaming";
+  padding: 15px;
+  text-align: left;
+}
+
+em {
+  font-family: "RetroGaming";
+  font-style: normal;
+  color: #75b3b6;
+}
+
+canvas {
+  background: #eee;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0px 5px 5px 0px rgb(0 0 0 / 0.2);
+}

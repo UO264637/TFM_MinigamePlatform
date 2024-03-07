@@ -1,80 +1,90 @@
 // Canvas y contexto del Canvas
-var canvas = document.getElementById("canvas");
-var context = canvas.getContext("2d");
-var minScale = 1;
+const canvas = document.getElementById("canvas");
+const header = document.getElementsByTagName("header")[0];
+const context = canvas.getContext("2d");
+let minScale = 1;
 
 // Capas
-var gameLayer;
+let gameLayer;
 
 // Controles
-var controls = {};
+const controls = {};
 
 // Socket.io
-socket = io(baseUrl, {
-    transports: ["websocket"],
-    withCredentials: true,
-  });
+const socket = io(baseUrl, {
+  transports: ["websocket"],
+  withCredentials: true,
+});
+let socketId;
 
 // Inicio capas y bucle del juego
 function startGame() {
-    initWebSocket();
-    gameLayer = new GameLayer();
+  
+  gameLayer = new GameLayer();
 
-    socket.on("gameState", function (state) {
-        gameLayer.updateGameState(state);
-    });
+  socket.on("connect", function () {
+    socketId = socket.id;
+  });
 
-    socket.on("turnTimer", function (secondsLeft) {
-        gameLayer.updateTurnTimer(secondsLeft);
-    });
+  initWebSocket();
 
-    setInterval(loop, 1000 / 30);
+  socket.on("gameState", function (state) {
+    gameLayer.updateGameState(state);
+  });
+
+  socket.on("turnTimer", function (secondsLeft) {
+    gameLayer.updateTurnTimer(secondsLeft);
+  });
+
+  setInterval(loop, 1000 / 30);
 }
 
 function loop() {
-    console.log("loop - ")
-    gameLayer.update();
-    gameLayer.calculateTaps(taps);
-    gameLayer.processControls();
-    gameLayer.paint();
+  console.log("loop - ");
+  gameLayer.update();
+  gameLayer.calculateTaps(taps);
+  gameLayer.processControls();
+  gameLayer.paint();
 
-    updateTaps();
+  updateTaps();
 }
 
 function updateTaps() {
-    for (var i = 0; i < taps.length; i++) {
-        if (taps[i].type == tapType.start) {
-            taps[i].type = tapType.mantain;
-        }
+  for (const tap of taps) {
+    if (tap.type == tapType.start) {
+      tap.type = tapType.mantain;
     }
+  }
 }
 
 // Cambio de escalado
-window.addEventListener('load', resize, false);
-window.addEventListener('resize', resize, false);
+window.addEventListener("load", resize, false);
+window.addEventListener("resize", resize, false);
 
 function resize() {
-    canvas.width = originalCanvasWidth;
-    canvas.height = originalCanvasHeight;
+  canvas.width = originalCanvasWidth;
+  canvas.height = originalCanvasHeight;
 
-    var widthScaling = parseFloat(window.innerWidth / canvas.width);
-    var heightScaling = parseFloat(window.innerHeight / canvas.height);
+  let widthScaling = parseFloat(window.innerWidth / canvas.width);
+  let heightScaling = parseFloat((window.innerHeight) / (canvas.height));
+  minScale = Math.min(widthScaling, heightScaling);
 
-    minScale = Math.min(widthScaling, heightScaling);
+  canvas.width = canvas.width * minScale - 162;
+  canvas.height = canvas.height * minScale - 90;
 
-    canvas.width *= minScale;
-    canvas.height *= minScale;
+  minScale = Math.min(parseFloat(canvas.width / originalCanvasWidth), parseFloat(canvas.height / originalCanvasHeight));
+  header.style.width = canvas.width+"px";
 
-    context.scale(minScale, minScale);
+  context.scale(minScale, minScale);
 }
 
 function initWebSocket() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const playerName = urlParams.get('playerName');
-    const roomId = urlParams.get('roomId');
+  const urlParams = new URLSearchParams(window.location.search);
+  const playerName = urlParams.get("playerName");
+  const roomId = urlParams.get("roomId");
 
-    socket.emit("joinGame", {
-        playerName: playerName,
-        roomId: roomId,
-    });
+  socket.emit("joinGame", {
+    playerName: playerName,
+    roomId: roomId,
+  });
 }
