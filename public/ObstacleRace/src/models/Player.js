@@ -42,20 +42,17 @@ class Player extends Model {
         this.animation.paint(this.x, this.y);
     }
 
-    moveX(direction) {
-        this.xv = direction * 3;
-    }
-
-    moveY(direction) {
-        this.yv = direction * 3;
-    }
-
     jump(){
         if ( !this.inTheAir ) {
             this.yv = -16;
             this.inTheAir = true;
         }
+    }
+
+    crouch(){
+        if ( !this.inTheAir ) {
+            this.crouched = true;
+        }
     
     }
-    
 }

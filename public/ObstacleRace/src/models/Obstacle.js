@@ -4,11 +4,11 @@ class Obstacle extends Model {
         super(images.obstacle, x, y)
 
         this.yv = 0;
-        this.xv = 1;
+        this.xv = 0;
     }
 
     update (){
-        this.xv = -1;
+        this.x += this.xv
     }
 
 }
