@@ -3,7 +3,8 @@ var images = {
     tttButton : "res/empty.png",
     board : "res/board.png",
     X : "res/X.png",
-    O : "res/O.png"
+    O : "res/O.png",
+    turnIndicator: "res/turn_indicator.png"
 };
 
 var imageRutes = Object.values(images);

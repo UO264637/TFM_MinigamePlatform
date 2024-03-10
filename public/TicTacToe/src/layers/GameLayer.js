@@ -16,7 +16,7 @@ class GameLayer extends Layer {
     }
 
     this.background = new Background(images.board, canvas.width * 0.5, canvas.height * 0.5);
-    //this.turnIndicator = new Background(images.turnIndicator, canvas.width * 0.5, canvas.height * 0.5);
+    this.turnIndicator = new Background(images.turnIndicator, canvas.width * 0.5, canvas.height * 0.5);
     this.player1 = new Text(0, canvas.width * 0.07, canvas.height * 0.47);
     this.player2 = new Text(0, canvas.width * 0.07, canvas.height * 0.53);
     this.status = new CenteredText(0, canvas.width * 0.5, canvas.height * 0.1);
@@ -33,6 +33,10 @@ class GameLayer extends Layer {
     this.player1.paint();
     this.player2.paint();
     this.status.paint();
+
+    if (this.isTurn) {
+      this.turnIndicator.paint();
+    }
   }
 
   calculateTaps(taps) {
@@ -68,19 +72,22 @@ class GameLayer extends Layer {
         break;
       case Statuses.PLAYING:
         if (state.currentPlayer.id == socketId) {
-          this.currentTurn = "Tu turno! "
-          //this.turnIndicator.paint();
+          this.currentTurn = "Tu turno! ";
+          this.isTurn = true;
         }
         else {
           let opponent = state.players.find((p) => p.id != socketId).playerName;
-          this.currentTurn = "Turno de " + opponent +": ";
+          this.currentTurn = "Turno de " + opponent + ": ";
+          this.isTurn = false;
         }
         break;
       case Statuses.DRAW:
         this.status.value = "Empate!";
+        this.isTurn = false;
         break;
       case Statuses.WIN:
         this.status.value = "Ha ganado " + state.result.winner.playerName + "! ";
+        this.isTurn = false;
         break;
       default:
         break;

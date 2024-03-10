@@ -2,11 +2,12 @@ class GameLayer extends Layer {
   constructor() {
     super();
     this.start();
-    this.speed = 0;
+    this.speed = -5;
   }
 
   start() {
     this.space = new Space(1);
+    this.backgrounds = [];
 
     this.player = new Player(150, originalCanvasHeight - 200);
     this.space.addDinamicCorp(this.player);
@@ -15,6 +16,50 @@ class GameLayer extends Layer {
       originalCanvasWidth * 0.5,
       originalCanvasHeight * 0.5
     );
+    this.backgrounds.push(this.background);
+
+    this.background1 = new Background(
+      images.background1,
+      originalCanvasWidth * 0.5,
+      originalCanvasHeight * 0.5
+    );
+    this.backgrounds.push(this.background1);
+
+    this.background2 = new Background(
+      images.background2,
+      originalCanvasWidth * 0.5,
+      originalCanvasHeight * 0.5
+    );
+    this.backgrounds.push(this.background2);
+
+    this.background3 = new Background(
+      images.background3,
+      originalCanvasWidth * 0.5,
+      originalCanvasHeight * 0.5
+    );
+    this.backgrounds.push(this.background3);
+
+    this.background4 = new Background(
+      images.background4,
+      originalCanvasWidth * 0.5,
+      originalCanvasHeight * 0.5
+    );
+    this.backgrounds.push(this.background4);
+
+    this.floor_background = new Background(
+      images.floor_background,
+      originalCanvasWidth * 0.5,
+      originalCanvasHeight * 0.5
+    );
+    this.backgrounds.push(this.floor_background);
+
+    this.background5 = new Background(
+      images.background5,
+      originalCanvasWidth * 0.5,
+      originalCanvasHeight * 0.5
+    );
+    this.backgrounds.push(this.background5);
+
     let floor = new Background(
       images.floor,
       originalCanvasWidth * 0.5,
@@ -35,9 +80,17 @@ class GameLayer extends Layer {
   }
 
   update() {
+    this.background1.xv = this.speed + 4;
+    this.background2.xv = this.speed + 3;
+    this.background3.xv = this.speed + 2;
+    this.background4.xv = this.speed + 1;
+    this.background5.xv = this.speed - 1;
+    this.floor_background.xv = this.speed;
+
     this.space.update();
-    this.background.xv = this.speed;
-    this.background.update();
+    for (let background of this.backgrounds) {
+      background.update();
+    }
 
     this.player.update();
 
@@ -64,7 +117,9 @@ class GameLayer extends Layer {
   }
 
   paint() {
-    this.background.paint();
+    for (let background of this.backgrounds) {
+      background.paint();
+    }
     this.player.paint();
 
     for (const obstacle of this.obstacles) {
@@ -114,7 +169,7 @@ class GameLayer extends Layer {
           this.speed = -5;
           for (obstaclePosition of state.obstacles) {
             if (obstaclePosition == 0) {
-              let obstacle = new Obstacle(images.mushroom, )
+              let obstacle = new Obstacle(images.mushroom,)
             }
             else {
 

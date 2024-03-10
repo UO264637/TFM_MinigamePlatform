@@ -15,16 +15,17 @@ const socket = io(baseUrl, {
   transports: ["websocket"],
   withCredentials: true,
 });
+
 let socketId;
+
+socket.on("connect", function () {
+  socketId = socket.id;
+});
 
 // Inicio capas y bucle del juego
 function startGame() {
   
   gameLayer = new GameLayer();
-
-  socket.on("connect", function () {
-    socketId = socket.id;
-  });
 
   initWebSocket();
 
