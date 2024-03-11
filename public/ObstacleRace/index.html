@@ -6,22 +6,13 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
-    <title>Tres en raya</title>
-    <style>
-        * { padding: 0; margin: 0; }
-        canvas {
-            background: #eee;
-            display: block;
-            margin: 0 auto;
-        }
-
-        @font-face {
-            font-family: 'RetroGaming';
-            src: local('RetroGaming'), url('res/RetroGaming.ttf') format('truetype');
-        }
-    </style>
-</head>
-<body>
+    <link rel="stylesheet" href="../common/style.css" />
+    <title>Obstacle race</title>
+  </head>
+  <body>
+    <header>
+      <a href="../index.html"><h1>Ar<em>kame</em>Games</h1></a>
+    </header>
 
 <canvas id="canvas" width="1280" height="720"></canvas>
 
@@ -40,7 +31,7 @@
 <script src="../common/src/TapEvents.js"></script>
 <script src="../common/src/KeyboardEvents.js"></script>
 <script src="../common/src/graphics/Animation.js"></script>
-<script src="Main.js"></script>
+<script src="../common/Main.js"></script>
 
 </body>
 </html>

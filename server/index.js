@@ -60,6 +60,10 @@ io.on('connection', function (socket) {
         joinGame(socket.id, data);
     });
 
+    // socket.on("readyPlayer", function (data) {
+    //     readyPlayer(socket.id, data);
+    // });
+
     socket.on("action", function (data) {
         action(socket.id, data);
     });

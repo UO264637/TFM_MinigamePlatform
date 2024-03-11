@@ -62,7 +62,7 @@ class TicTacToe extends BaseGame {
                 }
             }
         }
-        this.updateGameState(room);
+        this.this.updateGameState(room, 'gameState');
     }
 
     checkForEndOfGame(room) {
@@ -108,7 +108,7 @@ class TicTacToe extends BaseGame {
             this.startTurnTimer(room);
             this.switchPlayer(room);
         } else {
-            this.updateGameState(room)
+            this.this.updateGameState(room, 'gameState')
         }
     }
 
@@ -117,7 +117,7 @@ class TicTacToe extends BaseGame {
             (p) => p !== room.state.currentPlayer
         );
 
-        this.updateGameState(room)
+        this.this.updateGameState(room, 'gameState')
     }
 
     getRandomEmptyIndex(board) {

@@ -1,51 +1,58 @@
-const { BaseGame, Statuses } = require('./BaseGame');
+const { BaseGame, Statuses } = require("./BaseGame");
 
 class ObstacleRace extends BaseGame {
+  initializeGameState(room) {
+    const obstacles = Array.from({ length: 20 }, () =>
+      Math.round(Math.random())
+    );
 
-    initializeGameState(room) {
-        const obstacles = Array.from({ length: 20 }, () => Math.floor(Math.random()))
+    const state = {
+      obstacles: obstacles,
+      players: [],
+      result: {
+        status: Statuses.WAITING,
+      },
+    };
+    room.state = state;
+  }
 
-        const state = {
-            obstacles: obstacles,
-            players: [],
-            result: {
-                status: Statuses.WAITING,
-            }
-        };
-        room.state = state;
+  handleOnePlayer(room, socketId, data) {
+    room.state.players[0].position = 0;
+  }
+
+  handleGameStart(room, socketId, data) {
+    room.state.players[1].position = 0;
+
+    this.updateGameState(room, 'gameStart');
+    room.state.result.status = Statuses.PLAYING;
+  }
+
+  handleAction(room, socketId, data) {
+    const player = room.state.players.find((p) => p.id === socketId);
+    player.position += 1;
+
+    this.checkForEndOfGame(room);
+
+    this.updateGameState(room);
+  }
+
+  checkForEndOfGame(room) {
+    let playersAbove25 = 0;
+
+    room.state.players.forEach((player) => {
+      if (player.position >= 25) {
+        playersAbove25++;
+        room.state.result.status = Statuses.WIN;
+        room.state.result.winner = player;
+      }
+    });
+
+    if (playersAbove25 === 2) {
+      room.state.result.status = Statuses.DRAW;
     }
 
-    handleOnePlayer(room, socketId, data) {
-        room.state.players[0].position = 0;
-    }
-
-    handleGameStart(room, socketId, data) {
-        room.state.players[1].position = 0;
-
-        room.state.result.status = Statuses.PLAYING;
-
-        this.startTurnTimer(room);
-    }
-
-    handleAction(room, socketId, data) {
-        const player = room.state.players.find((p) => p.id === socketId);
-        player.position += 1;
-
-        this.checkForEndOfGame(room);
-
-        this.updateGameState(room);
-    }
-
-    checkForEndOfGame(room) {
-        room.state.players.forEach((player) => {
-            if (player.position >= 25) {
-                room.state.result.status = Statuses.WIN;
-                room.state.result.winner = player;
-            }
-        });
-
-        return room.state.result.status == Statuses.WIN;
-    }
+    return room.state.result.status === Statuses.WIN || room.state.result.status === Statuses.DRAW;
+  }
 }
 
 module.exports = ObstacleRace;

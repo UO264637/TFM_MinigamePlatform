@@ -2,49 +2,28 @@ class GameLayer extends Layer {
   constructor() {
     super();
     this.start();
-    this.speed = -5;
+    this.speed = 0;
   }
 
   start() {
     this.space = new Space(1);
     this.backgrounds = [];
+    this.obstacles = [];
+    this.obstacleIndicators = [];
+    this.floorY = originalCanvasHeight - 200;
+    this.airY = originalCanvasHeight - 300;
 
     this.player = new Player(150, originalCanvasHeight - 200);
     this.space.addDinamicCorp(this.player);
-    this.background = new Background(
-      images.background,
-      originalCanvasWidth * 0.5,
-      originalCanvasHeight * 0.5
-    );
-    this.backgrounds.push(this.background);
 
-    this.background1 = new Background(
-      images.background1,
-      originalCanvasWidth * 0.5,
-      originalCanvasHeight * 0.5
-    );
-    this.backgrounds.push(this.background1);
-
-    this.background2 = new Background(
-      images.background2,
-      originalCanvasWidth * 0.5,
-      originalCanvasHeight * 0.5
-    );
-    this.backgrounds.push(this.background2);
-
-    this.background3 = new Background(
-      images.background3,
-      originalCanvasWidth * 0.5,
-      originalCanvasHeight * 0.5
-    );
-    this.backgrounds.push(this.background3);
-
-    this.background4 = new Background(
-      images.background4,
-      originalCanvasWidth * 0.5,
-      originalCanvasHeight * 0.5
-    );
-    this.backgrounds.push(this.background4);
+    for (let i = 0; i < 5; i++) {
+      this["background" + i] = new Background(
+        images["background" + i],
+        originalCanvasWidth * 0.5,
+        originalCanvasHeight * 0.5
+      );
+      this.backgrounds.push(this["background" + i]);
+    }
 
     this.floor_background = new Background(
       images.floor_background,
@@ -67,15 +46,6 @@ class GameLayer extends Layer {
     );
     this.space.addStaticCorp(floor);
 
-    this.obstacles = [];
-    let obstacle1 = new Obstacle(150, originalCanvasHeight - 300);
-    let obstacle2 = new Obstacle(600, originalCanvasHeight - 175);
-
-    this.obstacles.push(obstacle1);
-    this.obstacles.push(obstacle2);
-
-    this.player1 = new Text(0, canvas.width * 0.07, canvas.height * 0.47);
-    this.player2 = new Text(0, canvas.width * 0.07, canvas.height * 0.53);
     this.status = new CenteredText(0, canvas.width * 0.5, canvas.height * 0.07);
   }
 
@@ -94,8 +64,8 @@ class GameLayer extends Layer {
 
     this.player.update();
 
-    /*     // Eliminar disparos fuera de pantalla
-    for (var i=0; i < this.disparosJugador.length; i++){
+    // Eliminar obstaculos fuera de pantalla
+    /*for (var i=0; i < this.disparosJugador.length; i++){
       if ( this.disparosJugador[i] != null &&
           !this.disparosJugador[i].estaEnPantalla()){
           this.espacio
@@ -109,11 +79,24 @@ class GameLayer extends Layer {
       obstacle.update();
     }
 
-    /*     for (var i=0; i < this.obstacles.length; i++){
-      if ( this.player.collides(this.obstacles[i])){
-          this.start();
+    for (const obstacle_indicator of this.obstacleIndicators) {
+      obstacle_indicator.xv = this.speed;
+      obstacle_indicator.update();
+    }
+
+    for (const obstacle of this.obstacles) {
+      if (this.player.collides(obstacle)) {
+        this.speed = -5;
       }
-  } */
+    }
+
+    for (const obstacleIndicator of this.obstacleIndicators) {
+      if (this.player.collides(obstacleIndicator)) {
+        this.speed -= 1;
+        this.obstacleIndicators.splice(0, 1);
+        socket.emit("action", {});
+      }
+    }
   }
 
   paint() {
@@ -126,8 +109,10 @@ class GameLayer extends Layer {
       obstacle.paint();
     }
 
-    this.player1.paint();
-    this.player2.paint();
+    for (const obstacle_indicator of this.obstacleIndicators) {
+      obstacle_indicator.paint();
+    }
+
     this.status.paint();
   }
 
@@ -140,49 +125,36 @@ class GameLayer extends Layer {
     }
   }
 
-  calculateTaps(taps) {
-    for (const tap of taps) {
-      if (tap.type == tapType.start) {
-        this.player.jump();
-        break;
+  initialize(state) {
+    this.speed = -5;
+    let xPos = 1000;
+    for (let obstaclePosition of state.obstacles) {
+      if (obstaclePosition == 0) {
+        let obstacle = new Obstacle(images.floorObstacle, xPos, this.floorY);
+        this.obstacles.push(obstacle);
+        let obstacleIndicator = new Obstacle(images.obstacle_indicator, xPos+270, originalCanvasHeight/2);
+        this.obstacleIndicators.push(obstacleIndicator);
+      } else {
+        let obstacle = new Obstacle(images.airObstacle, xPos, this.airY);
+        this.obstacles.push(obstacle);
+        let obstacleIndicator = new Obstacle(images.obstacle_indicator, xPos+270, originalCanvasHeight/2);
+        this.obstacleIndicators.push(obstacleIndicator);
       }
+      xPos += 1000;
     }
   }
 
   updateGameState(state) {
-    for (let i = 0; i < state.board.length; i++) {
-      const player = state.board[i];
-      if (player != null) {
-        this.board[i].image.src = images[player.symbol];
-      } else {
-        //boardSquares[index].textBox.text = "";
-      }
-    }
-
     this.status.value = "";
     switch (state.result.status) {
       case Statuses.WAITING:
         this.status.value = "Esperando jugadores...";
         break;
       case Statuses.PLAYING:
-        if (this.obstacles.length == 0) {
-          this.speed = -5;
-          for (obstaclePosition of state.obstacles) {
-            if (obstaclePosition == 0) {
-              let obstacle = new Obstacle(images.mushroom,)
-            }
-            else {
-
-            }
-
-          }
-        }
-        this.status.value = "Turno de " + state.currentPlayer.playerName;
         break;
       case Statuses.DRAW:
         this.speed = 0;
         this.status.value = "Empate!";
-        //console.log("Draw! \nPress R for rematch");
         break;
       case Statuses.WIN:
         this.speed = 0;
@@ -190,18 +162,6 @@ class GameLayer extends Layer {
         break;
       default:
         break;
-    }
-
-    this.player1.value = "";
-    this.player2.value = "";
-    if (state.players.length > 0) {
-      this.player1.value =
-        state.players[0].symbol + ": " + state.players[0].playerName;
-    }
-
-    if (state.players.length > 1) {
-      this.player2.value =
-        state.players[1].symbol + ": " + state.players[1].playerName;
     }
   }
 }

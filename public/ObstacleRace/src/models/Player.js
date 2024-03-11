@@ -21,7 +21,7 @@ class Player extends Model {
     update() {
         this.animation.update();
 
-        if (this.hitsBottom == true){
+        if (this.hitsBottom){
             this.inTheAir = false;
         } else {
             this.inTheAir = true;
@@ -44,7 +44,7 @@ class Player extends Model {
 
     jump(){
         if ( !this.inTheAir ) {
-            this.yv = -16;
+            this.yv = -24;
             this.inTheAir = true;
         }
     }

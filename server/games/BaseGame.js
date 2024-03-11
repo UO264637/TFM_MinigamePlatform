@@ -24,7 +24,7 @@ class BaseGame {
             room.state.players.push(newPlayer);
 
             this.handleOnePlayer(room, socketId, data);
-            this.updateGameState(room);
+            this.updateGameState(room, 'gameState');
         }
         else if (nPlayers === 1) {
             console.log('Room ' + data.roomId + " (2/2): " + data.playerName + " joined");
@@ -32,7 +32,7 @@ class BaseGame {
             room.state.players.push(newPlayer);
 
             this.handleGameStart(room, socketId, data);
-            this.updateGameState(room);
+            this.updateGameState(room, 'gameState');
         }
     }
 
@@ -41,6 +41,7 @@ class BaseGame {
     }
 
     handleGameStart(room, socketId, data) {
+        this.updateGameState(room, 'gameStart');
         room.state.result.status = Statuses.PLAYING;
     }
 
@@ -50,7 +51,7 @@ class BaseGame {
         room.state.result.winner = room.state.players[0];
 
         clearInterval(room.turnTimer);
-        this.updateGameState(room);
+        this.updateGameState(room, 'gameState');
     }
 
     startTurnTimer(room) {
@@ -72,12 +73,12 @@ class BaseGame {
 
     handleTurnTimeout(room) {
         clearInterval(room.turnTimer);
-        this.updateGameState(room);
+        this.updateGameState(room, 'gameState');
     }
 
-    updateGameState(room) {
+    updateGameState(room, message) {
         for (const player of room.state.players) {
-            this.io.to(player.id).emit('gameState', room.state);
+            this.io.to(player.id).emit(message, room.state);
         }
     }
 }
