@@ -1,8 +1,9 @@
 class GameLayer extends Layer {
   constructor() {
     super();
-    this.start();
     this.speed = 0;
+    this.baseSpeed = -7;
+    this.start();
   }
 
   start() {
@@ -47,6 +48,7 @@ class GameLayer extends Layer {
     this.space.addStaticCorp(floor);
 
     this.status = new CenteredText(0, canvas.width * 0.5, canvas.height * 0.07);
+    this.hud = new HUDLayer();
   }
 
   update() {
@@ -85,8 +87,8 @@ class GameLayer extends Layer {
     }
 
     for (const obstacle of this.obstacles) {
-      if (this.player.collides(obstacle)) {
-        this.speed = -5;
+      if (this.player.collidesCircle(obstacle)) {
+        this.speed = this.baseSpeed;
       }
     }
 
@@ -97,6 +99,8 @@ class GameLayer extends Layer {
         socket.emit("action", {});
       }
     }
+
+    this.hud.update();
   }
 
   paint() {
@@ -114,6 +118,7 @@ class GameLayer extends Layer {
     }
 
     this.status.paint();
+    this.hud.paint();
   }
 
   processControls() {
@@ -126,7 +131,7 @@ class GameLayer extends Layer {
   }
 
   initialize(state) {
-    this.speed = -5;
+    this.speed = this.baseSpeed;
     let xPos = 1000;
     for (let obstaclePosition of state.obstacles) {
       if (obstaclePosition == 0) {
