@@ -60,9 +60,9 @@ io.on('connection', function (socket) {
         joinGame(socket.id, data);
     });
 
-    // socket.on("readyPlayer", function (data) {
-    //     readyPlayer(socket.id, data);
-    // });
+    socket.on("readyPlayer", function (data) {
+         readyPlayer(socket.id, data);
+    });
 
     socket.on("action", function (data) {
         action(socket.id, data);
@@ -79,6 +79,14 @@ function joinGame(socketId, data) {
 
     if (room != null) {
         room.game.handleJoinGame(room, socketId, data);
+    }
+}
+
+function readyPlayer(socketId, data) {
+    let room = roomManager.getRoom(data.roomId);
+
+    if (room != null) {
+        room.game.handleReadyPlayer(room, socketId);
     }
 }
 

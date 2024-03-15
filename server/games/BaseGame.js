@@ -37,12 +37,35 @@ class BaseGame {
     }
 
     handleOnePlayer(room, socketId, data) {
+        throw new Error("Abstract method not implemented");
+    }
 
+    handleReadyPlayer(room, socketId) {
+        const player = room.state.players.find((p) => p.id === socketId);
+        player.ready = true;
+
+        const allReady = room.state.players.every((p) => p.ready);
+
+        if (allReady) {
+            this.handleGameStart(room, null, null);
+        }
+        else {
+            this.updateGameState(room, 'gameState');
+        }
     }
 
     handleGameStart(room, socketId, data) {
         this.updateGameState(room, 'gameStart');
         room.state.result.status = Statuses.PLAYING;
+    }
+
+    handleDisconnect(room, socketId) {
+        room.state.players = room.state.players.filter((p) => p.id != socketId);
+        room.state.result.status = Statuses.WIN;
+        room.state.result.winner = room.state.players[0];
+
+        clearInterval(room.turnTimer);
+        this.updateGameState(room, 'gameState');
     }
 
     handleDisconnect(room, socketId) {
