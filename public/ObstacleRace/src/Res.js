@@ -17,6 +17,7 @@ const images = {
     player : "res/player.png",
     idle_player: "res/idle_player.png",
     running_player: "res/running_player.png",
+    crouching_player: "res/crouching_player.png"
 };
 
 const imageRutes = Object.values(images);

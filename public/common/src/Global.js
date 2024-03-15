@@ -14,7 +14,8 @@ const Statuses = {
 const PlayerStatuses = {
   IDLE: 1,
   MOVING: 2,
-  HIT: 3
+  HIT: 3,
+  CROUCHED: 4,
 };
 
 

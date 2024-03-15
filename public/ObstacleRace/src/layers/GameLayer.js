@@ -96,7 +96,7 @@ class GameLayer extends Layer {
       if (this.player.collides(obstacleIndicator)) {
         this.speed -= 1;
         this.obstacleIndicators.splice(0, 1);
-        socket.emit("action", {});
+        socket.emit("action", {obstaclesLeft: this.obstacleIndicators.length});
       }
     }
 
@@ -122,6 +122,7 @@ class GameLayer extends Layer {
   }
 
   processControls() {
+    this.player.run();
     // Eje Y
     if (controls.moveY > 0) {
       this.player.jump();
@@ -147,6 +148,7 @@ class GameLayer extends Layer {
       }
       xPos += 1000;
     }
+    this.player.run();
   }
 
   updateGameState(state) {
@@ -156,12 +158,15 @@ class GameLayer extends Layer {
         this.status.value = "Esperando jugadores...";
         break;
       case Statuses.PLAYING:
+        this.hud.updatePlayerPositions(state);
         break;
       case Statuses.DRAW:
+        this.player.stop();
         this.speed = 0;
         this.status.value = "Empate!";
         break;
       case Statuses.WIN:
+        this.player.stop();
         this.speed = 0;
         this.status.value = "Ha ganado " + state.result.winner.playerName + "!";
         break;

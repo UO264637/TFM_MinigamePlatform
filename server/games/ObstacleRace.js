@@ -2,7 +2,7 @@ const { BaseGame, Statuses } = require("./BaseGame");
 
 class ObstacleRace extends BaseGame {
   initializeGameState(room) {
-    const obstacles = Array.from({ length: 20 }, () =>
+    const obstacles = Array.from({ length: 25 }, () =>
       Math.round(Math.random())
     );
 
@@ -33,7 +33,7 @@ class ObstacleRace extends BaseGame {
 
     this.checkForEndOfGame(room);
 
-    this.updateGameState(room);
+    this.updateGameState(room, 'gameState')
   }
 
   checkForEndOfGame(room) {
