@@ -12,7 +12,7 @@ class GameLayer extends Layer {
     this.obstacles = [];
     this.obstacleIndicators = [];
     this.floorY = originalCanvasHeight - 200;
-    this.airY = originalCanvasHeight - 300;
+    this.airY = originalCanvasHeight - 290;
 
     this.player = new Player(150, originalCanvasHeight - 182);
     this.space.addDinamicCorp(this.player);
