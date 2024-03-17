@@ -5,9 +5,10 @@ class Obstacle extends Model {
 
         this.yv = 0;
         this.xv = 0;
+
     }
 
-    update (){
+    update() {
         this.x += this.xv
     }
 

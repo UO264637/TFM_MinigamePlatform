@@ -8,16 +8,23 @@ const images = {
     background5 : "res/background5.png",
     floor: "res/floor.png",
     floor_background: "res/floor_background.png",
-    floorObstacle : "res/floorObstacle1.png",
-    airObstacle : "res/floorObstacle1.png",
+    floor_obstacle1_anim : "res/floor_obstacle1_anim.png",
+    floor_obstacle1 : "res/floor_obstacle1.png",
+    air_obstacle1_anim : "res/air_obstacle1_anim.png",
+    air_obstacle1 : "res/air_obstacle1.png",
     obstacle_indicator: "res/obstacle_indicator.png",
     progressbar: "res/progressbar.png",
-    progress_indicator: "res/progress_indicator.png",
+    progress_indicator1: "res/progress_indicator1.png",
+    progress_indicator2: "res/progress_indicator2.png",
     flag: "res/flag.png",
     player : "res/player.png",
     idle_player: "res/idle_player.png",
     running_player: "res/running_player.png",
-    crouching_player: "res/crouching_player.png"
+    crouching_player: "res/crouching_player.png",
+    hit_player: "res/hit_player.png",
+    jumping_player: "res/jumping_player.png",
+    goal: "res/goal.png",
+    goal_anim: "res/goal_anim.png"
 };
 
 const imageRutes = Object.values(images);

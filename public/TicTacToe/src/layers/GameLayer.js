@@ -17,9 +17,9 @@ class GameLayer extends Layer {
 
     this.background = new Background(images.board, canvas.width * 0.5, canvas.height * 0.5);
     this.turnIndicator = new Background(images.turnIndicator, canvas.width * 0.5, canvas.height * 0.5);
-    this.player1 = new Text(0, canvas.width * 0.07, canvas.height * 0.47);
-    this.player2 = new Text(0, canvas.width * 0.07, canvas.height * 0.53);
-    this.status = new CenteredText(0, canvas.width * 0.5, canvas.height * 0.1);
+    this.player1 = new Text(0, "#563F2E", canvas.width * 0.07, canvas.height * 0.47);
+    this.player2 = new Text(0, "#563F2E", canvas.width * 0.07, canvas.height * 0.53);
+    this.status = new CenteredText(0, "#563F2E", canvas.width * 0.5, canvas.height * 0.1);
     this.status.value = "";
   }
 

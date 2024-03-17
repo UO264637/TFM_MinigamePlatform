@@ -16,6 +16,7 @@ const PlayerStatuses = {
   MOVING: 2,
   HIT: 3,
   CROUCHED: 4,
+  JUMPIN: 5,
 };
 
 

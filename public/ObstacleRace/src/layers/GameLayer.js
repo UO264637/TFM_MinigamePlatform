@@ -2,7 +2,7 @@ class GameLayer extends Layer {
   constructor() {
     super();
     this.speed = 0;
-    this.baseSpeed = -7;
+    this.baseSpeed = -8;
     this.start();
   }
 
@@ -14,7 +14,7 @@ class GameLayer extends Layer {
     this.floorY = originalCanvasHeight - 200;
     this.airY = originalCanvasHeight - 300;
 
-    this.player = new Player(150, originalCanvasHeight - 200);
+    this.player = new Player(150, originalCanvasHeight - 182);
     this.space.addDinamicCorp(this.player);
 
     for (let i = 0; i < 5; i++) {
@@ -38,7 +38,6 @@ class GameLayer extends Layer {
       originalCanvasWidth * 0.5,
       originalCanvasHeight * 0.5
     );
-    this.backgrounds.push(this.background5);
 
     let floor = new Background(
       images.floor,
@@ -47,34 +46,38 @@ class GameLayer extends Layer {
     );
     this.space.addStaticCorp(floor);
 
-    this.status = new CenteredText(0, canvas.width * 0.5, canvas.height * 0.07);
+    this.status = new CenteredText(0, "#FFFFFF", canvas.width * 0.5, canvas.height * 0.07);
     this.hud = new HUDLayer();
+    this.goal = new Obstacle(images.obstacle_indicator, 10000, 0);
   }
 
   update() {
-    this.background1.xv = this.speed + 4;
-    this.background2.xv = this.speed + 3;
-    this.background3.xv = this.speed + 2;
-    this.background4.xv = this.speed + 1;
-    this.background5.xv = this.speed - 1;
+    if (this.speed != 0) {
+      this.background1.xv = this.speed + 8;
+      this.background2.xv = this.speed + 6;
+      this.background3.xv = this.speed + 4;
+      this.background4.xv = this.speed + 2;
+      this.background5.xv = this.speed - 2;
+    }
+    else {
+      for (let background of this.backgrounds) {
+        background.xv = 0;
+      }
+      this.background5.xv = 0;
+    }
     this.floor_background.xv = this.speed;
+
 
     this.space.update();
     for (let background of this.backgrounds) {
       background.update();
     }
 
-    this.player.update();
+    this.background5.update();
 
-    // Eliminar obstaculos fuera de pantalla
-    /*for (var i=0; i < this.disparosJugador.length; i++){
-      if ( this.disparosJugador[i] != null &&
-          !this.disparosJugador[i].estaEnPantalla()){
-          this.espacio
-              .eliminarCuerpoDinamico(this.disparosJugador[i]);
-          this.disparosJugador.splice(i, 1);
-      }
-  } */
+    this.goal.xv = this.speed;
+    this.goal.update();
+    this.player.update();
 
     for (const obstacle of this.obstacles) {
       obstacle.xv = this.speed;
@@ -89,6 +92,7 @@ class GameLayer extends Layer {
     for (const obstacle of this.obstacles) {
       if (this.player.collidesCircle(obstacle)) {
         this.speed = this.baseSpeed;
+        this.player.hit();
       }
     }
 
@@ -96,7 +100,7 @@ class GameLayer extends Layer {
       if (this.player.collides(obstacleIndicator)) {
         this.speed -= 1;
         this.obstacleIndicators.splice(0, 1);
-        socket.emit("action", {obstaclesLeft: this.obstacleIndicators.length});
+        socket.emit("action", { obstaclesLeft: this.obstacleIndicators.length });
       }
     }
 
@@ -107,27 +111,30 @@ class GameLayer extends Layer {
     for (let background of this.backgrounds) {
       background.paint();
     }
+
+    this.goal.paint();
+
     this.player.paint();
 
     for (const obstacle of this.obstacles) {
       obstacle.paint();
     }
 
-    for (const obstacle_indicator of this.obstacleIndicators) {
-      obstacle_indicator.paint();
-    }
+    this.background5.paint();
 
     this.status.paint();
     this.hud.paint();
   }
 
   processControls() {
-    this.player.run();
     // Eje Y
     if (controls.moveY > 0) {
       this.player.jump();
     } else if (controls.moveY < 0) {
       this.player.crouch();
+    }
+    else {
+      this.player.standUp();
     }
   }
 
@@ -136,18 +143,21 @@ class GameLayer extends Layer {
     let xPos = 1000;
     for (let obstaclePosition of state.obstacles) {
       if (obstaclePosition == 0) {
-        let obstacle = new Obstacle(images.floorObstacle, xPos, this.floorY);
+        let obstacle = new AnimatedObstacle(images.floor_obstacle1, images.floor_obstacle1_anim, xPos, this.floorY);
         this.obstacles.push(obstacle);
-        let obstacleIndicator = new Obstacle(images.obstacle_indicator, xPos+270, originalCanvasHeight/2);
+        let obstacleIndicator = new Obstacle(images.obstacle_indicator, xPos + 270, originalCanvasHeight / 2);
         this.obstacleIndicators.push(obstacleIndicator);
       } else {
-        let obstacle = new Obstacle(images.airObstacle, xPos, this.airY);
+        let obstacle = new AnimatedObstacle(images.air_obstacle1, images.air_obstacle1_anim, xPos, this.airY);
         this.obstacles.push(obstacle);
-        let obstacleIndicator = new Obstacle(images.obstacle_indicator, xPos+270, originalCanvasHeight/2);
+        let obstacleIndicator = new Obstacle(images.obstacle_indicator, xPos + 270, originalCanvasHeight / 2);
         this.obstacleIndicators.push(obstacleIndicator);
       }
       xPos += 1000;
     }
+    this.obstacles.pop();
+    var lastIndicator = this.obstacleIndicators[this.obstacleIndicators.length - 1];
+    this.goal = new AnimatedObstacle(images.goal, images.goal_anim, lastIndicator.x - 180, originalCanvasHeight - 290);
     this.player.run();
   }
 

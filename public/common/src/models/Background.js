@@ -6,7 +6,7 @@ class Background extends Model {
     }
 
     update(){
-        //if ( this.xv != 0) {
+        if ( this.xv != 0) {
             if ( this.auxBackground == null){
                 this.auxBackground =
                     new Background(this.image.src, this.x, this.y);
@@ -24,7 +24,7 @@ class Background extends Model {
                 // vuelve a la parte izquierda
                 this.x = 0 - this.width / 2;
             }
-        //}
+        }
     }
 
     paint(){
