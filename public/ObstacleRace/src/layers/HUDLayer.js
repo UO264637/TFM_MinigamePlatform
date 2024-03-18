@@ -4,7 +4,6 @@ class HUDLayer extends Layer {
 
   constructor() {
     super();
-    //this.step =30;
     this.start();
   }
 
@@ -25,14 +24,6 @@ class HUDLayer extends Layer {
     this.player1.paint();
     this.player2name.paint();
     this.player1name.paint();
-    // if (this.player1name.x < this.player2name.x) {
-    //   this.player2name.paint();
-    //   this.player1name.paint();
-    // }
-    // else {
-    //   this.player1name.paint();
-    //   this.player2name.paint();
-    // }
   }
 
   updatePlayerPositions(state) {

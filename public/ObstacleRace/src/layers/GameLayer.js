@@ -156,7 +156,7 @@ class GameLayer extends Layer {
       xPos += 1000;
     }
     this.obstacles.pop();
-    var lastIndicator = this.obstacleIndicators[this.obstacleIndicators.length - 1];
+    let lastIndicator = this.obstacleIndicators[this.obstacleIndicators.length - 1];
     this.goal = new AnimatedObstacle(images.goal, images.goal_anim, lastIndicator.x - 180, originalCanvasHeight - 290);
     this.player.run();
   }

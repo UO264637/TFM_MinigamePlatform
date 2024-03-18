@@ -1,11 +1,11 @@
-var keys = [];
+const keys = [];
 
 window.addEventListener('keydown', onKeyDown, false);
 window.addEventListener('keyup', onKeyUp, false);
 
 function onKeyDown( event) {
     // agregar la tecla pulsada si no estaba
-    var position = keys.indexOf(event.keyCode);
+    let position = keys.indexOf(event.keyCode);
     if ( position == -1 ) {
         keys.push(event.keyCode);
         switch ( event.keyCode ){
@@ -32,7 +32,7 @@ function onKeyDown( event) {
 
 function onKeyUp( event) {
     // sacar la tecla pulsada
-    var position = keys.indexOf(event.keyCode);
+    let position = keys.indexOf(event.keyCode);
     keys.splice( position, 1);
 
     switch ( event.keyCode ){

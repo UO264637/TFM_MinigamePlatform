@@ -1,12 +1,12 @@
 class Text {
 
-    constructor(value, color, x, y) {
+    constructor(value, color, x, y, size = 24) {
         this.value = value;
         this.color = color;
         this.x = x;
         this.y = y;
         this.width = 0; 
-        this.size = 24; 
+        this.size = size; 
     }
 
     paint(){

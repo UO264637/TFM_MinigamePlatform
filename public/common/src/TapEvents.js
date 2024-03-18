@@ -17,18 +17,18 @@ function mouseup(event) {
 }
 
 function addTap(id, tapType, event) {
-    x = event.pageX - canvas.offsetLeft;
-    y = event.pageY - canvas.offsetTop;
+    let x = event.pageX - canvas.offsetLeft;
+    let y = event.pageY - canvas.offsetTop;
 
-    var p = {};
+    const p = {};
     p.x = x / minScale;
     p.y = y / minScale;
     p.id = id; // Ratón SOLO hay 1
     p.type = tapType;
     p.timeStamp = event.timeStamp;
 
-    var foundTap = false;
-    for (var i = 0; i < taps.length; i++) {
+    let foundTap = false;
+    for (let i = 0; i < taps.length; i++) {
         if (taps[i].id == id) {
             taps[i] = p;
             foundTap = true;

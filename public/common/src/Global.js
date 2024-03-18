@@ -1,6 +1,6 @@
-var taps = []; // actuales registradas
+const taps = []; // actuales registradas
 
-var tapType = {}; // tipos
+const tapType = {}; // tipos
 tapType.start = 1;
 tapType.mantain = 2;
 
@@ -20,7 +20,7 @@ const PlayerStatuses = {
 };
 
 
-var baseUrl = "http://localhost:3000";
+const baseUrl = "http://localhost:3000";
 
-var originalCanvasWidth = 1280;
-var originalCanvasHeight = 720;
+const originalCanvasWidth = 1280;
+const originalCanvasHeight = 720;

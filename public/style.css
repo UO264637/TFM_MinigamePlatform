@@ -220,13 +220,7 @@ button:hover {
   border-style: dashed;
 }
 
-.TicTacToe {
-  position: relative;
-  display: flex;
-  flex-direction: column; /* Cambia la dirección del flujo a columna */
-  align-items: flex-start; /* Alinea los elementos al inicio */
-  overflow: hidden; /* Evita que el texto se desborde del contenedor */
-}
+
 
 p {
   color: #766142;
