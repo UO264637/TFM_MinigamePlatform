@@ -1,6 +1,15 @@
 const { BaseGame, Statuses } = require("./BaseGame");
 
-const roles = ["imitated", "imitator"];
+const Roles = {
+  IMITATED: "imitated",
+  IMITATOR: "imitator"
+};
+
+const Rounds = {
+  FIRST: 3,
+  SECOND: 5,
+  THIRD: 7
+};
 
 class DanceBattle extends BaseGame {
   initializeGameState(room) {
@@ -10,7 +19,9 @@ class DanceBattle extends BaseGame {
 
     const state = {
       movementSet: movementSet,
+      currentSequence: [],
       currentPlayer: null,
+      round: Rounds.FIRST,
       players: [],
       result: {
         status: Statuses.WAITING,
@@ -20,20 +31,21 @@ class DanceBattle extends BaseGame {
   }
 
   handleOnePlayer(room, socketId, data) {
-    let role = Math.round(Math.random());
-    room.state.players[0].role = roles[role];
+    const rolesKeys = Object.keys(Roles);
+    const randomIndex =  Math.round(Math.random());
+    room.state.players[0].role = rolesKeys[randomIndex];
   }
 
   handleGameStart(room, socketId, data) {
-    let role = roles.find((role) => role !== room.state.players[0].role); // imitated or imitator
-    room.state.players[1].role = role;
+    let firstPlayerRole = room.state.players[0].role;
+    room.state.players[1].role = Object.values(Roles).find(role => role !== firstPlayerRole);
 
     room.state.currentPlayer = room.state.players.find(
-      (player) => player.symbol === "imitated"
+      (player) => player.role == "imitated"
     );
     room.state.result.status = Statuses.PLAYING;
 
-    this.startTurnTimer(room);
+    this.startTurnTimer(room, 10);
   }
 
   handleAction(room, socketId, data) {
@@ -42,15 +54,12 @@ class DanceBattle extends BaseGame {
       room.state.currentPlayer.id === socketId
     ) {
       const player = room.state.players.find((p) => p.id === socketId);
-      if (room.state.board[data.gridIndex] == null) {
-        room.state.board[data.gridIndex] = player;
-        room.state.currentPlayer = room.state.players.find((p) => p !== player);
-
-        clearInterval(room.turnTimer);
-
-        if (!this.checkForEndOfGame(room)) {
-          this.startTurnTimer(room);
-        }
+      if (player.role == Roles.IMITATED) {
+        room.state.currentSequence.push(data.movement);
+        checkForEndOfRound(room);
+      }
+      else if (player.role == Roles.IMITATOR) {
+        
       }
     }
     this.this.updateGameState(room, "gameState");

@@ -71,8 +71,8 @@ class BaseGame {
     this.updateGameState(room, "gameState");
   }
 
-  startTurnTimer(room) {
-    let secondsLeft = 16;
+  startTurnTimer(room, time) {
+    let secondsLeft = time+1;
 
     room.turnTimer = setInterval(() => {
       secondsLeft--;
@@ -82,7 +82,7 @@ class BaseGame {
 
       if (secondsLeft <= 0) {
         this.handleTurnTimeout(room);
-        secondsLeft = 15;
+        secondsLeft = time;
       }
     }, 1000);
   }

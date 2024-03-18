@@ -39,7 +39,7 @@ class TicTacToe extends BaseGame {
         room.state.currentPlayer = room.state.players.find(player => player.symbol === "X")
         room.state.result.status = Statuses.PLAYING;
 
-        this.startTurnTimer(room);
+        this.startTurnTimer(room, 15);
     }
 
     handleAction(room, socketId, data) {
@@ -55,7 +55,7 @@ class TicTacToe extends BaseGame {
                 clearInterval(room.turnTimer);
 
                 if (!this.checkForEndOfGame(room)) {
-                    this.startTurnTimer(room);
+                    this.startTurnTimer(room, 15);
                 }
             }
         }
@@ -102,7 +102,7 @@ class TicTacToe extends BaseGame {
 
         clearInterval(room.turnTimer);
         if (!this.checkForEndOfGame(room)) {
-            this.startTurnTimer(room);
+            this.startTurnTimer(room, 15);
             this.switchPlayer(room);
         } else {
             this.updateGameState(room, 'gameState')
