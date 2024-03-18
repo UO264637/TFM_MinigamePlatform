@@ -14,9 +14,6 @@ const winPatterns = [
 const symbols = ["X", "O"];
 
 class TicTacToe extends BaseGame {
-    constructor(io) {
-        super(io);
-    }
 
     initializeGameState(room) {
         const state = {
