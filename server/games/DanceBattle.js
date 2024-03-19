@@ -2,13 +2,13 @@ const { BaseGame, Statuses } = require("./BaseGame");
 
 const Roles = {
   IMITATED: "imitated",
-  IMITATOR: "imitator"
+  IMITATOR: "imitator",
 };
 
 const Rounds = {
   FIRST: 3,
   SECOND: 5,
-  THIRD: 7
+  THIRD: 7,
 };
 
 class DanceBattle extends BaseGame {
@@ -19,7 +19,6 @@ class DanceBattle extends BaseGame {
 
     const state = {
       movementSet: movementSet,
-      currentSequence: [],
       currentPlayer: null,
       round: Rounds.FIRST,
       players: [],
@@ -32,13 +31,17 @@ class DanceBattle extends BaseGame {
 
   handleOnePlayer(room, socketId, data) {
     const rolesKeys = Object.keys(Roles);
-    const randomIndex =  Math.round(Math.random());
+    const randomIndex = Math.round(Math.random());
     room.state.players[0].role = rolesKeys[randomIndex];
+    room.state.players[0].movements = 0;
   }
 
   handleGameStart(room, socketId, data) {
     let firstPlayerRole = room.state.players[0].role;
-    room.state.players[1].role = Object.values(Roles).find(role => role !== firstPlayerRole);
+    room.state.players[1].role = Object.values(Roles).find(
+      (role) => role !== firstPlayerRole
+    );
+    room.state.players[1].movements = 0;
 
     room.state.currentPlayer = room.state.players.find(
       (player) => player.role == "imitated"
@@ -54,18 +57,27 @@ class DanceBattle extends BaseGame {
       room.state.currentPlayer.id === socketId
     ) {
       const player = room.state.players.find((p) => p.id === socketId);
-      if (player.role == Roles.IMITATED) {
-        room.state.currentSequence.push(data.movement);
-        checkForEndOfRound(room);
-      }
-      else if (player.role == Roles.IMITATOR) {
-        
-      }
+      player.movements.push(data.movement);
+      verifyMovements(room);
+      checkForEndOfTurn(room);
     }
     this.this.updateGameState(room, "gameState");
   }
 
-  checkForEndOfGame(room) {
+  verifyMovements(room) {
+    const imitated = room.state.players.find((p) => p.role === Roles.IMITATED);
+    const imitator = room.state.players.find((p) => p.role === Roles.IMITATOR);
+
+    for (let i = 0; i < imitator.movements.length; i++) {
+      if (imitator.movements[i] != imitated.movements[i]) {
+        room.state.result.status = Statuses.WIN;
+        room.state.result.winner = imitated;
+        break;
+      }
+    }
+  }
+
+  checkForEndOfTurn(room) {
     // Check for a win
     room.state.players.forEach((player) => {
       winPatterns.forEach((seq) => {
@@ -137,4 +149,4 @@ class DanceBattle extends BaseGame {
   }
 }
 
-module.exports = TicTacToe;
+module.exports = DanceBattle;

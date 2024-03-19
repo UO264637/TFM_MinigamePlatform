@@ -213,14 +213,16 @@ button:hover {
   background-color: #c6def1;
 }
 
+.DanceBattle {
+  background-color: #DBCDF0;
+}
+
 .selected {
   font-weight: bold;
   border-width: 3px;
   border-color: #5f4724;
   border-style: dashed;
 }
-
-
 
 p {
   color: #766142;

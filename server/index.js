@@ -2,6 +2,11 @@ const express = require('express')
 const http = require('http');
 const cors = require('cors');
 
+const roomManager = require('./RoomManager');
+const TicTacToe = require('./games/TicTacToe');
+const ObstacleRace = require('./games/ObstacleRace');
+const DanceBattle = require('./games/DanceBattle');
+
 const app = express();
 app.use(cors());
 app.use('/api/waitingRooms', cors());
@@ -17,13 +22,10 @@ const io = require("socket.io")(server, {
     }
 });
 
-const roomManager = require('./RoomManager');
-const TicTacToe = require('./games/TicTacToe');
-const ObstacleRace = require('./games/ObstacleRace');
-
 const games = {
     "TicTacToe": new TicTacToe(io),
     "ObstacleRace": new ObstacleRace(io),
+    "DanceBattle": new DanceBattle(io),
 }
 
 app.get('/api/gameTypes', (req, res) => {
