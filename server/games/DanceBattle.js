@@ -58,10 +58,11 @@ class DanceBattle extends BaseGame {
     ) {
       const player = room.state.players.find((p) => p.id === socketId);
       player.movements.push(data.movement);
-      verifyMovements(room);
-      checkForEndOfTurn(room);
+      if (verifyMovements(room)) {
+        checkForEndOfTurn(room);
+      }
     }
-    this.this.updateGameState(room, "gameState");
+    this.updateGameState(room, "gameState");
   }
 
   verifyMovements(room) {
@@ -72,38 +73,32 @@ class DanceBattle extends BaseGame {
       if (imitator.movements[i] != imitated.movements[i]) {
         room.state.result.status = Statuses.WIN;
         room.state.result.winner = imitated;
-        break;
+        return false;
       }
     }
+    return true;
   }
 
   checkForEndOfTurn(room) {
-    // Check for a win
-    room.state.players.forEach((player) => {
-      winPatterns.forEach((seq) => {
-        if (
-          room.state.board[seq[0]] == player &&
-          room.state.board[seq[1]] == player &&
-          room.state.board[seq[2]] == player
-        ) {
-          room.state.result.status = Statuses.WIN;
-          room.state.result.winner = player;
-        }
-      });
-    });
+    const imitated = room.state.players.find((p) => p.role === Roles.IMITATED);
+    const imitator = room.state.players.find((p) => p.role === Roles.IMITATOR);
 
-    // Check for a draw
-    if (room.state.result.status != Statuses.WIN) {
-      const emptyBlock = room.state.board.indexOf(null);
-      if (emptyBlock == -1) {
-        room.state.result.status = Statuses.DRAW;
-        return true;
+    if (imitator.movements.length == room.state.round) {
+      room.state.currentPlayer = imitated;
+      if (room.state.round != Rounds.THIRD) {
+        room.state.round += 2; // Incrementar la ronda
+        imitated.movements = [];
+        imitator.movements = [];
+      } else {
+        room.state.result.status = Statuses.WIN;
+          room.state.result.winner = imitated;
       }
-    } else {
-      return true;
+    } else if (
+      imitator.movements.length == 0 &&
+      imitated.movements.length == room.state.round
+    ) {
+      room.state.currentPlayer = imitator;
     }
-
-    return false;
   }
 
   handleTurnTimeout(room) {
