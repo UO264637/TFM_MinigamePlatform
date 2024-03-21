@@ -83,39 +83,41 @@ class DanceBattle extends BaseGame {
     const imitated = room.state.players.find((p) => p.role === Roles.IMITATED);
     const imitator = room.state.players.find((p) => p.role === Roles.IMITATOR);
 
-    if (imitator.movements.length == room.state.round) {
+    if (imitator.movements.length == imitated.movements.length) {
       room.state.currentPlayer = imitated;
+      clearInterval(room.turnTimer);
+
       if (room.state.round != Rounds.THIRD) {
         room.state.round += 2; // Incrementar la ronda
         imitated.movements = [];
         imitator.movements = [];
+
+        this.startTurnTimer(room, 10 + room.state.round);
       } else {
         room.state.result.status = Statuses.WIN;
-          room.state.result.winner = imitated;
+        room.state.result.winner = imitated;
       }
     } else if (
       imitator.movements.length == 0 &&
       imitated.movements.length == room.state.round
     ) {
       room.state.currentPlayer = imitator;
+      clearInterval(room.turnTimer);
+      this.startTurnTimer(room, 10 + room.state.round);
     }
   }
 
   handleTurnTimeout(room) {
-    const randomEmptyIndex = this.getRandomEmptyIndex(room.state.board);
-
-    if (randomEmptyIndex !== -1) {
-      const currentPlayer = room.state.currentPlayer;
-      room.state.board[randomEmptyIndex] = currentPlayer;
-    }
-
     clearInterval(room.turnTimer);
-    if (!this.checkForEndOfGame(room)) {
-      this.startTurnTimer(room);
+
+    if (room.state.currentPlayer.Roles == Roles.IMITATED) {
       this.switchPlayer(room);
-    } else {
-      this.this.updateGameState(room, "gameState");
+      this.startTurnTimer(room, 10 + room.state.round);
+    } else if (imitator.movements.length < imitated.movements.length) {
+      room.state.result.status = Statuses.WIN;
+      room.state.result.winner = imitated;
     }
+    this.this.updateGameState(room, "gameState");
   }
 }
 
