@@ -92,6 +92,12 @@ class BaseGame {
     this.updateGameState(room, "gameState");
   }
 
+  switchPlayer(room) {
+    room.state.currentPlayer = room.state.players.find(
+      (p) => p !== room.state.currentPlayer
+    );
+  }
+
   updateGameState(room, message) {
     for (const player of room.state.players) {
       this.io.to(player.id).emit(message, room.state);

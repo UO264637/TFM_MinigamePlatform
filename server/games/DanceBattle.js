@@ -117,31 +117,6 @@ class DanceBattle extends BaseGame {
       this.this.updateGameState(room, "gameState");
     }
   }
-
-  switchPlayer(room) {
-    room.state.currentPlayer = room.state.players.find(
-      (p) => p !== room.state.currentPlayer
-    );
-
-    this.this.updateGameState(room, "gameState");
-  }
-
-  getRandomEmptyIndex(board) {
-    const emptyIndices = [];
-
-    for (let i = 0; i < board.length; i++) {
-      if (board[i] === null) {
-        emptyIndices.push(i);
-      }
-    }
-
-    if (emptyIndices.length === 0) {
-      return -1;
-    }
-
-    const randomIndex = Math.floor(Math.random() * emptyIndices.length);
-    return emptyIndices[randomIndex];
-  }
 }
 
 module.exports = DanceBattle;
