@@ -13,12 +13,8 @@ const Rounds = {
 
 class DanceBattle extends BaseGame {
   initializeGameState(room) {
-    const movementSet = Array.from({ length: 4 }, () =>
-      Math.round(Math.random() * 6)
-    );
-
     const state = {
-      movementSet: movementSet,
+      movementsToPlay: [],
       currentPlayer: null,
       round: Rounds.FIRST,
       players: [],
@@ -57,7 +53,10 @@ class DanceBattle extends BaseGame {
       room.state.currentPlayer.id === socketId
     ) {
       const player = room.state.players.find((p) => p.id === socketId);
-      player.movements.push(data.movement);
+      if (player.movements.length == 0) {
+        let newMovements = data.movement.slice(0, room.state.round); // Ensures there aren't more movements tha it should
+        player.movements.push(newMovements);
+      }
       if (verifyMovements(room)) {
         checkForEndOfTurn(room);
       }
@@ -69,21 +68,31 @@ class DanceBattle extends BaseGame {
     const imitated = room.state.players.find((p) => p.role === Roles.IMITATED);
     const imitator = room.state.players.find((p) => p.role === Roles.IMITATOR);
 
-    for (let i = 0; i < imitator.movements.length; i++) {
-      if (imitator.movements[i] != imitated.movements[i]) {
-        room.state.result.status = Statuses.WIN;
-        room.state.result.winner = imitated;
-        return false;
-      }
+    if (room.currentPlayer == imitated) {
+      const completeMovements = Array.from({ length: longitudDeseada }, (_, index) => imitated.movements[index] || 0); // Ensures there are 3, 5 or 7 movements
+      imitated.movements = completeMovements;
+      return true;
     }
-    return true;
+    else if (imitator.movements.toString() === imitated.movements.toString()) {
+      return true;
+    }
+    else {
+      room.state.result.status = Statuses.WIN;
+      room.state.result.winner = imitated;
+      return false;
+    }
   }
 
   checkForEndOfTurn(room) {
     const imitated = room.state.players.find((p) => p.role === Roles.IMITATED);
     const imitator = room.state.players.find((p) => p.role === Roles.IMITATOR);
 
-    if (imitator.movements.length == imitated.movements.length) {
+    if (room.movementsToPlay.length == 0) {
+      room.movementsToPlay = room.currentPlayer.movements;
+      return;
+    }
+
+    if (room.currentPlayer == imitator) {
       room.state.currentPlayer = imitated;
       clearInterval(room.turnTimer);
 
@@ -95,16 +104,14 @@ class DanceBattle extends BaseGame {
         this.startTurnTimer(room, 10 + room.state.round);
       } else {
         room.state.result.status = Statuses.WIN;
-        room.state.result.winner = imitated;
+        room.state.result.winner = imitator;
       }
-    } else if (
-      imitator.movements.length == 0 &&
-      imitated.movements.length == room.state.round
-    ) {
+    } else {
       room.state.currentPlayer = imitator;
       clearInterval(room.turnTimer);
       this.startTurnTimer(room, 10 + room.state.round);
     }
+    room.movementsToPlay = [];
   }
 
   handleTurnTimeout(room) {
