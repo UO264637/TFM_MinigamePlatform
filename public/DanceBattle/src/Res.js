@@ -1,7 +1,13 @@
 // Lista re recursos a precargar 
 var images = {
-    tttButton : "res/empty.png",
-    board : "res/board.png",
+    wheel : "res/wheel.png",
+    wheel_d : "res/wheel_d.png",
+    wheel_l : "res/wheel_l.png",
+    wheel_u : "res/wheel_u.png",
+    wheel_r : "res/wheel_r.png",
+    wheel_m : "res/wheel_m.png",
+
+    background : "res/background.png",
     X : "res/X.png",
     O : "res/O.png",
     turnIndicator: "res/turn_indicator.png"

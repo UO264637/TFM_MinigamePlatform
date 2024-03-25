@@ -5,6 +5,8 @@ window.onload = function () {
   loadRoomList();
 };
 
+setInterval(loadRoomList, 5000);
+
 function loadGameList() {
   fetch(baseUrl + "/api/gameTypes")
     .then((response) => response.json())
