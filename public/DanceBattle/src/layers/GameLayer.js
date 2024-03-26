@@ -58,7 +58,7 @@ class GameLayer extends Layer {
   }
 
   update() {
-    if (this.movements.length > this.round) {
+    if (this.movements.length >= this.round) {
       socket.emit("action", { movements: this.movements });
     }
   }
@@ -77,8 +77,7 @@ class GameLayer extends Layer {
 
     if (this.isTurn) {
       this.turnIndicator.paint();
-      
-    }    
+    }
     this.movements.paint();
   }
 
@@ -151,17 +150,21 @@ class GameLayer extends Layer {
         this.status.value = "Esperando jugadores...";
         break;
       case Statuses.PLAYING:
-        if (state.currentPlayer.id == socketId) {
-          this.currentTurn = "Tu turno! ";
-          this.isTurn = true;
-        } else {
-          let opponent = state.players.find((p) => p.id != socketId).playerName;
-          this.currentTurn = "Turno de " + opponent + ": ";
-          this.isTurn = false;
-        }
         if (state.movementsToPlay.length > 0) {
           for (let movement of movementsToPlay) {
-            console.log(this.movements);
+            console.log(movement);
+          }
+          socket.emit("action", { movements: state.currentPlayer.movements });
+        } else {
+          if (state.currentPlayer.id == socketId) {
+            this.currentTurn = "Tu turno! ";
+            this.isTurn = true;
+          } else {
+            let opponent = state.players.find(
+              (p) => p.id != socketId
+            ).playerName;
+            this.currentTurn = "Turno de " + opponent + ": ";
+            this.isTurn = false;
           }
         }
         break;

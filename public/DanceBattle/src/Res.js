@@ -6,7 +6,6 @@ var images = {
     wheel_u : "res/wheel_u.png",
     wheel_r : "res/wheel_r.png",
     wheel_m : "res/wheel_m.png",
-
     background : "res/background.png",
     X : "res/X.png",
     O : "res/O.png",

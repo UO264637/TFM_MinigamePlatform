@@ -28,8 +28,8 @@ class DanceBattle extends BaseGame {
   handleOnePlayer(room, socketId, data) {
     const rolesKeys = Object.keys(Roles);
     const randomIndex = Math.round(Math.random());
-    room.state.players[0].role = rolesKeys[randomIndex];
-    room.state.players[0].movements = 0;
+    room.state.players[0].role = Roles[rolesKeys[randomIndex]];
+    room.state.players[0].movements = [];
   }
 
   handleGameStart(room, socketId, data) {
@@ -37,10 +37,10 @@ class DanceBattle extends BaseGame {
     room.state.players[1].role = Object.values(Roles).find(
       (role) => role !== firstPlayerRole
     );
-    room.state.players[1].movements = 0;
+    room.state.players[1].movements = [];
 
     room.state.currentPlayer = room.state.players.find(
-      (player) => player.role == "imitated"
+      (player) => player.role == Roles.IMITATED
     );
     room.state.result.status = Statuses.PLAYING;
 
@@ -87,8 +87,8 @@ class DanceBattle extends BaseGame {
     const imitated = room.state.players.find((p) => p.role === Roles.IMITATED);
     const imitator = room.state.players.find((p) => p.role === Roles.IMITATOR);
 
-    if (room.movementsToPlay.length == 0) {
-      room.movementsToPlay = room.currentPlayer.movements;
+    if (room.state.movementsToPlay.length == 0) {
+      room.state.movementsToPlay = room.currentPlayer.movements;
       return;
     }
 
@@ -116,15 +116,17 @@ class DanceBattle extends BaseGame {
 
   handleTurnTimeout(room) {
     clearInterval(room.turnTimer);
+    const imitated = room.state.players.find((p) => p.role === Roles.IMITATED);
+    const imitator = room.state.players.find((p) => p.role === Roles.IMITATOR);
 
-    if (room.state.currentPlayer.Roles == Roles.IMITATED) {
+    if (room.state.currentPlayer.role == Roles.IMITATED) {
       this.switchPlayer(room);
       this.startTurnTimer(room, 10 + room.state.round);
     } else if (imitator.movements.length < imitated.movements.length) {
       room.state.result.status = Statuses.WIN;
       room.state.result.winner = imitated;
     }
-    this.this.updateGameState(room, "gameState");
+    this.updateGameState(room, "gameState");
   }
 }
 
