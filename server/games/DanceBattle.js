@@ -43,7 +43,7 @@ class DanceBattle extends BaseGame {
       (player) => player.role == Roles.IMITATED
     );
     room.state.result.status = Statuses.PLAYING;
-
+    this.updateGameState(room, "gameStart");
     this.startTurnTimer(room, 10);
   }
 

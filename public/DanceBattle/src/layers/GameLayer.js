@@ -7,6 +7,7 @@ class GameLayer extends Layer {
 
   start() {
     this.board = [];
+    this.players = [];
     this.round = 3;
     this.isTurn = true;
 
@@ -20,32 +21,16 @@ class GameLayer extends Layer {
       originalCanvasWidth * 0.5,
       originalCanvasHeight * 0.5
     );
-    this.player1 = new Text(
-      0,
-      "#563F2E",
-      originalCanvasWidth * 0.07,
-      originalCanvasHeight * 0.47
-    );
-    this.player2 = new Text(
-      0,
-      "#563F2E",
-      originalCanvasWidth * 0.07,
-      originalCanvasHeight * 0.53
-    );
     this.status = new CenteredText(
       0,
       "#563F2E",
       originalCanvasWidth * 0.5,
       originalCanvasHeight * 0.1
     );
-    this.status.value = "";
-    this.wheel1 = new MovementsWheel(
-      originalCanvasWidth * 0.4,
-      originalCanvasHeight * 0.45
-    );
+
     this.wheel2 = new MovementsWheel(
-      originalCanvasWidth * 0.6,
-      originalCanvasHeight * 0.8
+      originalCanvasWidth * 0.45,
+      originalCanvasHeight * 0.475
     );
 
     this.movements = new Text(
@@ -54,6 +39,12 @@ class GameLayer extends Layer {
       originalCanvasWidth * 0.45,
       originalCanvasHeight * 0.95,
       30
+    );
+
+    this.right = new Background(
+      images.right,
+      originalCanvasWidth * 0.2,
+      originalCanvasHeight * 0.94
     );
   }
 
@@ -66,19 +57,21 @@ class GameLayer extends Layer {
   paint() {
     this.background.paint();
 
-    this.player1.paint();
-    this.player2.paint();
+    for (let player of this.players) {
+      player.paint();
+    }
+
     if (this.isTurn) {
       this.wheel2.paint();
-    } else {
-      this.wheel1.paint();
     }
+
     this.status.paint();
 
     if (this.isTurn) {
       this.turnIndicator.paint();
     }
     this.movements.paint();
+    this.right.paint();
   }
 
   calculateTaps(taps) {
@@ -101,6 +94,25 @@ class GameLayer extends Layer {
 
   initialize(state) {
     this.round = state.round;
+
+    let player = state.players.find(p => p.id == socketId);
+    let opponent = state.players.find(p => p.id != socketId);
+
+    this[player.role] = new Player(
+      originalCanvasWidth * 0.3,
+      originalCanvasHeight * 0.575,
+      player.playerName,
+      "back"
+    );
+    this.players.push(this[player.role]);
+
+    this[opponent.role] = new Player(
+      originalCanvasWidth * 0.75,
+      originalCanvasHeight * 0.3,
+      opponent.playerName,
+      "front"
+    );
+    this.players.push(this[opponent.role]);
   }
 
   processControls() {
@@ -179,18 +191,6 @@ class GameLayer extends Layer {
         break;
       default:
         break;
-    }
-
-    this.player1.value = "";
-    this.player2.value = "";
-    if (state.players.length > 0) {
-      this.player1.value =
-        state.players[0].symbol + ": " + state.players[0].playerName;
-    }
-
-    if (state.players.length > 1) {
-      this.player2.value =
-        state.players[1].symbol + ": " + state.players[1].playerName;
     }
   }
 

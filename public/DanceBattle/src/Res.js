@@ -6,8 +6,10 @@ var images = {
     wheel_u : "res/wheel_u.png",
     wheel_r : "res/wheel_r.png",
     wheel_m : "res/wheel_m.png",
+    player_back: "res/player_back.png",
+    player_front: "res/player_front.png",
     background : "res/background.png",
-    X : "res/X.png",
+    right : "res/right.png",
     O : "res/O.png",
     turnIndicator: "res/turn_indicator.png"
 };
