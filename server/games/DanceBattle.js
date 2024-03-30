@@ -52,13 +52,11 @@ class DanceBattle extends BaseGame {
       room.state.result.status === Statuses.PLAYING &&
       room.state.currentPlayer.id === socketId
     ) {
-      const player = room.state.players.find((p) => p.id === socketId);
-      if (player.movements.length == 0) {
-        let newMovements = data.movement.slice(0, room.state.round); // Ensures there aren't more movements tha it should
-        player.movements.push(newMovements);
-      }
-      if (verifyMovements(room)) {
-        checkForEndOfTurn(room);
+      let newMovements = data.movements.slice(0, room.state.round); // Ensures there aren't more movements tha it should
+      room.state.currentPlayer.movements = newMovements;
+      if (this.verifyMovements(room)) {
+        console.log("Verified")
+        this.checkForEndOfTurn(room);
       }
     }
     this.updateGameState(room, "gameState");
@@ -68,8 +66,8 @@ class DanceBattle extends BaseGame {
     const imitated = room.state.players.find((p) => p.role === Roles.IMITATED);
     const imitator = room.state.players.find((p) => p.role === Roles.IMITATOR);
 
-    if (room.currentPlayer == imitated) {
-      const completeMovements = Array.from({ length: longitudDeseada }, (_, index) => imitated.movements[index] || 0); // Ensures there are 3, 5 or 7 movements
+    if (room.state.currentPlayer == imitated) {
+      const completeMovements = Array.from({ length: room.state.round }, (_, index) => imitated.movements[index] || 0); // Ensures there are 3, 5 or 7 movements
       imitated.movements = completeMovements;
       return true;
     }
@@ -88,11 +86,11 @@ class DanceBattle extends BaseGame {
     const imitator = room.state.players.find((p) => p.role === Roles.IMITATOR);
 
     if (room.state.movementsToPlay.length == 0) {
-      room.state.movementsToPlay = room.currentPlayer.movements;
+      room.state.movementsToPlay = room.state.currentPlayer.movements;
       return;
     }
 
-    if (room.currentPlayer == imitator) {
+    if (room.state.currentPlayer == imitator) {
       room.state.currentPlayer = imitated;
       clearInterval(room.turnTimer);
 
@@ -111,7 +109,8 @@ class DanceBattle extends BaseGame {
       clearInterval(room.turnTimer);
       this.startTurnTimer(room, 10 + room.state.round);
     }
-    room.movementsToPlay = [];
+    room.state.movementsToPlay = [];
+    console.log(room.state.movementsToPlay)
   }
 
   handleTurnTimeout(room) {

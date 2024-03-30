@@ -6,10 +6,10 @@ class GameLayer extends Layer {
   }
 
   start() {
-    this.board = [];
     this.players = [];
     this.round = 3;
     this.isTurn = true;
+    this.moves = [];
 
     this.background = new Background(
       images.background,
@@ -49,8 +49,10 @@ class GameLayer extends Layer {
   }
 
   update() {
-    if (this.movements.length >= this.round) {
-      socket.emit("action", { movements: this.movements });
+    if (this.moves.length >= this.round) {
+      console.log("s")
+      socket.emit("action", { movements: this.moves });
+      this.moves = [];
     }
   }
 
@@ -123,22 +125,27 @@ class GameLayer extends Layer {
           case "Space":
             this.movements.value = this.movements.value.replace(/\·/, "-");
             this.wheel2.middle();
+            this.moves.push("middle");
             break;
           case "ArrowUp":
             this.movements.value = this.movements.value.replace(/\·/, "u");
             this.wheel2.up();
+            this.moves.push("up");
             break;
           case "ArrowDown":
             this.movements.value = this.movements.value.replace(/\·/, "d");
             this.wheel2.down();
+            this.moves.push("down");
             break;
           case "ArrowRight":
             this.movements.value = this.movements.value.replace(/\·/, "r");
             this.wheel2.right();
+            this.moves.push("right");
             break;
           case "ArrowLeft":
             this.movements.value = this.movements.value.replace(/\·/, "l");
             this.wheel2.left();
+            this.moves.push("left");
             break;
         }
         keysPressed.splice(i, 1);
@@ -163,7 +170,8 @@ class GameLayer extends Layer {
         break;
       case Statuses.PLAYING:
         if (state.movementsToPlay.length > 0) {
-          for (let movement of movementsToPlay) {
+          console.log("a");
+          for (let movement of state.movementsToPlay) {
             console.log(movement);
           }
           socket.emit("action", { movements: state.currentPlayer.movements });
