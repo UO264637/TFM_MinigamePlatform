@@ -8,8 +8,8 @@ class Player extends Model {
         // this.idleAnim = new Animation(images.idle_player,
         //     this.width, this.height, 6, 4);
 
-        this.rightAnim = new Animation(images["player_"+position+"_right"],
-            this.width, this.height, 3, 4);
+        this.rightAnim = new Animation(images["player_"+position+"_idle"],
+            this.width, this.height, 4, 4);
 
         // this.crouchingAnim = new Animation(images.crouching_player,
         //     this.width, this.height, 3, 4);
