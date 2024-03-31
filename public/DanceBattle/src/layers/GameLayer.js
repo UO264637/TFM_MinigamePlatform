@@ -16,11 +16,6 @@ class GameLayer extends Layer {
       originalCanvasWidth * 0.5,
       originalCanvasHeight * 0.5
     );
-    this.turnIndicator = new Background(
-      images.turnIndicator,
-      originalCanvasWidth * 0.5,
-      originalCanvasHeight * 0.5
-    );
     this.status = new CenteredText(
       0,
       "#563F2E",
@@ -49,8 +44,13 @@ class GameLayer extends Layer {
   }
 
   update() {
+    this.wheel2.update();
+
+    for (let player of this.players) {
+      player.update();
+    }
+
     if (this.moves.length >= this.round) {
-      console.log("s")
       socket.emit("action", { movements: this.moves });
       this.moves = [];
     }
@@ -68,10 +68,6 @@ class GameLayer extends Layer {
     }
 
     this.status.paint();
-
-    if (this.isTurn) {
-      this.turnIndicator.paint();
-    }
     this.movements.paint();
     this.right.paint();
   }
@@ -169,13 +165,13 @@ class GameLayer extends Layer {
         this.status.value = "Esperando jugadores...";
         break;
       case Statuses.PLAYING:
+        this.isTurn = false;
+        this.round = state.round;
         if (state.movementsToPlay.length > 0) {
-          console.log("a");
           for (let movement of state.movementsToPlay) {
             console.log(movement);
           }
-          socket.emit("action", { movements: state.currentPlayer.movements });
-        } else {
+        }
           if (state.currentPlayer.id == socketId) {
             this.currentTurn = "Tu turno! ";
             this.isTurn = true;
@@ -184,15 +180,15 @@ class GameLayer extends Layer {
               (p) => p.id != socketId
             ).playerName;
             this.currentTurn = "Turno de " + opponent + ": ";
-            this.isTurn = false;
           }
-        }
-        break;
-      case Statuses.DRAW:
-        this.status.value = "Empate!";
-        this.isTurn = false;
+        
         break;
       case Statuses.WIN:
+        if (state.movementsToPlay.length > 0) {
+          for (let movement of state.movementsToPlay) {
+            console.log(movement);
+          }
+        }
         this.status.value =
           "Ha ganado " + state.result.winner.playerName + "! ";
         this.isTurn = false;

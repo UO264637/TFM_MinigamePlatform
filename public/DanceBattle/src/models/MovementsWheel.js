@@ -4,6 +4,17 @@ class MovementsWheel extends Model {
         super(images.wheel, x, y);
     }
 
+    update() { 
+        if (!this.timer) {
+            this.timer = setTimeout(() => {
+                if (this.image.src != images.wheel) {
+                    this.image.src = images.wheel;
+                }
+                this.timer = null;
+            }, 100); // 500 milisegundos = medio segundo
+        }
+    }
+
     down() {
         this.image.src = images.wheel_d;
     }

@@ -8,8 +8,8 @@ class Player extends Model {
         // this.idleAnim = new Animation(images.idle_player,
         //     this.width, this.height, 6, 4);
 
-        // this.runningAnim = new Animation(images.running_player,
-        //     this.width, this.height, 3, 4);
+        this.rightAnim = new Animation(images["player_"+position+"_right"],
+            this.width, this.height, 3, 4);
 
         // this.crouchingAnim = new Animation(images.crouching_player,
         //     this.width, this.height, 3, 4);
@@ -21,6 +21,7 @@ class Player extends Model {
         //     this.width, this.height, 3, 4, this.endHitAnim.bind(this));
 
         // this.animation = this.idleAnim;
+        this.animation = this.rightAnim;
 
         this.tag = new CenteredText(
             name,
@@ -33,7 +34,7 @@ class Player extends Model {
     }
 
     update() {
-        //this.animation.update();
+        this.animation.update();
 
         /*switch (this.state) {
             case PlayerStatuses.IDLE:
@@ -56,8 +57,8 @@ class Player extends Model {
     }
 
     paint() {
-        super.paint();
-        //this.animation.paint(this.x, this.y);
+        //super.paint();
+        this.animation.paint(this.x, this.y);
         this.tag.paint();
     }
 }
