@@ -28,19 +28,7 @@ class GameLayer extends Layer {
       originalCanvasHeight * 0.475
     );
 
-    this.movements = new Text(
-      "·  ·  ·",
-      "#FFFFFF",
-      originalCanvasWidth * 0.45,
-      originalCanvasHeight * 0.95,
-      30
-    );
-
-    this.right = new Background(
-      images.right,
-      originalCanvasWidth * 0.2,
-      originalCanvasHeight * 0.94
-    );
+    this.movementsQueue = new MovementsQueue("back");
   }
 
   update() {
@@ -53,6 +41,7 @@ class GameLayer extends Layer {
     if (this.moves.length >= this.round) {
       socket.emit("action", { movements: this.moves });
       this.moves = [];
+      this.movementsQueue.clear();
     }
   }
 
@@ -68,33 +57,14 @@ class GameLayer extends Layer {
     }
 
     this.status.paint();
-    this.movements.paint();
-    this.right.paint();
-  }
-
-  calculateTaps(taps) {
-    // for (let i = 0; i < 9; i++) {
-    //   this.board[i].pressed = false;
-    // }
-    // for (const tap of taps) {
-    //   for (let i = 0; i < 9; i++) {
-    //     if (this.board[i].containsPoint(tap.x, tap.y)) {
-    //       if (tap.type == tapType.start) {
-    //         socket.emit("action", {
-    //           gridIndex: i,
-    //         });
-    //         break;
-    //       }
-    //     }
-    //   }
-    // }
+    this.movementsQueue.paint();
   }
 
   initialize(state) {
     this.round = state.round;
 
-    let player = state.players.find(p => p.id == socketId);
-    let opponent = state.players.find(p => p.id != socketId);
+    let player = state.players.find((p) => p.id == socketId);
+    let opponent = state.players.find((p) => p.id != socketId);
 
     this[player.role] = new Player(
       originalCanvasWidth * 0.3,
@@ -119,29 +89,29 @@ class GameLayer extends Layer {
         let key = keysPressed[i];
         switch (key) {
           case "Space":
-            this.movements.value = this.movements.value.replace(/\·/, "-");
             this.wheel2.middle();
             this.moves.push("middle");
+            this.movementsQueue.addMovement("space");
             break;
           case "ArrowUp":
-            this.movements.value = this.movements.value.replace(/\·/, "u");
             this.wheel2.up();
             this.moves.push("up");
+            this.movementsQueue.addMovement("up");
             break;
           case "ArrowDown":
-            this.movements.value = this.movements.value.replace(/\·/, "d");
             this.wheel2.down();
             this.moves.push("down");
+            this.movementsQueue.addMovement("down");
             break;
           case "ArrowRight":
-            this.movements.value = this.movements.value.replace(/\·/, "r");
             this.wheel2.right();
             this.moves.push("right");
+            this.movementsQueue.addMovement("right");
             break;
           case "ArrowLeft":
-            this.movements.value = this.movements.value.replace(/\·/, "l");
             this.wheel2.left();
             this.moves.push("left");
+            this.movementsQueue.addMovement("left");
             break;
         }
         keysPressed.splice(i, 1);
@@ -153,13 +123,6 @@ class GameLayer extends Layer {
   }
 
   updateGameState(state) {
-    // for (let i = 0; i < state.board.length; i++) {
-    //   const player = state.board[i];
-    //   if (player != null) {
-    //     this.board[i].image.src = images[player.symbol];
-    //   }
-    // }
-
     switch (state.result.status) {
       case Statuses.WAITING:
         this.status.value = "Esperando jugadores...";
@@ -172,16 +135,14 @@ class GameLayer extends Layer {
             console.log(movement);
           }
         }
-          if (state.currentPlayer.id == socketId) {
-            this.currentTurn = "Tu turno! ";
-            this.isTurn = true;
-          } else {
-            let opponent = state.players.find(
-              (p) => p.id != socketId
-            ).playerName;
-            this.currentTurn = "Turno de " + opponent + ": ";
-          }
-        
+        if (state.currentPlayer.id == socketId) {
+          this.currentTurn = "Tu turno! ";
+          this.isTurn = true;
+        } else {
+          let opponent = state.players.find((p) => p.id != socketId).playerName;
+          this.currentTurn = "Turno de " + opponent + ": ";
+        }
+
         break;
       case Statuses.WIN:
         if (state.movementsToPlay.length > 0) {

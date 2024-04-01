@@ -2,6 +2,8 @@ class Player extends Model {
 
     constructor(x, y, name, position) {
         super(images["player_"+position], x, y);
+
+        this.movementsQueue = new MovementsQueue(position);
         this.state = PlayerStatuses.IDLE;
 
         // Animaciones
@@ -57,6 +59,7 @@ class Player extends Model {
     }
 
     paint() {
+        this.movementsQueue.paint();
         //super.paint();
         this.animation.paint(this.x, this.y);
         this.tag.paint();
