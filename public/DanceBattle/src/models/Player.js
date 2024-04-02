@@ -1,67 +1,68 @@
 class Player extends Model {
+  constructor(x, y, name, position) {
+    super(images["player_" + position], x, y);
 
-    constructor(x, y, name, position) {
-        super(images["player_"+position], x, y);
+    this.position = position;
+    this.movementsQueue = new MovementsQueue(position);
 
-        this.movementsQueue = new MovementsQueue(position);
-        this.state = PlayerStatuses.IDLE;
+    this.animation = new Animation(
+      images["player_" + position + "_idle"],
+      this.width,
+      this.height,
+      4,
+      4
+    );
 
-        // Animaciones
-        // this.idleAnim = new Animation(images.idle_player,
-        //     this.width, this.height, 6, 4);
+    this.tag = new CenteredText(name, "#FFFFFF", x, y - this.height / 2 - 15);
+  }
 
-        this.rightAnim = new Animation(images["player_"+position+"_idle"],
-            this.width, this.height, 4, 4);
+  update() {
+    this.animation.update();
+  }
 
-        // this.crouchingAnim = new Animation(images.crouching_player,
-        //     this.width, this.height, 3, 4);
+  paint() {
+    this.movementsQueue.paint();
+    this.animation.paint(this.x, this.y);
+    this.tag.paint();
+  }
 
-        // this.jumpingAnim = new Animation(images.jumping_player,
-        //     this.width, this.height, 3, 4);
+  playDance(movements, callback) {
+    let index = 0;
 
-        // this.hitAnim = new Animation(images.hit_player,
-        //     this.width, this.height, 3, 4, this.endHitAnim.bind(this));
-
-        // this.animation = this.idleAnim;
-        this.animation = this.rightAnim;
-
-        this.tag = new CenteredText(
-            name,
-            "#FFFFFF",
-            x,
-            y-this.height/2 - 15
-          );
-
-
-    }
-
-    update() {
-        this.animation.update();
-
-        /*switch (this.state) {
-            case PlayerStatuses.IDLE:
-                this.animation = this.idleAnim;
-                break;
-            case PlayerStatuses.MOVING:
-                this.animation = this.runningAnim;
-                break;
-            case PlayerStatuses.CROUCHED:
-                this.animation = this.crouchingAnim;
-                break;
-            case PlayerStatuses.HIT:
-                this.animation = this.hitAnim;
-                break;
-            case PlayerStatuses.JUMPING:
-                this.animation = this.jumpingAnim;
-                break;
+    const playNextMovement = () => {
+      //console.log(this.animation);
+      if (index < movements.length) {
+        const movement = movements[index];
+        if (this.position != "back") {
+            this.movementsQueue.addMovement(movement);
         }
-        */
-    }
+        this.setAnimation(movement,
+            () => {
+              index++;
+              playNextMovement();
+            }
+        );
+      } else {
+        this.setAnimation("idle");
+        if (callback) {
+          setTimeout(() => {
+            callback();
+          }, 1000);
+        }
+      }
+    };
 
-    paint() {
-        this.movementsQueue.paint();
-        //super.paint();
-        this.animation.paint(this.x, this.y);
-        this.tag.paint();
-    }
+    playNextMovement();
+  }
+
+  setAnimation(movement, callback) {
+    this.animation = new Animation(
+        images["player_" + this.position + "_" + movement],
+        this.width,
+        this.height,
+        4,
+        4,
+        callback
+      );
+  }
 }

@@ -8,7 +8,7 @@ class GameLayer extends Layer {
   start() {
     this.players = [];
     this.round = 3;
-    this.isTurn = true;
+    this.isTurn = false;
     this.moves = [];
 
     this.background = new Background(
@@ -41,7 +41,6 @@ class GameLayer extends Layer {
     if (this.moves.length >= this.round) {
       socket.emit("action", { movements: this.moves });
       this.moves = [];
-      this.movementsQueue.clear();
     }
   }
 
@@ -90,7 +89,7 @@ class GameLayer extends Layer {
         switch (key) {
           case "Space":
             this.wheel2.middle();
-            this.moves.push("middle");
+            this.moves.push("space");
             this.movementsQueue.addMovement("space");
             break;
           case "ArrowUp":
@@ -131,17 +130,48 @@ class GameLayer extends Layer {
         this.isTurn = false;
         this.round = state.round;
         if (state.movementsToPlay.length > 0) {
+          console.log(state.currentPlayer.role)
+          let dancerRole = state.players.find((p) => p.id != state.currentPlayer.id).role;
+          console.log(dancerRole);
+            this[dancerRole].playDance(state.movementsToPlay, () => {
+                // Esta función se ejecutará cuando se haya completado el baile
+                this[dancerRole].movementsQueue.clear();
+                this.movementsQueue.clear();
+    
+                if (state.currentPlayer.id == socketId) {
+                    this.currentTurn = "Tu turno! ";
+                    this.isTurn = true;
+                } else {
+                    let opponent = state.players.find((p) => p.id != socketId).playerName;
+                    this.currentTurn = "Turno de " + opponent + ": ";
+                }
+    
+                // Aquí puedes colocar cualquier otra operación que quieras ejecutar después de terminar el baile
+            });
+          
           for (let movement of state.movementsToPlay) {
             console.log(movement);
           }
-        }
-        if (state.currentPlayer.id == socketId) {
-          this.currentTurn = "Tu turno! ";
-          this.isTurn = true;
+        
+      } else if (state.currentPlayer.id == socketId) {
+            this.currentTurn = "Tu turno! ";
+            this.isTurn = true;
         } else {
-          let opponent = state.players.find((p) => p.id != socketId).playerName;
-          this.currentTurn = "Turno de " + opponent + ": ";
-        }
+            let opponent = state.players.find((p) => p.id != socketId).playerName;
+            this.currentTurn = "Turno de " + opponent + ": ";
+        
+    }
+      //   setTimeout(() => {
+      //     this[state.currentPlayer.role].movementsQueue.clear();
+  
+      //     if (state.currentPlayer.id == socketId) {
+      //         this.currentTurn = "Tu turno! ";
+      //         this.isTurn = true;
+      //     } else {
+      //         let opponent = state.players.find((p) => p.id != socketId).playerName;
+      //         this.currentTurn = "Turno de " + opponent + ": ";
+      //     }
+      // }, 1000);
 
         break;
       case Statuses.WIN:
