@@ -5,7 +5,7 @@ class Player extends Model {
     this.position = position;
     this.movementsQueue = new MovementsQueue(position);
 
-    this.animation = new Animation(
+    this.idleAnim = new Animation(
       images["player_" + position + "_idle"],
       this.width,
       this.height,
@@ -13,7 +13,48 @@ class Player extends Model {
       4
     );
 
-    this.tag = new CenteredText(name, "#FFFFFF", x, y - this.height / 2 - 15);
+    this.upAnim = new Animation(
+      images["player_" + position + "_up"],
+      this.width,
+      this.height,
+      4,
+      4
+    );
+
+    this.rightAnim = new Animation(
+      images["player_" + position + "_right"],
+      this.width,
+      this.height,
+      4,
+      4
+    );
+
+    this.downAnim = new Animation(
+      images["player_" + position + "_down"],
+      this.width,
+      this.height,
+      4,
+      4
+    );
+
+    this.leftAnim = new Animation(
+      images["player_" + position + "_left"],
+      this.width,
+      this.height,
+      4,
+      4
+    );
+
+    this.spaceAnim = new Animation(
+      images["player_" + position + "_space"],
+      this.width,
+      this.height,
+      4,
+      4
+    );
+
+    this.animation = this.idleAnim;
+    this.tag = new CenteredText(name, "#FFFFFF", x, y - this.height / 2 - 20);
   }
 
   update() {
@@ -21,25 +62,24 @@ class Player extends Model {
   }
 
   paint() {
+    this.tag.paint();
     this.movementsQueue.paint();
     this.animation.paint(this.x, this.y);
-    this.tag.paint();
   }
 
   playDance(movements, callback) {
     let index = 0;
 
     const playNextMovement = () => {
-      //console.log(this.animation);
       if (index < movements.length) {
         const movement = movements[index];
-        if (this.position != "back") {
+        if (this.position != "back") { // Las del jugador actual ya están pintadas
             this.movementsQueue.addMovement(movement);
         }
         this.setAnimation(movement,
             () => {
-              index++;
-              playNextMovement();
+                index++;
+                playNextMovement();
             }
         );
       } else {
@@ -51,18 +91,11 @@ class Player extends Model {
         }
       }
     };
-
     playNextMovement();
   }
 
   setAnimation(movement, callback) {
-    this.animation = new Animation(
-        images["player_" + this.position + "_" + movement],
-        this.width,
-        this.height,
-        4,
-        4,
-        callback
-      );
+    this[movement + "Anim"].callback = callback
+    this.animation = this[movement + "Anim"];
   }
 }
