@@ -67,21 +67,22 @@ class Player extends Model {
     this.animation.paint(this.x, this.y);
   }
 
-  playDance(movements, callback) {
+  playDance(movements, rightMovements, callback) {
     let index = 0;
-
     const playNextMovement = () => {
       if (index < movements.length) {
         const movement = movements[index];
-        if (this.position != "back") { // Las del jugador actual ya están pintadas
-            this.movementsQueue.addMovement(movement);
+        const rightMovement = rightMovements[index];
+        if (this.position != "back") {
+          // Las del jugador actual ya están pintadas
+          this.movementsQueue.addMovement(movement, rightMovement);
+        } else {
+          this.movementsQueue.verifyMovement(index, rightMovement);
         }
-        this.setAnimation(movement,
-            () => {
-                index++;
-                playNextMovement();
-            }
-        );
+        this.setAnimation(movement, () => {
+          index++;
+          playNextMovement();
+        });
       } else {
         this.setAnimation("idle");
         if (callback) {
@@ -95,7 +96,7 @@ class Player extends Model {
   }
 
   setAnimation(movement, callback) {
-    this[movement + "Anim"].callback = callback
+    this[movement + "Anim"].callback = callback;
     this.animation = this[movement + "Anim"];
   }
 }

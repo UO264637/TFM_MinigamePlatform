@@ -1,34 +1,40 @@
 class GameLayer extends Layer {
   constructor() {
     super();
-    this.start();
-    this.turnTimer = 0;
-  }
-
-  start() {
     this.players = [];
     this.round = 3;
     this.isTurn = false;
-    this.moves = [];
+    this.numMoves = 0;
+    this.turnTimer = 0;
+    this.start();
+  }
 
+  start() {
     this.background = new Background(
       images.background,
       originalCanvasWidth * 0.5,
       originalCanvasHeight * 0.5
     );
-    this.status = new CenteredText(
-      0,
-      "#563F2E",
-      originalCanvasWidth * 0.5,
-      originalCanvasHeight * 0.1
+
+    this.roundIndicator = new Text(
+      "Round 1",
+      "#FFFFFF",
+      originalCanvasWidth * 0.05,
+      originalCanvasHeight * 0.1,
+      32
+    );
+
+    this.status = new Text(
+      "",
+      "#FFFFFF",
+      originalCanvasWidth * 0.05,
+      originalCanvasHeight * 0.15
     );
 
     this.movementsWheel = new MovementsWheel(
       originalCanvasWidth * 0.45,
       originalCanvasHeight * 0.475
     );
-
-    this.movementsQueue = new MovementsQueue("back");
   }
 
   update() {
@@ -38,9 +44,11 @@ class GameLayer extends Layer {
       player.update();
     }
 
-    if (this.moves.length >= this.round) {
-      socket.emit("action", { movements: this[this.ownRole].movementsQueue});
-      this.moves = [];
+    if (this.numMoves >= this.round) {
+      socket.emit("action", {
+        movements: this[this.ownRole].movementsQueue.movements,
+      });
+      this.numMoves = 0;
     }
   }
 
@@ -56,7 +64,7 @@ class GameLayer extends Layer {
     }
 
     this.status.paint();
-    this.movementsQueue.paint();
+    this.roundIndicator.paint();
   }
 
   initialize(state) {
@@ -90,28 +98,28 @@ class GameLayer extends Layer {
         switch (key) {
           case "Space":
             this.movementsWheel.middle();
-            this.moves.push("space");
             this[this.ownRole].movementsQueue.addMovement("space");
+            this.numMoves++;
             break;
           case "ArrowUp":
             this.movementsWheel.up();
-            this.moves.push("up");
             this[this.ownRole].movementsQueue.addMovement("up");
+            this.numMoves++;
             break;
           case "ArrowDown":
             this.movementsWheel.down();
-            this.moves.push("down");
             this[this.ownRole].movementsQueue.addMovement("down");
+            this.numMoves++;
             break;
           case "ArrowRight":
             this.movementsWheel.right();
-            this.moves.push("right");
             this[this.ownRole].movementsQueue.addMovement("right");
+            this.numMoves++;
             break;
           case "ArrowLeft":
             this.movementsWheel.left();
-            this.moves.push("left");
             this[this.ownRole].movementsQueue.addMovement("left");
+            this.numMoves++;
             break;
         }
         keysPressed.splice(i, 1);
@@ -123,7 +131,11 @@ class GameLayer extends Layer {
   }
 
   updateGameState(state) {
-    let dancerRole = state.players?.find(p => p.id !== state.currentPlayer.id)?.role;
+    let dancerRole = state.players.find(
+      (p) => p.id !== state.currentPlayer?.id
+    ).role;
+    let imitated = state.players.find((p) => p.role === "imitated");
+      console.log(dancerRole);
     switch (state.result.status) {
       case Statuses.WAITING:
         this.status.value = "Esperando jugadores...";
@@ -132,30 +144,31 @@ class GameLayer extends Layer {
         this.isTurn = false;
         this.round = state.round;
         if (state.movementsToPlay.length > 0) {
-          //this.playDance(state);
-
-          this[dancerRole].playDance(state.movementsToPlay, () => {
-            this[dancerRole].movementsQueue.clear();
-            this.movementsQueue.clear();
-
-            this.updateState(state);
-          });
+          this[dancerRole].playDance(
+            state.movementsToPlay,
+            imitated.movements,
+            () => {
+              this[dancerRole].movementsQueue.clear();
+              this.updateState(state);
+            }
+          );
         } else {
           this.updateState(state);
         }
         break;
       case Statuses.WIN:
-        this[dancerRole].playDance(state.movementsToPlay, () => {
-          this[dancerRole].movementsQueue.clear();
-          this.movementsQueue.clear();
+        this.isTurn = false;
+        this[dancerRole].playDance(
+          state.movementsToPlay,
+          imitated.movements,
+          () => {
+            this[dancerRole].movementsQueue.clear();
 
-          this.status.value =
-            "Ha ganado " + state.result.winner.playerName + "! ";
-          this.isTurn = false;
-        });
-
-        break;
-      default:
+            this.status.value =
+              "Ha ganado " + state.result.winner.playerName + "! ";
+            this.isTurn = false;
+          }
+        );
         break;
     }
   }
@@ -167,6 +180,21 @@ class GameLayer extends Layer {
     } else {
       let opponent = state.players.find((p) => p.id != socketId).playerName;
       this.currentTurn = "Turno de " + opponent + ": ";
+    }
+    this.updateRound();
+  }
+
+  updateRound() {
+    switch (this.round) {
+      case 3:
+        this.roundIndicator.value = "Round 1";
+        break;
+      case 5:
+        this.roundIndicator.value = "Round 2";
+        break;
+      case 7:
+        this.roundIndicator.value = "Round 3";
+        break;
     }
   }
 

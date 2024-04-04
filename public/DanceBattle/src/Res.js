@@ -26,6 +26,7 @@ const images = {
   down: "res/down.png",
   left: "res/left.png",
   space: "res/space.png",
+  wrong: "res/wrong.png"
 };
 
 const imageRutes = Object.values(images);

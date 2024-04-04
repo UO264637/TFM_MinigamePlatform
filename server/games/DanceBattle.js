@@ -75,7 +75,7 @@ class DanceBattle extends BaseGame {
     }
     else {
       room.state.movementsToPlay = room.state.currentPlayer.movements;
-      
+      this.switchPlayer(room);
       clearInterval(room.turnTimer);
       room.state.result.status = Statuses.WIN;
       room.state.result.winner = imitated;
@@ -108,6 +108,11 @@ class DanceBattle extends BaseGame {
       clearInterval(room.turnTimer);
       this.startTurnTimer(room, 10 + room.state.round);
     }
+  }
+
+  handleDisconnect(room, socketId) {
+    room.state.movementsToPlay = [];
+    super.handleDisconnect(room, socketId);
   }
 
   handleTurnTimeout(room) {
