@@ -99,4 +99,8 @@ class Player extends Model {
     this[movement + "Anim"].callback = callback;
     this.animation = this[movement + "Anim"];
   }
+
+  setName(name) {
+    this.tag.value = name;
+  }
 }

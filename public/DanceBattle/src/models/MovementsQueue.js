@@ -11,11 +11,12 @@ class MovementsQueue {
         break;
     }
 
-    // this.up = new Background(images.up, this.x, this.y);
-    // this.right = new Background(images.right, this.x, this.y);
-    // this.down = new Background(images.down, this.x, this.y);
-    // this.left = new Background(images.left, this.x, this.y);
-    // this.space = new Background(images.space, this.x, this.y);
+    this.up = new Background(images.up, this.x, this.y);
+    this.right = new Background(images.right, this.x, this.y);
+    this.down = new Background(images.down, this.x, this.y);
+    this.left = new Background(images.left, this.x, this.y);
+    this.space = new Background(images.space, this.x, this.y);
+    this.wrong = new Background(images.wrong, this.x, this.y);
 
     this.movements = [];
     this.movementsIcons = [];
@@ -35,16 +36,18 @@ class MovementsQueue {
   addMovement(movement, rightMovement) {
     let xpos = this.x;
     if (this.movements.length > 0) {
-      let previousMovement = this.movementsIcons[this.movementsIcons.length - 1];
+      let previousMovement =
+        this.movementsIcons[this.movementsIcons.length - 1];
       xpos = previousMovement.x + previousMovement.width + 8;
     }
+    // Se clona el objeto para evitar cargarlo de nuevo
+    let movementIcon = { ...this[movement], paint: this[movement].paint, x:xpos, y: this.y };
 
-    let movementIcon = new Background(images[movement], xpos, this.y);
     this.movements.push(movement);
     this.movementsIcons.push(movementIcon);
 
     if (rightMovement != null && movement != rightMovement) {
-      let wrongIcon = new Background(images.wrong, xpos, this.y);
+      let wrongIcon = { ...this.wrong, paint: this[movement].paint, x:xpos, y: this.y };;
       this.wrongIcons.push(wrongIcon);
     }
   }

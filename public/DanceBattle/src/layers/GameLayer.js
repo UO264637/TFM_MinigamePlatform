@@ -35,6 +35,22 @@ class GameLayer extends Layer {
       originalCanvasWidth * 0.45,
       originalCanvasHeight * 0.475
     );
+
+    this.backPlayer = new Player(
+      originalCanvasWidth * 0.3,
+      originalCanvasHeight * 0.575,
+      "",
+      "back"
+    );
+    this.players.push(this.backPlayer);
+
+    this.frontPlayer = new Player(
+      originalCanvasWidth * 0.75,
+      originalCanvasHeight * 0.3,
+      "",
+      "front"
+    );
+    this.players.push(this.frontPlayer);
   }
 
   update() {
@@ -74,21 +90,10 @@ class GameLayer extends Layer {
     let opponent = state.players.find((p) => p.id != socketId);
     this.ownRole = player.role;
 
-    this[player.role] = new Player(
-      originalCanvasWidth * 0.3,
-      originalCanvasHeight * 0.575,
-      player.playerName,
-      "back"
-    );
-    this.players.push(this[player.role]);
-
-    this[opponent.role] = new Player(
-      originalCanvasWidth * 0.75,
-      originalCanvasHeight * 0.3,
-      opponent.playerName,
-      "front"
-    );
-    this.players.push(this[opponent.role]);
+    this[player.role] = this.backPlayer;
+    this[player.role].setName(player.playerName)
+    this[opponent.role] = this.frontPlayer;
+    this[opponent.role].setName(player.playerName)
   }
 
   processControls() {
@@ -133,7 +138,7 @@ class GameLayer extends Layer {
   updateGameState(state) {
     let dancerRole = state.players.find(
       (p) => p.id !== state.currentPlayer?.id
-    ).role;
+    )?.role;
     let imitated = state.players.find((p) => p.role === "imitated");
     switch (state.result.status) {
       case Statuses.WAITING:
@@ -159,7 +164,7 @@ class GameLayer extends Layer {
         this.isTurn = false;
         this[dancerRole].playDance(
           state.movementsToPlay,
-          imitated.movements,
+          imitated?.movements,
           () => {
             this[dancerRole].movementsQueue.clear();
 
