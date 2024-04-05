@@ -189,6 +189,9 @@ class GameLayer extends Layer {
   }
 
   updateRound() {
+    for (let player of this.players) {
+      //player.movementsQueue.movementsPlaceholder.setRound("round");
+    }
     switch (this.round) {
       case 3:
         this.roundIndicator.value = "Round 1";
