@@ -37,7 +37,6 @@ class MovementsQueue {
     if (this.movements.length > 0) {
       let previousMovement = this.movementsIcons[this.movementsIcons.length - 1];
       xpos = previousMovement.x + previousMovement.width + 8;
-      console.log(xpos);
     }
 
     let movementIcon = new Background(images[movement], xpos, this.y);

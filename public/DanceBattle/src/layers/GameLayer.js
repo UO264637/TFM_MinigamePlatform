@@ -135,7 +135,6 @@ class GameLayer extends Layer {
       (p) => p.id !== state.currentPlayer?.id
     ).role;
     let imitated = state.players.find((p) => p.role === "imitated");
-      console.log(dancerRole);
     switch (state.result.status) {
       case Statuses.WAITING:
         this.status.value = "Esperando jugadores...";

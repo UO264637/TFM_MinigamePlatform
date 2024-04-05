@@ -19,14 +19,18 @@ class BaseGame {
     };
 
     if (nPlayers === 0) {
-      console.log("Room " + data.roomId + " (1/2): " + data.playerName + " joined");
+      console.log(
+        "Room " + data.roomId + " (1/2): " + data.playerName + " joined"
+      );
 
       room.state.players.push(newPlayer);
 
       this.handleOnePlayer(room, socketId, data);
       this.updateGameState(room, "gameState");
     } else if (nPlayers === 1) {
-      console.log("Room " + data.roomId + " (2/2): " + data.playerName + " joined");
+      console.log(
+        "Room " + data.roomId + " (2/2): " + data.playerName + " joined"
+      );
 
       room.state.players.push(newPlayer);
 
@@ -72,7 +76,7 @@ class BaseGame {
   }
 
   startTurnTimer(room, time) {
-    let secondsLeft = time+1;
+    let secondsLeft = time + 1;
 
     room.turnTimer = setInterval(() => {
       secondsLeft--;

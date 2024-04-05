@@ -66,14 +66,17 @@ class DanceBattle extends BaseGame {
     const imitator = room.state.players.find((p) => p.role === Roles.IMITATOR);
 
     if (room.state.currentPlayer == imitated) {
-      const completeMovements = Array.from({ length: room.state.round }, (_, index) => imitated.movements[index] || "space"); // Ensures there are 3, 5 or 7 movements
+      const completeMovements = Array.from(
+        { length: room.state.round },
+        (_, index) => imitated.movements[index] || "space"
+      ); // Ensures there are 3, 5 or 7 movements
       imitated.movements = completeMovements;
       return true;
-    }
-    else if (imitator.movements.toString() === imitated.movements.toString()) {
+    } else if (
+      imitator.movements.toString() === imitated.movements.toString()
+    ) {
       return true;
-    }
-    else {
+    } else {
       room.state.movementsToPlay = room.state.currentPlayer.movements;
       this.switchPlayer(room);
       clearInterval(room.turnTimer);

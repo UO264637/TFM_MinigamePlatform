@@ -113,9 +113,15 @@ function filterRooms() {
   const rooms = roomList.getElementsByTagName("li");
 
   for (const room of rooms) {
-    let roomName = room.querySelector("h3").textContent.toLowerCase().replace("- waiting", "");
+    let roomName = room
+      .querySelector("h3")
+      .textContent.toLowerCase()
+      .replace("- waiting", "");
     let roomDescription = room.querySelector("p").textContent.toLowerCase();
-    let roomNumber = room.querySelector("div").textContent.toLowerCase().replace("sala ", "");
+    let roomNumber = room
+      .querySelector("div")
+      .textContent.toLowerCase()
+      .replace("sala ", "");
 
     let displayStyle =
       roomName.includes(filterValue) ||
@@ -128,11 +134,11 @@ function filterRooms() {
   }
 }
 
-const gameList = document.getElementById('gameList');
+const gameList = document.getElementById("gameList");
 
-    gameList.addEventListener('wheel', function (event) {
-      if (gameList.scrollWidth > gameList.clientWidth) {
-        gameList.scrollLeft += event.deltaY;
-        event.preventDefault();
-      }
-    });
+gameList.addEventListener("wheel", function (event) {
+  if (gameList.scrollWidth > gameList.clientWidth) {
+    gameList.scrollLeft += event.deltaY;
+    event.preventDefault();
+  }
+});
