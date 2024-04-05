@@ -209,15 +209,19 @@ button:hover {
 }
 
 .TicTacToe {
-  background-color: #f2c6de;
+  background-color: #F3CDDB;
 }
 
 .ObstacleRace {
-  background-color: #c6def1;
+  background-color: #C7DFEE;
 }
 
 .DanceBattle {
-  background-color: #DBCDF0;
+  background-color: #E3CBEA;
+}
+
+.MazeChase {
+  background-color: #DFE8D6;
 }
 
 .selected {
