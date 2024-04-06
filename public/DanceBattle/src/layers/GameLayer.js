@@ -93,7 +93,7 @@ class GameLayer extends Layer {
     this[player.role] = this.backPlayer;
     this[player.role].setName(player.playerName)
     this[opponent.role] = this.frontPlayer;
-    this[opponent.role].setName(player.playerName)
+    this[opponent.role].setName(opponent.playerName)
   }
 
   processControls() {
@@ -138,7 +138,7 @@ class GameLayer extends Layer {
   updateGameState(state) {
     let dancerRole = state.players.find(
       (p) => p.id !== state.currentPlayer?.id
-    )?.role;
+    ).role;
     let imitated = state.players.find((p) => p.role === "imitated");
     switch (state.result.status) {
       case Statuses.WAITING:
@@ -190,7 +190,7 @@ class GameLayer extends Layer {
 
   updateRound() {
     for (let player of this.players) {
-      //player.movementsQueue.movementsPlaceholder.setRound("round");
+      player.movementsQueue.movementsPlaceholder.setRound(this.round);
     }
     switch (this.round) {
       case 3:

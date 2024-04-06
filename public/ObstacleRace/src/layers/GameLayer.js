@@ -113,7 +113,6 @@ class GameLayer extends Layer {
     }
 
     this.goal.paint();
-
     this.player.paint();
 
     for (const obstacle of this.obstacles) {
@@ -121,7 +120,6 @@ class GameLayer extends Layer {
     }
 
     this.background5.paint();
-
     this.status.paint();
     this.hud.paint();
   }

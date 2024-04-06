@@ -11,7 +11,7 @@ class MovementsQueue {
         break;
     }
 
-    //this.movementsPlaceholder = new MovementsPlaceholder(this.x, this.y);
+    this.movementsPlaceholder = new MovementsPlaceholder(this.x, this.y);
 
     this.up = new Background(images.up, this.x, this.y);
     this.right = new Background(images.right, this.x, this.y);
@@ -26,7 +26,7 @@ class MovementsQueue {
   }
 
   paint() {
-    //this.movementsPlaceholder.paint();
+    this.movementsPlaceholder.paint();
 
     for (let movementIcon of this.movementsIcons) {
       movementIcon.paint();

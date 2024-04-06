@@ -26,7 +26,10 @@ const images = {
   down: "res/down.png",
   left: "res/left.png",
   space: "res/space.png",
-  wrong: "res/wrong.png"
+  wrong: "res/wrong.png",
+  placeholder3: "res/placeholder3.png",
+  placeholder5: "res/placeholder5.png",
+  placeholder7: "res/placeholder7.png",
 };
 
 const imageRutes = Object.values(images);
