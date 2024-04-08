@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotar Matriz</title>
+</head>
+<body>
+    <h1>Rotar Matriz</h1>
+    <form id="matrizForm">
+        <label for="matrizInput">Introduce la matriz:</label><br>
+        <textarea id="matrizInput" rows="3" cols="5"></textarea><br>
+        <button type="submit">Obtener Resultado</button>
+    </form>
+    <div id="resultado"></div>
+
+    <script>
+        function rotarMatriz(matriz) {
+            const filas = matriz.length;
+            const columnas = matriz[0].length;
+
+            // Crear una matriz vacía para almacenar el resultado rotado
+            const matrizRotada = [];
+            for (let i = columnas - 1; i >= 0; i--) {
+                matrizRotada.push([]);
+            }
+
+            // Llenar la matriz rotada con los elementos de la matriz original rotados
+            for (let i = columnas - 1; i >= 0; i--) {
+                for (let j = 0; j < filas; j++) {
+                    matrizRotada[columnas - 1 - i].push(matriz[j][i]);
+                }
+            }
+
+            // Convertir la matriz rotada en una cadena de texto
+            let resultado = "";
+            for (let i = 0; i < filas; i++) {
+                resultado += matrizRotada[i].join("") + "\n";
+            }
+
+            return resultado;
+        }
+
+        document.getElementById("matrizForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const matrizInput = document.getElementById("matrizInput").value.trim();
+            const matrizFilas = matrizInput.split("\n");
+
+            const matriz = matrizFilas.map(fila => fila.split(""));
+
+            const matrizRotada = rotarMatriz(matriz);
+
+            document.getElementById("resultado").innerText = "Matriz Rotada:\n" + matrizRotada;
+        });
+    </script>
+</body>
+</html>
