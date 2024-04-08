@@ -148,11 +148,15 @@ class GameLayer extends Layer {
 
   loadMapObject(symbol, x, y) {
     switch (symbol) {
-      case "1":
-        this.jugador = new Jugador(x, y);
-        // modificación para empezar a contar desde el suelo
-        this.jugador.y = this.jugador.y - this.jugador.alto / 2;
+      case "S":{
+        // this.jugador = new Jugador(x, y);
+        // // modificación para empezar a contar desde el suelo
+        // this.jugador.y = this.jugador.y - this.jugador.alto / 2;
+        let wallTile = new Wall(images.player, x, y);
+        wallTile.y = wallTile.y - wallTile.height / 2;
+        this.wallTiles.push(wallTile);
         break;
+    }
       case "■": {
         let wallTile = new Wall(images.c_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;

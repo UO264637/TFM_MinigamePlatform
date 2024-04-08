@@ -18,6 +18,7 @@ let images = {
     tr_tile : "res/tr_tile.png",
     br_tile : "res/br_tile.png",
     bl_tile : "res/bl_tile.png",
+    player : "res/player.png",
 };
 
 let imageRutes = Object.values(images);
