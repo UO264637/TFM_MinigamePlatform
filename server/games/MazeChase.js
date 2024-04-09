@@ -38,8 +38,10 @@ class MazeChase extends BaseGame {
     if (room.state.result.status === Statuses.PLAYING) {
       const player = room.state.players.find((p) => p.id === socketId);
       if (data.nextDirection != null) {
+        console.log("A")
         player.nextDirection = data.nextDirection;
       } else if (data.superPower) {
+        // TODO
       }
       else if (data.haunted) {
         checkForEndOfGame(room);

@@ -41,7 +41,7 @@ header a {
   text-decoration: none;
 }
 
-hgroup {
+.hgroup {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -236,7 +236,7 @@ p {
   margin-top: 0;
 }
 
-div {
+li>div {
   font-weight: bold;
   background-color: #e8e1d5;
   width: 75px;

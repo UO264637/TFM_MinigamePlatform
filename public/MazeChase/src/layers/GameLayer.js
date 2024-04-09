@@ -6,93 +6,105 @@ class GameLayer extends Layer {
   }
 
   start() {
-    this.board = [];
     this.wallTiles = [];
-
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        this.board[i + j + i * 2] = new Button(
-          images.tttButton,
-          canvas.width / 2 - 155 + i * 155,
-          canvas.height / 2 - 155 + j * 155
-        );
-      }
-    }
+    this.space = new Space(0);
 
     this.background = new Background(
       images.background,
       canvas.width * 0.5,
       canvas.height * 0.5
     );
-    this.turnIndicator = new Background(
-      images.turnIndicator,
-      canvas.width * 0.5,
-      canvas.height * 0.5
-    );
     this.player1 = new Text(
       0,
       "#563F2E",
-      canvas.width * 0.07,
-      canvas.height * 0.47
+      originalCanvasWidth * 0.01,
+      originalCanvasHeight * 0.47
     );
     this.player2 = new Text(
       0,
       "#563F2E",
-      canvas.width * 0.07,
-      canvas.height * 0.53
+      originalCanvasWidth * 0.01,
+      originalCanvasHeight * 0.53
     );
-    this.status = new CenteredText(
+    this.status = new Text(
       0,
       "#563F2E",
-      canvas.width * 0.5,
-      canvas.height * 0.1
+      originalCanvasWidth * 0.01,
+      originalCanvasHeight * 0.1
     );
     this.status.value = "";
     this.loadMap("/maph.txt");
   }
 
+  update() {
+    this.space.update();
+    this.player.update();
+    this.opponent.update();
+  }
+
   paint() {
     this.background.paint();
 
-    for (let i = 0; i < 9; i++) {
-      this.board[i].paint();
+    for (let tile of this.wallTiles) {
+      tile.paint();
     }
 
     this.player1.paint();
     this.player2.paint();
     this.status.paint();
+    this.player.paint();
+    this.opponent.paint();
+  }
 
-    if (this.isTurn) {
-      this.turnIndicator.paint();
+  initialize(state) {
+    let pursued = state.players.find((p) => p.role == "pursued");
+    let haunter = state.players.find((p) => p.role == "haunter");
+
+    if (haunter.id == socketId) {
+      //this.player = this.haunter;
+    } else {
+      let aux = this.player;
+      this.player = this.opponent;
+      this.opponent = aux;
+      console.log(this.player);
+      console.log(this.opponent);
+    }
+  }
+
+  processControls() {
+    let nextDirection = 0;
+    // Eje X
+    if (controls.moveX > 0) {
+      nextDirection = "X";
+    } else if (controls.moveX < 0) {
+      nextDirection = "-X";
+    }
+    // Eje Y
+    if (controls.moveY > 0) {
+      nextDirection = "-Y";
+    } else if (controls.moveY < 0) {
+      nextDirection = "Y";
     }
 
-    for (let tile of this.wallTiles) {
-      tile.paint();
+    if (nextDirection != 0) {
+      this.player.addDirection(nextDirection);
+      socket.emit("action", {
+        nextDirection: nextDirection,
+      });
     }
   }
 
   updateGameState(state) {
-    for (let i = 0; i < state.board.length; i++) {
-      const player = state.board[i];
-      if (player != null) {
-        this.board[i].image.src = images[player.symbol];
-      }
-    }
-
     switch (state.result.status) {
       case Statuses.WAITING:
         this.status.value = "Esperando jugadores...";
         break;
-      case Statuses.PLAYING:
-        if (state.currentPlayer.id == socketId) {
-          this.currentTurn = "Tu turno! ";
-          this.isTurn = true;
-        } else {
-          let opponent = state.players.find((p) => p.id != socketId).playerName;
-          this.currentTurn = "Turno de " + opponent + ": ";
-          this.isTurn = false;
-        }
+      case Statuses.PLAYING: {
+        let opponentState = state.players.find((p) => p.id != socketId);
+        console.log(this.opponent);
+        this.opponent.addDirection(opponentState.nextDirection);
         break;
+      }
       case Statuses.DRAW:
         this.status.value = "Empate!";
         this.isTurn = false;
@@ -110,17 +122,17 @@ class GameLayer extends Layer {
     this.player2.value = "";
     if (state.players.length > 0) {
       this.player1.value =
-        state.players[0].symbol + ": " + state.players[0].playerName;
+        state.players[0].role + ": " + state.players[0].playerName;
     }
 
     if (state.players.length > 1) {
       this.player2.value =
-        state.players[1].symbol + ": " + state.players[1].playerName;
+        state.players[1].role + ": " + state.players[1].playerName;
     }
   }
 
   updateTurnTimer(secondsLeft) {
-    this.status.value = this.currentTurn + secondsLeft + "s...";
+    this.status.value = secondsLeft + "s...";
   }
 
   loadMap(route) {
@@ -135,7 +147,7 @@ class GameLayer extends Layer {
           let line = lines[i];
           for (let j = 0; j < mapWidth; j++) {
             let symbol = line[j];
-            let x = mapOffsetX+24 + j * 24; // Calcula la posición x ajustada para centrar el mapa
+            let x = mapOffsetX + 24 + j * 24; // Calcula la posición x ajustada para centrar el mapa
             let y = 24 + i * 24; // Calcula la posición y ajustada para centrar el mapa
             this.loadMapObject(symbol, x, y);
           }
@@ -148,91 +160,108 @@ class GameLayer extends Layer {
 
   loadMapObject(symbol, x, y) {
     switch (symbol) {
-      case "S":{
-        // this.jugador = new Jugador(x, y);
-        // // modificación para empezar a contar desde el suelo
-        // this.jugador.y = this.jugador.y - this.jugador.alto / 2;
-        let wallTile = new Wall(images.player, x, y);
-        wallTile.y = wallTile.y - wallTile.height / 2;
-        this.wallTiles.push(wallTile);
+      case "S": {
+        this.player = new Player(x, y);
+        // modificación para empezar a contar desde el suelo
+        this.player.y = this.player.y - this.player.height / 2;
+        this.space.addDinamicCorp(this.player);
         break;
-    }
+      }
+      case "s": {
+        this.opponent = new Player(x, y);
+        this.opponent.y = this.opponent.y - this.opponent.height / 2;
+        this.space.addDinamicCorp(this.opponent);
+        break;
+      }
       case "■": {
         let wallTile = new Wall(images.c_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
+        this.space.addStaticCorp(wallTile);
         break;
       }
       case "┌": {
         let wallTile = new Wall(images.itl_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
+        this.space.addStaticCorp(wallTile);
         break;
       }
       case "┐": {
         let wallTile = new Wall(images.itr_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
+        this.space.addStaticCorp(wallTile);
         break;
       }
       case "┘": {
         let wallTile = new Wall(images.ibr_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
+        this.space.addStaticCorp(wallTile);
         break;
       }
       case "└": {
         let wallTile = new Wall(images.ibl_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
+        this.space.addStaticCorp(wallTile);
         break;
       }
       case "─": {
         let wallTile = new Wall(images.t_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
+        this.space.addStaticCorp(wallTile);
         break;
       }
       case "┤": {
         let wallTile = new Wall(images.r_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
+        this.space.addStaticCorp(wallTile);
         break;
       }
       case "═": {
         let wallTile = new Wall(images.b_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
+        this.space.addStaticCorp(wallTile);
         break;
       }
       case "├": {
         let wallTile = new Wall(images.l_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
+        this.space.addStaticCorp(wallTile);
         break;
       }
       case "╔": {
         let wallTile = new Wall(images.tl_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
+        this.space.addStaticCorp(wallTile);
         break;
       }
       case "╗": {
         let wallTile = new Wall(images.tr_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
+        this.space.addStaticCorp(wallTile);
         break;
       }
       case "╝": {
         let wallTile = new Wall(images.br_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
+        this.space.addStaticCorp(wallTile);
         break;
       }
       case "╚": {
         let wallTile = new Wall(images.bl_tile, x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
+        this.space.addStaticCorp(wallTile);
         break;
       }
     }
