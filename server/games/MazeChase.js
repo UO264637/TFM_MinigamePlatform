@@ -38,20 +38,20 @@ class MazeChase extends BaseGame {
     if (room.state.result.status === Statuses.PLAYING) {
       const player = room.state.players.find((p) => p.id === socketId);
       if (data.nextDirection != null) {
-        console.log("A")
         player.nextDirection = data.nextDirection;
       } else if (data.superPower) {
         // TODO
       }
       else if (data.haunted) {
-        checkForEndOfGame(room);
+        clearInterval(room.turnTimer);
+        this.checkForEndOfGame(room);
       }
     }
     this.updateGameState(room, "gameState");
   }
 
   checkForEndOfGame(room) {
-    if (this.state.result.status != Statuses.WIN) {
+    if (room.state.result.status != Statuses.WIN) {
       const haunter = room.state.players.find((p) => p.role === Roles.HAUNTER);
 
       room.state.result.status = Statuses.WIN;
@@ -60,6 +60,7 @@ class MazeChase extends BaseGame {
   }
 
   handleTurnTimeout(room) {
+    clearInterval(room.turnTimer);
     const pursued = room.state.players.find((p) => p.role === Roles.PURSUED);
 
     room.state.result.status = Statuses.WIN;

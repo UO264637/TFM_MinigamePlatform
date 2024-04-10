@@ -6,8 +6,13 @@ class GameLayer extends Layer {
   }
 
   start() {
+    disableKeyboardInput();
     this.wallTiles = [];
     this.space = new Space(0);
+    this.player = new Player(-50, 0);
+    this.opponent = new Player(-50, 50);
+
+    this.coundown = new Countdown();
 
     this.background = new Background(
       images.background,
@@ -40,6 +45,11 @@ class GameLayer extends Layer {
     this.space.update();
     this.player.update();
     this.opponent.update();
+
+    if (this.player.collides(this.opponent)) {
+      socket.emit("action", { haunted: true });
+    }
+    this.coundown.update();
   }
 
   paint() {
@@ -54,6 +64,7 @@ class GameLayer extends Layer {
     this.status.paint();
     this.player.paint();
     this.opponent.paint();
+    this.coundown.paint();
   }
 
   initialize(state) {
@@ -66,9 +77,9 @@ class GameLayer extends Layer {
       let aux = this.player;
       this.player = this.opponent;
       this.opponent = aux;
-      console.log(this.player);
-      console.log(this.opponent);
     }
+
+    enableKeyboardInput();
   }
 
   processControls() {
@@ -101,15 +112,11 @@ class GameLayer extends Layer {
         break;
       case Statuses.PLAYING: {
         let opponentState = state.players.find((p) => p.id != socketId);
-        console.log(this.opponent);
         this.opponent.addDirection(opponentState.nextDirection);
         break;
       }
-      case Statuses.DRAW:
-        this.status.value = "Empate!";
-        this.isTurn = false;
-        break;
       case Statuses.WIN:
+        disableKeyboardInput();
         this.status.value =
           "Ha ganado " + state.result.winner.playerName + "! ";
         this.isTurn = false;
@@ -161,15 +168,15 @@ class GameLayer extends Layer {
   loadMapObject(symbol, x, y) {
     switch (symbol) {
       case "S": {
-        this.player = new Player(x, y);
         // modificación para empezar a contar desde el suelo
-        this.player.y = this.player.y - this.player.height / 2;
+        this.player.x = x;
+        this.player.y = y - this.player.height / 2;
         this.space.addDinamicCorp(this.player);
         break;
       }
       case "s": {
-        this.opponent = new Player(x, y);
-        this.opponent.y = this.opponent.y - this.opponent.height / 2;
+        this.opponent.x = x;
+        this.opponent.y = y - this.opponent.height / 2;
         this.space.addDinamicCorp(this.opponent);
         break;
       }
