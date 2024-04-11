@@ -8,7 +8,6 @@ class Countdown {
     this.oppacity = 1;
 
     const playNextMovement = () => {
-      console.log(this.value);
       if (this.value == 1) {
         this.value = "Go!";
         this.oppacity = 1;

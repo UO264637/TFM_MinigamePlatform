@@ -10,7 +10,7 @@ function onKeyDown(event) {
     keys.push(event.keyCode);
     switch (event.keyCode) {
       case 32:
-        controls.shoot = true;
+        controls.action = true;
         break;
       case 38:
         controls.moveY = 1;
@@ -35,7 +35,7 @@ function onKeyUp(event) {
 
   switch (event.keyCode) {
     case 32:
-      controls.shoot = false;
+      controls.action = false;
       break;
     case 38:
       if (controls.moveY == 1) {

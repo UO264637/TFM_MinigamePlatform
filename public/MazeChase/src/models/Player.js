@@ -7,6 +7,7 @@ class Player extends Model {
 
     this.nextXMovement = 0;
     this.nextYMovement = 0;
+    this.stuned = false;
   }
 
   update() {
@@ -54,5 +55,29 @@ class Player extends Model {
         this.nextXMovement = 0;
         break;
     }
+  }
+
+  stop() {
+    this.xv = 0;
+    this.yv = 0; 
+
+    this.nextXMovement = 0;
+    this.nextYMovement = 0;
+  }
+
+  useSkill(name) {
+    console.log("POWER " + name);
+  }
+
+  stun() {
+    this.stop();
+    this.stuned = true;
+  }
+
+  collides(model) {
+    if (!this.stuned) {
+      return super.collides(model);
+    }
+    return false;
   }
 }

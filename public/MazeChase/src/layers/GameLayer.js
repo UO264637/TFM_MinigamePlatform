@@ -37,6 +37,12 @@ class GameLayer extends Layer {
       originalCanvasWidth * 0.01,
       originalCanvasHeight * 0.1
     );
+    this.timer = new Text(
+      "",
+      "#563F2E",
+      originalCanvasWidth * 0.9,
+      originalCanvasHeight * 0.9
+    );
     this.status.value = "";
     this.loadMap("/maph.txt");
   }
@@ -46,7 +52,7 @@ class GameLayer extends Layer {
     this.player.update();
     this.opponent.update();
 
-    if (this.player.collides(this.opponent)) {
+    if (this.player.role == "haunter" && this.player.collides(this.opponent)) {
       socket.emit("action", { haunted: true });
     }
     this.coundown.update();
@@ -62,6 +68,7 @@ class GameLayer extends Layer {
     this.player1.paint();
     this.player2.paint();
     this.status.paint();
+    this.timer.paint();
     this.player.paint();
     this.opponent.paint();
     this.coundown.paint();
@@ -72,11 +79,16 @@ class GameLayer extends Layer {
     let haunter = state.players.find((p) => p.role == "haunter");
 
     if (haunter.id == socketId) {
+      this.player.addDirection("X");
+      this.opponent.addDirection("-X");
+      this.player.role = "haunter";
       //this.player = this.haunter;
     } else {
       let aux = this.player;
       this.player = this.opponent;
       this.opponent = aux;
+      this.player.addDirection("-X");
+      this.opponent.addDirection("X");
     }
 
     enableKeyboardInput();
@@ -103,6 +115,14 @@ class GameLayer extends Layer {
         nextDirection: nextDirection,
       });
     }
+    
+    if (controls.action && this.timer.value == "") {
+      this.startSkillTimer();
+      this.player.useSkill("Self")
+      socket.emit("action", {
+        skill: true,
+      });
+    }
   }
 
   updateGameState(state) {
@@ -111,12 +131,35 @@ class GameLayer extends Layer {
         this.status.value = "Esperando jugadores...";
         break;
       case Statuses.PLAYING: {
+        let playerState = state.players.find((p) => p.id == socketId);
         let opponentState = state.players.find((p) => p.id != socketId);
         this.opponent.addDirection(opponentState.nextDirection);
+        if (opponentState.skill) {
+          this.opponent.useSkill(opponentState.playerName);
+        }
+        if (state.invert) {
+          console.log("invert");
+          this.player.role = playerState.role;
+          this.opponent.role = opponentState.role;
+          if (this.player.role == "haunter") {
+            this.player.stun();
+            disableKeyboardInput();
+            setTimeout(() => {
+              console.log("free");
+              this.player.stuned = false;
+              enableKeyboardInput();
+            }, 5000);
+          }
+          else {
+            this.opponent.stop();
+          }
+        }
         break;
       }
       case Statuses.WIN:
         disableKeyboardInput();
+        this.player.stop();
+        this.opponent.stop();
         this.status.value =
           "Ha ganado " + state.result.winner.playerName + "! ";
         this.isTurn = false;
@@ -140,6 +183,21 @@ class GameLayer extends Layer {
 
   updateTurnTimer(secondsLeft) {
     this.status.value = secondsLeft + "s...";
+  }
+
+  startSkillTimer() {
+    let secondsLeft = 10;
+    this.timer.value = secondsLeft;
+
+    this.skillTimer = setInterval(() => {
+      secondsLeft--;
+      this.timer.value = secondsLeft;
+
+      if (secondsLeft < 0) {
+        this.timer.value = "";
+        clearInterval(this.skillTimer);
+      }
+    }, 1000);
   }
 
   loadMap(route) {
