@@ -8,6 +8,28 @@ class Player extends Model {
     this.nextXMovement = 0;
     this.nextYMovement = 0;
     this.stuned = false;
+
+    this.tail = new Image();
+    this.tail.src = images.tail;
+
+    this.head = new Image();
+    this.head.src = images.player_visual;
+  }
+
+  paint() {
+    super.paint();
+    
+    context.drawImage(
+      this.tail,
+      this.x - this.width / 2,
+      this.y - this.height / 2 -32
+    );
+
+    context.drawImage(
+      this.head,
+      this.x - this.head.width / 2,
+      this.y - this.head.height / 2
+    );
   }
 
   update() {
