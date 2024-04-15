@@ -16,9 +16,8 @@ class Model {
         this.x - this.width / 2,
         this.y - this.height / 2
       );
-    }
-    else {
-        console.log(this.image.src);
+    } else {
+      console.log(this.image.src);
     }
   }
 

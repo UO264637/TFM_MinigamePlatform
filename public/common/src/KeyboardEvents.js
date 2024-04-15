@@ -60,13 +60,12 @@ function onKeyUp(event) {
   }
 }
 
-
 function disableKeyboardInput() {
-    window.removeEventListener('keydown', onKeyDown);
-    window.removeEventListener('keyup', onKeyUp);
+  window.removeEventListener("keydown", onKeyDown);
+  window.removeEventListener("keyup", onKeyUp);
 }
 
 function enableKeyboardInput() {
-    window.addEventListener('keydown', onKeyDown, false);
-    window.addEventListener('keyup', onKeyUp, false);
+  window.addEventListener("keydown", onKeyDown, false);
+  window.addEventListener("keyup", onKeyUp, false);
 }

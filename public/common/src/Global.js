@@ -19,7 +19,6 @@ const PlayerStatuses = {
   JUMPIN: 5,
 };
 
-
 const baseUrl = "http://localhost:3000";
 
 const originalCanvasWidth = 1280;
