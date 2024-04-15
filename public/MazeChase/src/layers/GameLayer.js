@@ -52,7 +52,7 @@ class GameLayer extends Layer {
     this.player.update();
     this.opponent.update();
 
-    if (this.player.role == "haunter" && this.player.collides(this.opponent)) {
+    if (!this.player.pursued && this.player.collides(this.opponent)) {
       socket.emit("action", { haunted: true });
     }
     this.coundown.update();
@@ -82,6 +82,7 @@ class GameLayer extends Layer {
       this.player.addDirection("X");
       this.opponent.addDirection("-X");
       this.player.role = "haunter";
+      this.opponent.pursued = true;
       //this.player = this.haunter;
     } else {
       let aux = this.player;
@@ -89,6 +90,7 @@ class GameLayer extends Layer {
       this.opponent = aux;
       this.player.addDirection("-X");
       this.opponent.addDirection("X");
+      this.player.pursued = true;
     }
 
     enableKeyboardInput();
@@ -139,9 +141,9 @@ class GameLayer extends Layer {
         }
         if (state.invert) {
           console.log("invert");
-          this.player.role = playerState.role;
-          this.opponent.role = opponentState.role;
-          if (this.player.role == "haunter") {
+          this.player.pursued = !this.player.pursued;
+          this.opponent.pursued = !this.opponent.pursued;
+          if (!this.player.pursued) {
             this.player.stun();
             disableKeyboardInput();
             setTimeout(() => {
@@ -239,8 +241,6 @@ class GameLayer extends Layer {
         break;
       }
       case "■": {
-        console.log("A");
-        console.log(images["c_tile"+"2"]);
         let wallTile = new Wall(images["c_tile"+"2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);

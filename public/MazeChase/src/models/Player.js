@@ -9,27 +9,37 @@ class Player extends Model {
     this.nextYMovement = 0;
     this.stuned = false;
 
-    this.tail = new Image();
-    this.tail.src = images.tail;
+    this.headUpAnim = new Animation(images["head_u"], 32, 32, 4, 1);
 
-    this.head = new Image();
-    this.head.src = images.player_visual;
+    this.headRightAnim = new Animation(images["head_r"], 32, 32, 4, 1);
+
+    this.headDownAnim = new Animation(images["head_d"], 32, 32, 4, 1);
+
+    this.headLeftAnim = new Animation(images["head_l"], 32, 32, 4, 1);
+
+    this.tailUpAnim = new Animation(images["tail_u"], 32, 32, 4, 1);
+
+    this.tailRightAnim = new Animation(images["tail_r"], 32, 32, 4, 1);
+
+    this.tailDownAnim = new Animation(images["tail_d"], 32, 32, 4, 1);
+
+    this.tailLeftAnim = new Animation(images["tail_l"], 32, 32, 4, 1);
+
+    this.headAnimation = this.headDownAnim;
+    this.tailAmimation = this.tailDownAnim;
+    this.pursued = false;
+    this.tailXOffset = 0;
+    this.tailYOffset = 0;
   }
 
   paint() {
     super.paint();
-    
-    context.drawImage(
-      this.tail,
-      this.x - this.width / 2,
-      this.y - this.height / 2 -32
-    );
 
-    context.drawImage(
-      this.head,
-      this.x - this.head.width / 2,
-      this.y - this.head.height / 2
-    );
+    if (this.pursued) {
+      this.tailAmimation.paint(this.x + this.tailXOffset, this.y + this.tailYOffset);
+    }
+
+    this.headAnimation.paint(this.x, this.y);
   }
 
   update() {
@@ -46,6 +56,38 @@ class Player extends Model {
     } else if (this.nextYMovement != 0) {
       this.yv = this.nextYMovement * 3;
     }
+
+    if (this.xv > 0 && this.yv == 0) {
+      this.headAnimation = this.headRightAnim;
+      this.tailAmimation = this.tailRightAnim;
+      this.tailXOffset = -this.width;
+      this.tailYOffset = 0;
+    }
+    if (this.xv < 0 && this.yv == 0) {
+      this.headAnimation = this.headLeftAnim;
+      this.tailAmimation = this.tailLeftAnim;
+      this.tailXOffset = this.width;
+      this.tailYOffset = 0;
+    }
+
+    if (this.yv > 0 && this.xv == 0) {
+      this.headAnimation = this.headDownAnim;
+      this.tailAmimation = this.tailDownAnim;
+      this.tailXOffset = 0;
+      this.tailYOffset = -this.height;
+    }
+    if (this.yv < 0 && this.xv == 0) {
+      this.headAnimation = this.headUpAnim;
+      this.tailAmimation = this.tailUpAnim;
+      this.tailXOffset = 0;
+      this.tailYOffset = this.height;
+    }
+
+    if (this.pursued) {
+      this.tailAmimation.update();
+    }
+
+    this.headAnimation.update();
   }
 
   addXMovement(direction) {
@@ -81,7 +123,7 @@ class Player extends Model {
 
   stop() {
     this.xv = 0;
-    this.yv = 0; 
+    this.yv = 0;
 
     this.nextXMovement = 0;
     this.nextYMovement = 0;
