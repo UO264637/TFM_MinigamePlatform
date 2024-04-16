@@ -14,7 +14,7 @@ class Player extends Model {
 
     this.headRightAnim = new Animation(images["head_r"], 32, 32, 4, 1);
 
-    this.headDownAnim = new Animation(images["head_d"], 32, 32, 4, 1);
+    this.headDownAnim = new Animation(images["head_d"], 32, 32, 8, 2);
 
     this.headLeftAnim = new Animation(images["head_l"], 32, 32, 4, 1);
 
@@ -22,7 +22,7 @@ class Player extends Model {
 
     this.tailRightAnim = new Animation(images["tail_r"], 32, 32, 4, 1);
 
-    this.tailDownAnim = new Animation(images["tail_d"], 32, 32, 4, 1);
+    this.tailDownAnim = new Animation(images["tail_d"], 32, 32, 4, 4);
 
     this.tailLeftAnim = new Animation(images["tail_l"], 32, 32, 4, 1);
 
