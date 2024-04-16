@@ -41,7 +41,7 @@ function addTap(id, tapType, event) {
 }
 
 function deleteTap(id) {
-  for (var i = 0; i < taps.length; i++) {
+  for (let i = 0; i < taps.length; i++) {
     if (taps[i].id == id) {
       taps.splice(i, 1);
     }

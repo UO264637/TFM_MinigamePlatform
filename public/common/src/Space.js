@@ -53,13 +53,13 @@ class Space {
       let possibleMovement = this.dynamic[i].xv;
       // El mejor "idealmente" xv partimos de ese
 
-      for (let j = 0; j < this.static.length; j++) {
+      for (const staticElement of this.static) {
         let dynamicRight = this.dynamic[i].x + this.dynamic[i].width / 2;
         let dynamicTop = this.dynamic[i].y - this.dynamic[i].height / 2;
         let dynamicDown = this.dynamic[i].y + this.dynamic[i].height / 2;
-        let staticLeft = this.static[j].x - this.static[j].width / 2;
-        let staticTop = this.static[j].y - this.static[j].height / 2;
-        let staticDown = this.static[j].y + this.static[j].height / 2;
+        let staticLeft = staticElement.x - staticElement.width / 2;
+        let staticTop = staticElement.y - staticElement.height / 2;
+        let staticDown = staticElement.y + staticElement.height / 2;
 
         // Alerta!, Elemento estático en la trayectoria.
         if (
@@ -89,13 +89,13 @@ class Space {
       let possibleMovement = this.dynamic[i].xv;
       // El mejor "idealmente" xv partimos de ese
 
-      for (let j = 0; j < this.static.length; j++) {
+      for (const staticElement of this.static) {
         let dynamicLeft = this.dynamic[i].x - this.dynamic[i].width / 2;
         let dynamicTop = this.dynamic[i].y - this.dynamic[i].height / 2;
         let dynamicDown = this.dynamic[i].y + this.dynamic[i].height / 2;
-        let staticRight = this.static[j].x + this.static[j].width / 2;
-        let staticTop = this.static[j].y - this.static[j].height / 2;
-        let staticDown = this.static[j].y + this.static[j].height / 2;
+        let staticRight = staticElement.x + staticElement.width / 2;
+        let staticTop = staticElement.y - staticElement.height / 2;
+        let staticDown = staticElement.y + staticElement.height / 2;
 
         // Alerta!, Elemento estático en la trayectoria.
         if (
@@ -125,15 +125,15 @@ class Space {
       let possibleMovement = this.dynamic[i].yv;
       // El mejor "idealmente" es la velocidad yv.
 
-      for (let j = 0; j < this.static.length; j++) {
+      for (const staticElement of this.static) {
         let dynamicTop = this.dynamic[i].y - this.dynamic[i].height / 2;
         let dynamicDown = this.dynamic[i].y + this.dynamic[i].height / 2;
         let dynamicRight = this.dynamic[i].x + this.dynamic[i].width / 2;
         let dynamicLeft = this.dynamic[i].x - this.dynamic[i].width / 2;
-        let staticTop = this.static[j].y - this.static[j].height / 2;
-        let staticDown = this.static[j].y + this.static[j].height / 2;
-        let staticRight = this.static[j].x + this.static[j].width / 2;
-        let staticLeft = this.static[j].x - this.static[j].width / 2;
+        let staticTop = staticElement.y - staticElement.height / 2;
+        let staticDown = staticElement.y + staticElement.height / 2;
+        let staticRight = staticElement.x + staticElement.width / 2;
+        let staticLeft = staticElement.x - staticElement.width / 2;
 
         // Alerta!, Elemento estático en la trayectoria.
         if (
@@ -164,15 +164,15 @@ class Space {
       let possibleMovement = this.dynamic[i].yv;
       // El mejor "idealmente" es la velocidad yv.
 
-      for (let j = 0; j < this.static.length; j++) {
+      for (const staticElement of this.static) {
         let dynamicTop = this.dynamic[i].y - this.dynamic[i].height / 2;
         let dynamicDown = this.dynamic[i].y + this.dynamic[i].height / 2;
         let dynamicRight = this.dynamic[i].x + this.dynamic[i].width / 2;
         let dynamicLeft = this.dynamic[i].x - this.dynamic[i].width / 2;
-        let staticTop = this.static[j].y - this.static[j].height / 2;
-        let staticDown = this.static[j].y + this.static[j].height / 2;
-        let staticRight = this.static[j].x + this.static[j].width / 2;
-        let staticLeft = this.static[j].x - this.static[j].width / 2;
+        let staticTop = staticElement.y - staticElement.height / 2;
+        let staticDown = staticElement.y + staticElement.height / 2;
+        let staticRight = staticElement.x + staticElement.width / 2;
+        let staticLeft = staticElement.x - staticElement.width / 2;
 
         // Alerta!, Elemento estático en la trayectoria
         if (

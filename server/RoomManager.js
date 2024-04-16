@@ -11,7 +11,7 @@ class RoomManager {
     getRoomBySocketId(socketId) {
         let roomId = this.getRoomId(socketId);
 
-        if (roomId != -1) {
+        if (roomId != null) {
             return this.rooms[roomId];
         }
 
@@ -39,7 +39,7 @@ class RoomManager {
                 return roomId;
             }
         }
-        return -1;
+        return null;
     }
 
     createRoom(gameType) {
