@@ -23,7 +23,7 @@ class ObstacleRace extends BaseGame {
   handleGameStart(room, socketId, data) {
     room.state.players[1].position = 0;
 
-    this.updateGameState(room, 'gameStart');
+    this.updateGameState(room, "gameStart");
     room.state.result.status = Statuses.PLAYING;
   }
 
@@ -33,7 +33,7 @@ class ObstacleRace extends BaseGame {
 
     this.checkForEndOfGame(room);
 
-    this.updateGameState(room, 'gameState')
+    this.updateGameState(room, "gameState");
   }
 
   checkForEndOfGame(room) {
@@ -51,7 +51,10 @@ class ObstacleRace extends BaseGame {
       room.state.result.status = Statuses.DRAW;
     }
 
-    return room.state.result.status === Statuses.WIN || room.state.result.status === Statuses.DRAW;
+    return (
+      room.state.result.status === Statuses.WIN ||
+      room.state.result.status === Statuses.DRAW
+    );
   }
 }
 

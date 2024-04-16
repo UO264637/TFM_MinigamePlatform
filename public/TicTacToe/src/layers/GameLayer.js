@@ -1,5 +1,4 @@
 class GameLayer extends Layer {
-
   constructor() {
     super();
     this.start();
@@ -11,15 +10,42 @@ class GameLayer extends Layer {
 
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
-        this.board[i + j + i * 2] = new Button(images.tttButton, canvas.width / 2 - 155 + i * 155, canvas.height / 2 - 155 + j * 155);
+        this.board[i + j + i * 2] = new Button(
+          images.tttButton,
+          canvas.width / 2 - 155 + i * 155,
+          canvas.height / 2 - 155 + j * 155
+        );
       }
     }
 
-    this.background = new Background(images.board, canvas.width * 0.5, canvas.height * 0.5);
-    this.turnIndicator = new Background(images.turnIndicator, canvas.width * 0.5, canvas.height * 0.5);
-    this.player1 = new Text(0, "#563F2E", canvas.width * 0.07, canvas.height * 0.47);
-    this.player2 = new Text(0, "#563F2E", canvas.width * 0.07, canvas.height * 0.53);
-    this.status = new CenteredText(0, "#563F2E", canvas.width * 0.5, canvas.height * 0.1);
+    this.background = new Background(
+      images.board,
+      canvas.width * 0.5,
+      canvas.height * 0.5
+    );
+    this.turnIndicator = new Background(
+      images.turnIndicator,
+      canvas.width * 0.5,
+      canvas.height * 0.5
+    );
+    this.player1 = new Text(
+      0,
+      "#563F2E",
+      canvas.width * 0.07,
+      canvas.height * 0.47
+    );
+    this.player2 = new Text(
+      0,
+      "#563F2E",
+      canvas.width * 0.07,
+      canvas.height * 0.53
+    );
+    this.status = new CenteredText(
+      0,
+      "#563F2E",
+      canvas.width * 0.5,
+      canvas.height * 0.1
+    );
     this.status.value = "";
   }
 
@@ -74,8 +100,7 @@ class GameLayer extends Layer {
         if (state.currentPlayer.id == socketId) {
           this.currentTurn = "Tu turno! ";
           this.isTurn = true;
-        }
-        else {
+        } else {
           let opponent = state.players.find((p) => p.id != socketId).playerName;
           this.currentTurn = "Turno de " + opponent + ": ";
           this.isTurn = false;
@@ -86,7 +111,8 @@ class GameLayer extends Layer {
         this.isTurn = false;
         break;
       case Statuses.WIN:
-        this.status.value = "Ha ganado " + state.result.winner.playerName + "! ";
+        this.status.value =
+          "Ha ganado " + state.result.winner.playerName + "! ";
         this.isTurn = false;
         break;
       default:

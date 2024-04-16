@@ -14,8 +14,8 @@ class MazeChase extends BaseGame {
       },
     };
     room.state = state;
-    room[Roles.HAUNTER +"timer"] = 0;
-    room[Roles.PURSUED +"timer"] = 0;
+    room[Roles.HAUNTER + "timer"] = 0;
+    room[Roles.PURSUED + "timer"] = 0;
   }
 
   handleOnePlayer(room, socketId, data) {
@@ -34,9 +34,9 @@ class MazeChase extends BaseGame {
 
     room.state.result.status = Statuses.PLAYING;
     setTimeout(() => {
-    this.updateGameState(room, "gameStart");
-    this.startTurnTimer(room, 60);
-    },1000);
+      this.updateGameState(room, "gameStart");
+      this.startTurnTimer(room, 60);
+    }, 1000);
   }
 
   handleAction(room, socketId, data) {
@@ -47,8 +47,7 @@ class MazeChase extends BaseGame {
       } else if (player.timer <= 0 && data.skill) {
         player.skill = true;
         this.startSkillTimer(room, player);
-      }
-      else if (data.haunted) {
+      } else if (data.haunted) {
         this.invertRoles(room);
       }
       this.updateGameState(room, "gameState");
@@ -60,7 +59,7 @@ class MazeChase extends BaseGame {
   startSkillTimer(room, player) {
     let secondsLeft = 10;
 
-    room[player.role +"timer"] = setInterval(() => {
+    room[player.role + "timer"] = setInterval(() => {
       secondsLeft--;
       player.timer = secondsLeft;
 
@@ -71,7 +70,7 @@ class MazeChase extends BaseGame {
   }
 
   handleSkillTimeout(room, role) {
-    clearInterval(room[role +"timer"]);
+    clearInterval(room[role + "timer"]);
   }
 
   invertRoles(room) {
