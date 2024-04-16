@@ -4,10 +4,11 @@ class Player extends Model {
 
     this.xv = 0; // velocidadX
     this.yv = 0; // velocidadY
+    this.speed = 3;
 
     this.nextXMovement = 0;
     this.nextYMovement = 0;
-    this.stuned = false;
+    this.invulnerable = false;
 
     this.headUpAnim = new Animation(images["head_u"], 32, 32, 4, 1);
 
@@ -36,7 +37,10 @@ class Player extends Model {
     super.paint();
 
     if (this.pursued) {
-      this.tailAmimation.paint(this.x + this.tailXOffset, this.y + this.tailYOffset);
+      this.tailAmimation.paint(
+        this.x + this.tailXOffset,
+        this.y + this.tailYOffset
+      );
     }
 
     this.headAnimation.paint(this.x, this.y);
@@ -47,14 +51,14 @@ class Player extends Model {
       this.nextXMovement = 0;
       this.yv = 0;
     } else if (this.nextXMovement != 0) {
-      this.xv = this.nextXMovement * 3;
+      this.xv = this.nextXMovement * this.speed;
     }
 
     if (this.nextYMovement == this.yv && this.yv != 0) {
       this.nextYMovement = 0;
       this.xv = 0;
     } else if (this.nextYMovement != 0) {
-      this.yv = this.nextYMovement * 3;
+      this.yv = this.nextYMovement * this.speed;
     }
 
     if (this.xv > 0 && this.yv == 0) {
@@ -121,6 +125,51 @@ class Player extends Model {
     }
   }
 
+  switchRole() {
+    this.pursued = !this.pursued;
+    if (this.pursued) {
+      this.speed = 3;
+    } else {
+      this.speed = 4;
+    }
+  }
+
+  useSkill(opponent) {
+    if (this.pursued) {
+      this.speed = 4.5;
+      setTimeout(() => {
+        this.speed = 3;
+      }, 3000);
+    } else {
+      opponent.stop();
+      opponent.stuned = true;
+
+      setTimeout(() => {
+        opponent.stuned = false;
+      }, 3000);
+    }
+  }
+
+  stun() {
+    this.stop();
+    disableKeyboardInput();
+
+    setTimeout(() => {
+      enableKeyboardInput();
+    }, 3000);
+  }
+
+  haunt() {
+    this.stop();
+    disableKeyboardInput();
+    this.invulnerable = true;
+
+    setTimeout(() => {
+      this.invulnerable = false;
+      enableKeyboardInput();
+    }, 3000);
+  }
+
   stop() {
     this.xv = 0;
     this.yv = 0;
@@ -129,17 +178,8 @@ class Player extends Model {
     this.nextYMovement = 0;
   }
 
-  useSkill(name) {
-    console.log("POWER " + name);
-  }
-
-  stun() {
-    this.stop();
-    this.stuned = true;
-  }
-
   collides(model) {
-    if (!this.stuned) {
+    if (!this.invulnerable) {
       return super.collides(model);
     }
     return false;

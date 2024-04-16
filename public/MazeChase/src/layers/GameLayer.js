@@ -82,7 +82,7 @@ class GameLayer extends Layer {
       this.player.addDirection("X");
       this.opponent.addDirection("-X");
       this.player.role = "haunter";
-      this.opponent.pursued = true;
+      this.opponent.switchRole();
       //this.player = this.haunter;
     } else {
       let aux = this.player;
@@ -117,10 +117,12 @@ class GameLayer extends Layer {
         nextDirection: nextDirection,
       });
     }
-    
+
     if (controls.action && this.timer.value == "") {
+      controls.action = false;     
       this.startSkillTimer();
-      this.player.useSkill("Self")
+      this.player.useSkill(this.opponent);
+      this.opponent.stop();
       socket.emit("action", {
         skill: true,
       });
@@ -133,28 +135,16 @@ class GameLayer extends Layer {
         this.status.value = "Esperando jugadores...";
         break;
       case Statuses.PLAYING: {
-        let playerState = state.players.find((p) => p.id == socketId);
         let opponentState = state.players.find((p) => p.id != socketId);
+        if (!this.opponent.stuned){
         this.opponent.addDirection(opponentState.nextDirection);
+        }
+
         if (opponentState.skill) {
-          this.opponent.useSkill(opponentState.playerName);
+          this.opponent.useSkill(this.player);
         }
         if (state.invert) {
-          console.log("invert");
-          this.player.pursued = !this.player.pursued;
-          this.opponent.pursued = !this.opponent.pursued;
-          if (!this.player.pursued) {
-            this.player.stun();
-            disableKeyboardInput();
-            setTimeout(() => {
-              console.log("free");
-              this.player.stuned = false;
-              enableKeyboardInput();
-            }, 5000);
-          }
-          else {
-            this.opponent.stop();
-          }
+          this.invertRoles();
         }
         break;
       }
@@ -180,6 +170,17 @@ class GameLayer extends Layer {
     if (state.players.length > 1) {
       this.player2.value =
         state.players[1].role + ": " + state.players[1].playerName;
+    }
+  }
+
+  invertRoles() {
+    this.player.switchRole();
+    this.opponent.switchRole();
+
+    if (!this.player.pursued) {
+      this.player.haunt();
+    } else {
+      this.opponent.stop();
     }
   }
 
@@ -241,91 +242,91 @@ class GameLayer extends Layer {
         break;
       }
       case "■": {
-        let wallTile = new Wall(images["c_tile"+"2"], x, y);
+        let wallTile = new Wall(images["c_tile" + "2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
         this.space.addStaticCorp(wallTile);
         break;
       }
       case "┌": {
-        let wallTile = new Wall(images["itl_tile"+"2"], x, y);
+        let wallTile = new Wall(images["itl_tile" + "2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
         this.space.addStaticCorp(wallTile);
         break;
       }
       case "┐": {
-        let wallTile = new Wall(images["itr_tile"+"2"], x, y);
+        let wallTile = new Wall(images["itr_tile" + "2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
         this.space.addStaticCorp(wallTile);
         break;
       }
       case "┘": {
-        let wallTile = new Wall(images["ibr_tile"+"2"], x, y);
+        let wallTile = new Wall(images["ibr_tile" + "2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
         this.space.addStaticCorp(wallTile);
         break;
       }
       case "└": {
-        let wallTile = new Wall(images["ibl_tile"+"2"], x, y);
+        let wallTile = new Wall(images["ibl_tile" + "2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
         this.space.addStaticCorp(wallTile);
         break;
       }
       case "─": {
-        let wallTile = new Wall(images["t_tile"+"2"], x, y);
+        let wallTile = new Wall(images["t_tile" + "2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
         this.space.addStaticCorp(wallTile);
         break;
       }
       case "┤": {
-        let wallTile = new Wall(images["r_tile"+"2"], x, y);
+        let wallTile = new Wall(images["r_tile" + "2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
         this.space.addStaticCorp(wallTile);
         break;
       }
       case "═": {
-        let wallTile = new Wall(images["b_tile"+"2"], x, y);
+        let wallTile = new Wall(images["b_tile" + "2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
         this.space.addStaticCorp(wallTile);
         break;
       }
       case "├": {
-        let wallTile = new Wall(images["l_tile"+"2"], x, y);
+        let wallTile = new Wall(images["l_tile" + "2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
         this.space.addStaticCorp(wallTile);
         break;
       }
       case "╔": {
-        let wallTile = new Wall(images["tl_tile"+"2"], x, y);
+        let wallTile = new Wall(images["tl_tile" + "2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
         this.space.addStaticCorp(wallTile);
         break;
       }
       case "╗": {
-        let wallTile = new Wall(images["tr_tile"+"2"], x, y);
+        let wallTile = new Wall(images["tr_tile" + "2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
         this.space.addStaticCorp(wallTile);
         break;
       }
       case "╝": {
-        let wallTile = new Wall(images["br_tile"+"2"], x, y);
+        let wallTile = new Wall(images["br_tile" + "2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
         this.space.addStaticCorp(wallTile);
         break;
       }
       case "╚": {
-        let wallTile = new Wall(images["bl_tile"+"2"], x, y);
+        let wallTile = new Wall(images["bl_tile" + "2"], x, y);
         wallTile.y = wallTile.y - wallTile.height / 2;
         this.wallTiles.push(wallTile);
         this.space.addStaticCorp(wallTile);
