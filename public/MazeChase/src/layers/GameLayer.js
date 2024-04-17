@@ -9,8 +9,8 @@ class GameLayer extends Layer {
     disableKeyboardInput();
     this.wallTiles = [];
     this.space = new Space(0);
-    this.player = new Player(-50, 0);
-    this.opponent = new Player(-50, 50);
+    this.player = new Player(-50, 0, "p1");
+    this.opponent = new Player(-50, 50, "p2");
 
     this.coundown = new Countdown();
 
@@ -37,11 +37,10 @@ class GameLayer extends Layer {
       originalCanvasWidth * 0.01,
       originalCanvasHeight * 0.1
     );
-    this.timer = new Text(
-      "",
-      "#563F2E",
-      originalCanvasWidth * 0.9,
-      originalCanvasHeight * 0.9
+    this.skillButton = new SkillButton(
+      images.speed_skill,
+      originalCanvasWidth * 0.95,
+      originalCanvasHeight * 0.90
     );
     this.status.value = "";
     this.loadMap("/map2h.txt");
@@ -68,7 +67,7 @@ class GameLayer extends Layer {
     this.player1.paint();
     this.player2.paint();
     this.status.paint();
-    this.timer.paint();
+    this.skillButton.paint();
     this.player.paint();
     this.opponent.paint();
     this.coundown.paint();
@@ -83,6 +82,7 @@ class GameLayer extends Layer {
       this.opponent.addDirection("-X");
       this.player.role = "haunter";
       this.opponent.switchRole();
+      this.skillButton.switchSkill(images.ice_skill)
       //this.player = this.haunter;
     } else {
       let aux = this.player;
@@ -118,11 +118,11 @@ class GameLayer extends Layer {
       });
     }
 
-    if (controls.action && this.timer.value == "") {
+    if (controls.action && this.skillButton.isReseted()) {
       controls.action = false;     
-      this.startSkillTimer();
+      this.skillButton.startCooldown();
       this.player.useSkill(this.opponent);
-      this.opponent.stop();
+      //this.opponent.stop();
       socket.emit("action", {
         skill: true,
       });
@@ -136,9 +136,7 @@ class GameLayer extends Layer {
         break;
       case Statuses.PLAYING: {
         let opponentState = state.players.find((p) => p.id != socketId);
-        if (!this.opponent.stuned){
-        this.opponent.addDirection(opponentState.nextDirection);
-        }
+          this.opponent.addDirection(opponentState.nextDirection);
 
         if (opponentState.skill) {
           this.opponent.useSkill(this.player);
@@ -150,8 +148,6 @@ class GameLayer extends Layer {
       }
       case Statuses.WIN:
         disableKeyboardInput();
-        this.player.stop();
-        this.opponent.stop();
         this.status.value =
           "Ha ganado " + state.result.winner.playerName + "! ";
         this.isTurn = false;
@@ -179,28 +175,15 @@ class GameLayer extends Layer {
 
     if (!this.player.pursued) {
       this.player.haunt();
+      this.skillButton.switchSkill(images.ice_skill);
     } else {
       this.opponent.stop();
+      this.skillButton.switchSkill(images.speed_skill);
     }
   }
 
   updateTurnTimer(secondsLeft) {
     this.status.value = secondsLeft + "s...";
-  }
-
-  startSkillTimer() {
-    let secondsLeft = 10;
-    this.timer.value = secondsLeft;
-
-    this.skillTimer = setInterval(() => {
-      secondsLeft--;
-      this.timer.value = secondsLeft;
-
-      if (secondsLeft < 0) {
-        this.timer.value = "";
-        clearInterval(this.skillTimer);
-      }
-    }, 1000);
   }
 
   loadMap(route) {
@@ -230,14 +213,12 @@ class GameLayer extends Layer {
     switch (symbol) {
       case "S": {
         // modificación para empezar a contar desde el suelo
-        this.player.x = x;
-        this.player.y = y - this.player.height / 2;
+        this.player = new Player(x, y - this.player.height / 2, "p1")
         this.space.addDinamicCorp(this.player);
         break;
       }
       case "s": {
-        this.opponent.x = x;
-        this.opponent.y = y - this.opponent.height / 2;
+        this.opponent = new Player(x, y - this.opponent.height / 2, "p2")
         this.space.addDinamicCorp(this.opponent);
         break;
       }

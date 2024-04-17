@@ -53,6 +53,7 @@ class MazeChase extends BaseGame {
       this.updateGameState(room, "gameState");
       player.skill = false;
       room.state.invert = false;
+      player.nextDirection = null;
     }
   }
 

@@ -1,5 +1,5 @@
 class Player extends Model {
-  constructor(x, y) {
+  constructor(x, y, player) {
     super(images.player, x, y);
 
     this.xv = 0; // velocidadX
@@ -10,21 +10,27 @@ class Player extends Model {
     this.nextYMovement = 0;
     this.invulnerable = false;
 
-    this.headUpAnim = new Animation(images["head_u"], 32, 32, 4, 1);
+    this.headUpAnim = new Animation(images["head_u_" + player], 32, 32, 4, 2);
+    this.headRightAnim = new Animation(
+      images["head_r_" + player],
+      32,
+      32,
+      4,
+      2
+    );
+    this.headDownAnim = new Animation(images["head_d_" + player], 32, 32, 4, 2);
+    this.headLeftAnim = new Animation(images["head_l_" + player], 32, 32, 4, 2);
 
-    this.headRightAnim = new Animation(images["head_r"], 32, 32, 4, 1);
-
-    this.headDownAnim = new Animation(images["head_d"], 32, 32, 8, 2);
-
-    this.headLeftAnim = new Animation(images["head_l"], 32, 32, 4, 1);
-
-    this.tailUpAnim = new Animation(images["tail_u"], 32, 32, 4, 1);
-
-    this.tailRightAnim = new Animation(images["tail_r"], 32, 32, 4, 1);
-
-    this.tailDownAnim = new Animation(images["tail_d"], 32, 32, 4, 4);
-
-    this.tailLeftAnim = new Animation(images["tail_l"], 32, 32, 4, 1);
+    this.tailUpAnim = new Animation(images["tail_u_" + player], 32, 32, 4, 4);
+    this.tailRightAnim = new Animation(
+      images["tail_r_" + player],
+      32,
+      32,
+      4,
+      4
+    );
+    this.tailDownAnim = new Animation(images["tail_d_" + player], 32, 32, 4, 4);
+    this.tailLeftAnim = new Animation(images["tail_l_" + player], 32, 32, 4, 4);
 
     this.headAnimation = this.headDownAnim;
     this.tailAmimation = this.tailDownAnim;
@@ -61,6 +67,10 @@ class Player extends Model {
       this.yv = this.nextYMovement * this.speed;
     }
 
+    this.updateAnimations();
+  }
+
+  updateAnimations() {
     if (this.xv > 0 && this.yv == 0) {
       this.headAnimation = this.headRightAnim;
       this.tailAmimation = this.tailRightAnim;
@@ -87,11 +97,13 @@ class Player extends Model {
       this.tailYOffset = this.height;
     }
 
-    if (this.pursued) {
-      this.tailAmimation.update();
-    }
+    if (this.yv != 0 || this.xv != 0) {
+      if (this.pursued) {
+        this.tailAmimation.update();
+      }
 
-    this.headAnimation.update();
+      this.headAnimation.update();
+    }
   }
 
   addXMovement(direction) {
