@@ -47,7 +47,10 @@ let images = {
     tail_l_p2 : "res/tail_l_p2.png",
     cooldown : "res/cooldown.png",
     ice_skill : "res/ice_skill.png",
+    ice_particles : "res/ice_particles.png",
+    ice_effect : "res/ice_effect.png",
     speed_skill : "res/speed_skill.png",
+    dash_particles : "res/dash_particles.png",
 };
 
 let imageRutes = Object.values(images);

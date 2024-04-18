@@ -11,36 +11,36 @@ class Player extends Model {
     this.invulnerable = false;
 
     this.headUpAnim = new Animation(images["head_u_" + player], 32, 32, 4, 2);
-    this.headRightAnim = new Animation(
-      images["head_r_" + player],
-      32,
-      32,
-      4,
-      2
-    );
+    this.headRightAnim = new Animation(images["head_r_" + player], 32, 32, 4, 2);
     this.headDownAnim = new Animation(images["head_d_" + player], 32, 32, 4, 2);
     this.headLeftAnim = new Animation(images["head_l_" + player], 32, 32, 4, 2);
 
     this.tailUpAnim = new Animation(images["tail_u_" + player], 32, 32, 4, 4);
-    this.tailRightAnim = new Animation(
-      images["tail_r_" + player],
-      32,
-      32,
-      4,
-      4
-    );
+    this.tailRightAnim = new Animation(images["tail_r_" + player], 32, 32, 4, 4);
     this.tailDownAnim = new Animation(images["tail_d_" + player], 32, 32, 4, 4);
     this.tailLeftAnim = new Animation(images["tail_l_" + player], 32, 32, 4, 4);
+
+    this.freezeAnim = new Animation(images.ice_particles, 40, 40, 16, 2);
+    this.dashAnim = new Animation(images.dash_particles, 32, 32, 4, 4, this.endDashAnim.bind(this));
+    this.dashing = false;
+    this.dashX = 0;
+    this.dashY = 0;
 
     this.headAnimation = this.headDownAnim;
     this.tailAmimation = this.tailDownAnim;
     this.pursued = false;
     this.tailXOffset = 0;
     this.tailYOffset = 0;
+    
+    this.tag = new CenteredText("", "#563F2E", x, y);
   }
 
   paint() {
     super.paint();
+
+    if (this.dashing) {
+      this.dashAnim.paint(this.dashX, this.dashY);
+    }
 
     if (this.pursued) {
       this.tailAmimation.paint(
@@ -49,7 +49,12 @@ class Player extends Model {
       );
     }
 
+    if (this.frozen) {
+      this.freezeAnim.paint(this.x, this.y)
+    }
+
     this.headAnimation.paint(this.x, this.y);
+    this.tag.paint();
   }
 
   update() {
@@ -67,6 +72,8 @@ class Player extends Model {
       this.yv = this.nextYMovement * this.speed;
     }
 
+    this.tag.x = this.x;
+    this.tag.y = this.y - this.height / 2 - 20;
     this.updateAnimations();
   }
 
@@ -104,6 +111,12 @@ class Player extends Model {
 
       this.headAnimation.update();
     }
+    this.freezeAnim.update();
+
+    if (this.dashing) {
+      this.dashAnim.update();
+    }
+    
   }
 
   addXMovement(direction) {
@@ -148,16 +161,13 @@ class Player extends Model {
 
   useSkill(opponent) {
     if (this.pursued) {
-      this.speed = 4.5;
-      setTimeout(() => {
-        this.speed = 3;
-      }, 3000);
+      this.speedUp();
     } else {
       opponent.stop();
-      opponent.stuned = true;
+      opponent.frozen = true;
 
       setTimeout(() => {
-        opponent.stuned = false;
+        opponent.frozen = false;
       }, 3000);
     }
   }
@@ -180,6 +190,31 @@ class Player extends Model {
       this.invulnerable = false;
       enableKeyboardInput();
     }, 3000);
+  }
+
+  freeze() {
+    this.stop();
+    disableKeyboardInput();
+    this.frozen = true;
+
+    setTimeout(() => {
+      this.frozen = false;
+      enableKeyboardInput();
+    }, 2000);
+  }
+
+  speedUp() {
+    this.dashX = this.x;
+    this.dashY = this.y;
+    this.dashing = true;
+    this.speed = 25;
+      setTimeout(() => {
+        this.speed = 3;
+      }, 100);
+  }
+
+  endDashAnim() {
+    this.dashing = false;
   }
 
   stop() {

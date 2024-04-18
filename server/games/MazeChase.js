@@ -44,6 +44,8 @@ class MazeChase extends BaseGame {
       const player = room.state.players.find((p) => p.id === socketId);
       if (data.nextDirection != null) {
         player.nextDirection = data.nextDirection;
+        player.x = data.x;
+        player.y = data.y;
       } else if (player.timer <= 0 && data.skill) {
         player.skill = true;
         this.startSkillTimer(room, player);
