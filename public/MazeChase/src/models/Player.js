@@ -4,7 +4,7 @@ class Player extends Model {
 
     this.xv = 0; // velocidadX
     this.yv = 0; // velocidadY
-    this.speed = 3;
+    this.speed = 4;
 
     this.nextXMovement = 0;
     this.nextYMovement = 0;
@@ -31,12 +31,11 @@ class Player extends Model {
     this.pursued = false;
     this.tailXOffset = 0;
     this.tailYOffset = 0;
-    
+
     this.tag = new CenteredText("", "#563F2E", x, y);
   }
 
   paint() {
-    super.paint();
 
     if (this.dashing) {
       this.dashAnim.paint(this.dashX, this.dashY);
@@ -53,7 +52,14 @@ class Player extends Model {
       this.freezeAnim.paint(this.x, this.y)
     }
 
-    this.headAnimation.paint(this.x, this.y);
+    if (this.invulnerable) {
+      context.globalAlpha = 0.4;
+      this.headAnimation.paint(this.x, this.y);
+      context.globalAlpha = 1;
+    } else {
+      this.headAnimation.paint(this.x, this.y);
+    }
+
     this.tag.paint();
   }
 
@@ -74,6 +80,8 @@ class Player extends Model {
 
     this.tag.x = this.x;
     this.tag.y = this.y - this.height / 2 - 20;
+    this.tail.x = this.x + this.tailXOffset;
+    this.tail.y = this.y + this.tailYOffset;
     this.updateAnimations();
   }
 
@@ -116,7 +124,7 @@ class Player extends Model {
     if (this.dashing) {
       this.dashAnim.update();
     }
-    
+
   }
 
   addXMovement(direction) {
@@ -172,15 +180,6 @@ class Player extends Model {
     }
   }
 
-  stun() {
-    this.stop();
-    disableKeyboardInput();
-
-    setTimeout(() => {
-      enableKeyboardInput();
-    }, 3000);
-  }
-
   haunt() {
     this.stop();
     disableKeyboardInput();
@@ -189,6 +188,15 @@ class Player extends Model {
     setTimeout(() => {
       this.invulnerable = false;
       enableKeyboardInput();
+    }, 3000);
+  }
+
+  makeInvulnerable() {
+    this.stop();
+    this.invulnerable = true;
+
+    setTimeout(() => {
+      this.invulnerable = false;
     }, 3000);
   }
 
@@ -208,9 +216,9 @@ class Player extends Model {
     this.dashY = this.y;
     this.dashing = true;
     this.speed = 25;
-      setTimeout(() => {
-        this.speed = 3;
-      }, 100);
+    setTimeout(() => {
+      this.speed = 3;
+    }, 100);
   }
 
   endDashAnim() {

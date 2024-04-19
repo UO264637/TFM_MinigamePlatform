@@ -8,6 +8,7 @@ const Roles = {
 class MazeChase extends BaseGame {
   initializeGameState(room) {
     const state = {
+      map: Math.floor(Math.random() * 3) + 1,
       players: [],
       result: {
         status: Statuses.WAITING,
@@ -36,7 +37,7 @@ class MazeChase extends BaseGame {
     setTimeout(() => {
       this.updateGameState(room, "gameStart");
       this.startTurnTimer(room, 60);
-    }, 1000);
+    }, 2000);
   }
 
   handleAction(room, socketId, data) {
