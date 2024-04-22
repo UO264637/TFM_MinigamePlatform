@@ -33,8 +33,6 @@ class BaseGame {
       );
 
       room.state.players.push(newPlayer);
-
-      this.handleGameStart(room, socketId, data);
       this.updateGameState(room, "gameState");
     }
   }
@@ -49,11 +47,10 @@ class BaseGame {
 
     const allReady = room.state.players.every((p) => p.ready);
 
-    if (allReady) {
+    if (room.state.players.length >= 2 && allReady) {
       this.handleGameStart(room, null, null);
-    } else {
-      this.updateGameState(room, "gameState");
     }
+    this.updateGameState(room, "gameState");
   }
 
   handleGameStart(room, socketId, data) {

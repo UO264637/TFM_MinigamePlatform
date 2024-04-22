@@ -84,6 +84,10 @@ class GameLayer extends Layer {
     }
   }
 
+  initialize() {
+    
+  }
+
   updateGameState(state) {
     for (let i = 0; i < state.board.length; i++) {
       const player = state.board[i];

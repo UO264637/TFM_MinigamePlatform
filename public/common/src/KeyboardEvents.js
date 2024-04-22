@@ -24,6 +24,9 @@ function onKeyDown(event) {
       case 37:
         controls.moveX = -1;
         break;
+      case 82:
+        controls.ready = true;
+        break;
     }
   }
 }
@@ -56,6 +59,9 @@ function onKeyUp(event) {
       if (controls.moveX == -1) {
         controls.moveX = 0;
       }
+      break;
+    case 82:
+      controls.ready = false;
       break;
   }
 }

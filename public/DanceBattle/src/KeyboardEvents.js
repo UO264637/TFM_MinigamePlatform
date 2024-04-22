@@ -7,4 +7,8 @@ function onKeyDown(event) {
   if (position == -1) {
     keysPressed.push(event.code);
   }
+
+  if (event.code == 82) {
+    controls.ready = true;
+  }
 }

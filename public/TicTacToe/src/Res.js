@@ -1,5 +1,7 @@
 // Lista re recursos a precargar
 let images = {
+  lobby_background: "../common/res/lobby_background.png",
+  ready_button: "../common/res/ready_button.png",
   tttButton: "res/empty.png",
   board: "res/board.png",
   X: "res/X.png",

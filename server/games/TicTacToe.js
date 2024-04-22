@@ -41,7 +41,7 @@ class TicTacToe extends BaseGame {
       (player) => player.symbol === "X"
     );
     room.state.result.status = Statuses.PLAYING;
-
+    this.updateGameState(room, "gameStart");
     this.startTurnTimer(room, 15);
   }
 

@@ -68,8 +68,8 @@ io.on("connection", function (socket) {
     joinGame(socket.id, data);
   });
 
-  socket.on("readyPlayer", function (data) {
-    readyPlayer(socket.id, data);
+  socket.on("ready", function () {
+    readyPlayer(socket.id);
   });
 
   socket.on("action", function (data) {
@@ -89,8 +89,8 @@ function joinGame(socketId, data) {
   }
 }
 
-function readyPlayer(socketId, data) {
-  let room = roomManager.getRoom(data.roomId);
+function readyPlayer(socketId) {
+  let room = roomManager.getRoomBySocketId(socketId);
 
   if (room != null) {
     room.game.handleReadyPlayer(room, socketId);
