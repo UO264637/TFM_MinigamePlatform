@@ -5,26 +5,27 @@ class Countdown {
     this.size = 150;
     this.x = originalCanvasWidth * 0.5;
     this.y = originalCanvasHeight * 0.5;
-    this.oppacity = 1;
+    this.oppacity = 0;
 
-    const playNextMovement = () => {
+    this.countdown = () => {
       if (this.value == 1) {
         this.value = "Go!";
         this.oppacity = 1;
         setTimeout(() => {
-          playNextMovement();
+          this.countdown();
         }, 1000);
       } else if (this.value == "Go!") {
         this.value = null;
+        enableKeyboardInput();
+        enableTapInput();
       } else {
         this.value--;
         this.oppacity = 1;
         setTimeout(() => {
-          playNextMovement();
+          this.countdown();
         }, 1000);
       }
     };
-    playNextMovement();
   }
 
   update() {
@@ -41,5 +42,9 @@ class Countdown {
 
       context.fillText(this.value, this.x - textWidth / 2, this.y);
     }
+  }
+
+  start() {
+    this.countdown();
   }
 }

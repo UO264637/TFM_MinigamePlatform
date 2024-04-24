@@ -29,18 +29,15 @@ function startGame() {
   gameLayer = new GameLayer();
   lobbyLayer = new LobbyLayer();
   layer = lobbyLayer;
-
   initWebSocket();
 
   socket.on("gameStart", function (state) {
-    console.log("a")
-    gameLayer.initialize(state);
+    gameLayer.start(state);
     layer = gameLayer;
   });
 
   socket.on("gameState", function (state) {
-    gameLayer.updateGameState(state);
-    lobbyLayer.updateGameState(state);
+    layer.updateGameState(state);
   });
 
   socket.on("turnTimer", function (secondsLeft) {
@@ -51,18 +48,13 @@ function startGame() {
 }
 
 function loop() {
-  // console.log("loop - ");
-  // gameLayer.update();
-  // gameLayer.calculateTaps(taps);
-  // gameLayer.processControls();
-  // gameLayer.paint();
+  console.log("loop - ");
 
   layer.update();
   layer.calculateTaps(taps);
   layer.processControls();
   layer.paint();
-
-
+  
   updateTaps();
 }
 

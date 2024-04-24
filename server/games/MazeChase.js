@@ -33,11 +33,13 @@ class MazeChase extends BaseGame {
     );
     room.state.players[1].timer = 0;
 
-    room.state.result.status = Statuses.PLAYING;
-    setTimeout(() => {
+    if (room.state.result.status == Statuses.WAITING) {
       this.updateGameState(room, "gameStart");
-      this.startTurnTimer(room, 60);
-    }, 2000);
+      room.state.result.status = Statuses.PLAYING;
+      setTimeout(() => {
+        this.startTurnTimer(room, 60);
+      }, 3000);
+    }
   }
 
   handleAction(room, socketId, data) {

@@ -1,11 +1,12 @@
 class GameLayer extends Layer {
   constructor() {
     super();
-    this.start();
-    this.turnTimer = 0;
+    this.initialize();
   }
 
-  start() {
+  initialize() {
+    this.countdown = new Countdown();
+    this.turnTimer = 0;
     this.board = [];
 
     for (let i = 0; i < 3; i++) {
@@ -29,13 +30,13 @@ class GameLayer extends Layer {
       canvas.height * 0.5
     );
     this.player1 = new Text(
-      0,
+      "",
       "#563F2E",
       canvas.width * 0.07,
       canvas.height * 0.47
     );
     this.player2 = new Text(
-      0,
+      "",
       "#563F2E",
       canvas.width * 0.07,
       canvas.height * 0.53
@@ -47,6 +48,10 @@ class GameLayer extends Layer {
       canvas.height * 0.1
     );
     this.status.value = "";
+  }
+
+  update() {
+    this.countdown.update();
   }
 
   paint() {
@@ -63,6 +68,8 @@ class GameLayer extends Layer {
     if (this.isTurn) {
       this.turnIndicator.paint();
     }
+
+    this.countdown.paint();
   }
 
   calculateTaps(taps) {
@@ -84,8 +91,14 @@ class GameLayer extends Layer {
     }
   }
 
-  initialize() {
-    
+  start(state) {
+    disableTapInput();
+    this.player1.value =
+      state.players[0].symbol + ": " + state.players[0].playerName;
+
+    this.player2.value =
+      state.players[1].symbol + ": " + state.players[1].playerName;
+    this.countdown.start();
   }
 
   updateGameState(state) {
@@ -97,9 +110,6 @@ class GameLayer extends Layer {
     }
 
     switch (state.result.status) {
-      case Statuses.WAITING:
-        this.status.value = "Esperando jugadores...";
-        break;
       case Statuses.PLAYING:
         if (state.currentPlayer.id == socketId) {
           this.currentTurn = "Tu turno! ";
@@ -121,18 +131,6 @@ class GameLayer extends Layer {
         break;
       default:
         break;
-    }
-
-    this.player1.value = "";
-    this.player2.value = "";
-    if (state.players.length > 0) {
-      this.player1.value =
-        state.players[0].symbol + ": " + state.players[0].playerName;
-    }
-
-    if (state.players.length > 1) {
-      this.player2.value =
-        state.players[1].symbol + ": " + state.players[1].playerName;
     }
   }
 

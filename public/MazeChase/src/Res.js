@@ -1,5 +1,7 @@
-// Lista re recursos a precargar 
+let cache = {};
 let images = {
+    lobby_background: "../common/res/lobby_background.png",
+    ready_button: "../common/res/ready_button.png",
     background1 : "res/map1/background.png",
     c_tile1 : "res/map1/c_tile.png",
     c_tile1b : "res/map1/c_tile_b.png",
@@ -75,9 +77,9 @@ let imageRutes = Object.values(images);
 loadImages(0);
 
 function loadImages(index){
-    let image = new Image();
-    image.src = imageRutes[index];
-    image.onload = function(){
+    cache[imageRutes[index]] = new Image(); 
+    cache[imageRutes[index]].src = imageRutes[index]; 
+    cache[imageRutes[index]].onload = function(){
         if ( index < imageRutes.length-1 ){
             index++;
             loadImages(index);

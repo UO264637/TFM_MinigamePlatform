@@ -47,3 +47,15 @@ function deleteTap(id) {
     }
   }
 }
+
+function disableTapInput() {
+  window.removeEventListener("mousedown", mousedown);
+  window.removeEventListener("mousemove", mousemove);
+  window.removeEventListener("mouseup", mouseup);
+}
+
+function enableTapInput() {
+  window.addEventListener("mousedown", mousedown);
+  window.addEventListener("mousemove", mousemove);
+  window.addEventListener("mouseup", mouseup);
+}

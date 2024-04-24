@@ -72,6 +72,6 @@ function disableKeyboardInput() {
 }
 
 function enableKeyboardInput() {
-  window.addEventListener("keydown", onKeyDown, false);
-  window.addEventListener("keyup", onKeyUp, false);
+  window.addEventListener("keydown", onKeyDown);
+  window.addEventListener("keyup", onKeyUp);
 }

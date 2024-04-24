@@ -80,8 +80,6 @@ class Player extends Model {
 
     this.tag.x = this.x;
     this.tag.y = this.y - this.height / 2 - 20;
-    this.tail.x = this.x + this.tailXOffset;
-    this.tail.y = this.y + this.tailYOffset;
     this.updateAnimations();
   }
 

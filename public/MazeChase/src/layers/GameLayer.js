@@ -1,17 +1,17 @@
 class GameLayer extends Layer {
   constructor() {
     super();
-    this.start();
+    this.initialize();
     this.turnTimer = 0;
   }
 
-  start() {
+  initialize() {
     disableKeyboardInput();
     this.wallTiles = [];
     this.space = new Space(0);
     this.player = new Player(-50, 0, "p1");
     this.opponent = new Player(-50, 50, "p2");
-    this.coundown = new Countdown();
+    this.countdown = new Countdown();
 
     this.background1 = new Background(
       images.background1,
@@ -58,7 +58,7 @@ class GameLayer extends Layer {
     if (!this.player.pursued && this.player.collides(this.opponent)) {
       socket.emit("action", { haunted: true });
     }
-    this.coundown.update();
+    this.countdown.update();
   }
 
   paint() {
@@ -71,40 +71,44 @@ class GameLayer extends Layer {
     this.skillButton.paint();
     this.player.paint();
     this.opponent.paint();
-    this.coundown.paint();
+    this.countdown.paint();
 
     if (this.player.frozen) {
       this.iceEffect.paint();
     }
   }
 
-  initialize(state) {
+  start(state) {
     let pursued = state.players.find((p) => p.role == "pursued");
     let haunter = state.players.find((p) => p.role == "haunter");
+    let playerDirection = "X";
+    let opponentDirection = "-X";
 
     if (haunter.id == socketId) {
-      //this.player.addDirection("X");
       this.player.role = "haunter";
       this.player.tag.value = "Tú";
 
-      //this.opponent.addDirection("-X");
       this.opponent.switchRole();
       this.opponent.tag.value = pursued.playerName;
       this.skillButton.switchSkill(images.ice_skill);
     } else {
       let aux = this.player;
       this.player = this.opponent;
-      //this.player.addDirection("-X");
+      playerDirection = "-X";
       this.player.tag.value = "Tú";
       this.player.switchRole();
 
       this.opponent = aux;
-      //this.opponent.addDirection("X");
+      opponentDirection = "X";
       this.opponent.tag.value = haunter.playerName;
     }
 
     this.loadMap(state.map);
-    enableKeyboardInput();
+    this.countdown.start();
+    setTimeout(() => {
+      this.player.addDirection(playerDirection);
+      this.opponent.addDirection(opponentDirection);
+    }, 3000);
   }
 
   processControls() {

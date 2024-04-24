@@ -26,15 +26,13 @@ class BaseGame {
       room.state.players.push(newPlayer);
 
       this.handleOnePlayer(room, socketId, data);
-      this.updateGameState(room, "gameState");
     } else if (nPlayers === 1) {
       console.log(
         "Room " + data.roomId + " (2/2): " + data.playerName + " joined"
       );
-
       room.state.players.push(newPlayer);
-      this.updateGameState(room, "gameState");
     }
+    this.updateGameState(room, "gameState");
   }
 
   handleOnePlayer(room, socketId, data) {
@@ -54,8 +52,10 @@ class BaseGame {
   }
 
   handleGameStart(room, socketId, data) {
-    this.updateGameState(room, "gameStart");
-    room.state.result.status = Statuses.PLAYING;
+    if (room.state.result.status == Statuses.WAITING) {
+      this.updateGameState(room, "gameStart");
+      room.state.result.status = Statuses.PLAYING;
+    }
   }
 
   handleDisconnect(room, socketId) {
@@ -78,8 +78,9 @@ class BaseGame {
     room.turnTimer = setInterval(() => {
       secondsLeft--;
 
-      this.io.to(room.state.players[0].id).emit("turnTimer", secondsLeft);
-      this.io.to(room.state.players[1].id).emit("turnTimer", secondsLeft);
+      for (const player of room.state.players) {
+        this.io.to(player.id).emit("turnTimer", secondsLeft);
+      }
 
       if (secondsLeft <= 0) {
         this.handleTurnTimeout(room);
