@@ -23,8 +23,10 @@ class ObstacleRace extends BaseGame {
   handleGameStart(room, socketId, data) {
     room.state.players[1].position = 0;
 
-    this.updateGameState(room, "gameStart");
-    room.state.result.status = Statuses.PLAYING;
+    if (room.state.result.status == Statuses.WAITING) {
+      this.updateGameState(room, "gameStart");
+      room.state.result.status = Statuses.PLAYING;
+    }
   }
 
   handleAction(room, socketId, data) {

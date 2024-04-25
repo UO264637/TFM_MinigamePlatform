@@ -6,12 +6,11 @@ class GameLayer extends Layer {
   }
 
   initialize() {
-    disableKeyboardInput();
+    this.countdown = new Countdown();
     this.wallTiles = [];
     this.space = new Space(0);
     this.player = new Player(-50, 0, "p1");
     this.opponent = new Player(-50, 50, "p2");
-    this.countdown = new Countdown();
 
     this.background1 = new Background(
       images.background1,
@@ -79,6 +78,8 @@ class GameLayer extends Layer {
   }
 
   start(state) {
+    disableKeyboardInput();
+    
     let pursued = state.players.find((p) => p.role == "pursued");
     let haunter = state.players.find((p) => p.role == "haunter");
     let playerDirection = "X";

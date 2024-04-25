@@ -24,7 +24,6 @@ class BaseGame {
       );
 
       room.state.players.push(newPlayer);
-
       this.handleOnePlayer(room, socketId, data);
     } else if (nPlayers === 1) {
       console.log(
@@ -69,7 +68,7 @@ class BaseGame {
     }
 
     clearInterval(room.turnTimer);
-    this.updateGameState(room, "gameState");
+    this.updateGameState(room, "gameFinished");
   }
 
   startTurnTimer(room, time) {

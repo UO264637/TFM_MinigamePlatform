@@ -12,3 +12,11 @@ function onKeyDown(event) {
     controls.ready = true;
   }
 }
+
+function disableKeyboardInput() {
+  window.removeEventListener("keydown", onKeyDown);
+}
+
+function enableKeyboardInput() {
+  window.addEventListener("keydown", onKeyDown);
+}

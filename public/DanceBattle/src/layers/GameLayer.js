@@ -6,10 +6,11 @@ class GameLayer extends Layer {
     this.isTurn = false;
     this.numMoves = 0;
     this.turnTimer = 0;
-    this.start();
+    this.initialize();
   }
 
-  start() {
+  initialize() {
+    this.countdown = new Countdown();
     this.background = new Background(
       images.background,
       originalCanvasWidth * 0.5,
@@ -66,6 +67,7 @@ class GameLayer extends Layer {
       });
       this.numMoves = 0;
     }
+    this.countdown.update();
   }
 
   paint() {
@@ -81,9 +83,11 @@ class GameLayer extends Layer {
 
     this.status.paint();
     this.roundIndicator.paint();
+    this.countdown.paint();
   }
 
-  initialize(state) {
+  start(state) {
+    disableKeyboardInput();
     this.round = state.round;
 
     let player = state.players.find((p) => p.id == socketId);
@@ -91,9 +95,11 @@ class GameLayer extends Layer {
     this.ownRole = player.role;
 
     this[player.role] = this.backPlayer;
-    this[player.role].setName(player.playerName)
+    this[player.role].setName(player.playerName);
     this[opponent.role] = this.frontPlayer;
-    this[opponent.role].setName(opponent.playerName)
+    this[opponent.role].setName(opponent.playerName);
+
+    this.countdown.start();
   }
 
   processControls() {

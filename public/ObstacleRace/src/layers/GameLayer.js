@@ -3,10 +3,11 @@ class GameLayer extends Layer {
     super();
     this.speed = 0;
     this.baseSpeed = -8;
-    this.start();
+    this.initialize();
   }
 
-  start() {
+  initialize() {
+    this.countdown = new Countdown();
     this.space = new Space(1);
     this.backgrounds = [];
     this.obstacles = [];
@@ -105,6 +106,7 @@ class GameLayer extends Layer {
     }
 
     this.hud.update();
+    this.countdown.update();
   }
 
   paint() {
@@ -122,6 +124,7 @@ class GameLayer extends Layer {
     this.background5.paint();
     this.status.paint();
     this.hud.paint();
+    this.countdown.paint();
   }
 
   processControls() {
@@ -136,8 +139,9 @@ class GameLayer extends Layer {
     }
   }
 
-  initialize(state) {
-    this.speed = this.baseSpeed;
+  start(state) {
+    disableKeyboardInput();
+    
     let xPos = 1000;
     for (let obstaclePosition of state.obstacles) {
       if (obstaclePosition == 0) {
@@ -156,7 +160,12 @@ class GameLayer extends Layer {
     this.obstacles.pop();
     let lastIndicator = this.obstacleIndicators[this.obstacleIndicators.length - 1];
     this.goal = new AnimatedObstacle(images.goal, images.goal_anim, lastIndicator.x - 180, originalCanvasHeight - 290);
-    this.player.run();
+    
+    this.countdown.start();
+    setTimeout(() => {
+      this.speed = this.baseSpeed;
+      this.player.run();
+    }, 3000);
   }
 
   updateGameState(state) {

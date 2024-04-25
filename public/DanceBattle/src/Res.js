@@ -1,5 +1,7 @@
 // Lista re recursos a precargar
 const images = {
+  lobby_background: "../common/res/lobby_background.png",
+  ready_button: "../common/res/ready_button.png",
   wheel: "res/wheel.png",
   wheel_u: "res/wheel_u.png",
   wheel_r: "res/wheel_r.png",
