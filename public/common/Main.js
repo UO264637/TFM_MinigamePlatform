@@ -45,7 +45,7 @@ function startGame() {
   });
 
   socket.on("gameFinished", function (state) {
-
+    gameLayer.finish(state);
   });
 
   setInterval(loop, 1000 / 30);

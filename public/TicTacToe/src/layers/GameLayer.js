@@ -132,15 +132,14 @@ class GameLayer extends Layer {
         this.currentTurn = "Turno de " + opponent + ": ";
         this.isTurn = false;
       }
-    } else if (
-      state.result.status == Statuses.DRAW ||
-      state.result.status == Statuses.WIN
-    ) {
-      this.status.value = "";
-      this.isTurn = false;
-      this.finished = true;
-      this.results.updateGameState(state);
     }
+  }
+
+  finish(state) {
+    this.status.value = "";
+    this.isTurn = false;
+    this.finished = true;
+    this.results.updateGameState(state);
   }
 
   updateTurnTimer(secondsLeft) {
