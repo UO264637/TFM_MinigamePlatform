@@ -131,33 +131,25 @@ class GameLayer extends Layer {
 
     let pursued = state.players.find((p) => p.role == "pursued");
     let haunter = state.players.find((p) => p.role == "haunter");
-    let playerDirection = "X";
-    let opponentDirection = "-X";
 
     if (haunter.id == socketId) {
-      this.player.role = "haunter";
-      this.player.tag.value = "Tú";
-
       this.opponent.switchRole();
       this.opponent.tag.value = pursued.playerName;
       this.skillButton.switchSkill(images.ice_skill);
     } else {
       let aux = this.player;
       this.player = this.opponent;
-      playerDirection = "-X";
-      this.player.tag.value = "Tú";
       this.player.switchRole();
-
       this.opponent = aux;
-      opponentDirection = "X";
       this.opponent.tag.value = haunter.playerName;
     }
+    this.player.tag.value = "Tú";
 
     this.loadMap(state.map);
     this.countdown.start();
     setTimeout(() => {
-      this.player.addDirection(playerDirection);
-      this.opponent.addDirection(opponentDirection);
+      this.player.startMoving();
+      this.opponent.startMoving();
     }, 3000);
   }
 

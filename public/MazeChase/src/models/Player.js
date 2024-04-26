@@ -36,7 +36,6 @@ class Player extends Model {
   }
 
   paint() {
-
     if (this.dashing) {
       this.dashAnim.paint(this.dashX, this.dashY);
     }
@@ -123,6 +122,15 @@ class Player extends Model {
       this.dashAnim.update();
     }
 
+  }
+
+  startMoving() {
+    if (this.pursued) {
+      this.addDirection("-X");
+    }
+    else {
+      this.addDirection("X");
+    }
   }
 
   addXMovement(direction) {
