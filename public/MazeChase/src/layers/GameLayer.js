@@ -1,8 +1,8 @@
 class GameLayer extends Layer {
   constructor() {
     super();
+    this.results = new ResultsLayer();
     this.initialize();
-    this.turnTimer = 0;
   }
 
   initialize() {
@@ -11,6 +11,7 @@ class GameLayer extends Layer {
     this.space = new Space(0);
     this.player = new Player(-50, 0, "p1");
     this.opponent = new Player(-50, 50, "p2");
+    this.turnTimer = 0;
 
     this.background1 = new Background(
       images.background1,
@@ -75,44 +76,17 @@ class GameLayer extends Layer {
     if (this.player.frozen) {
       this.iceEffect.paint();
     }
-  }
 
-  start(state) {
-    disableKeyboardInput();
-    
-    let pursued = state.players.find((p) => p.role == "pursued");
-    let haunter = state.players.find((p) => p.role == "haunter");
-    let playerDirection = "X";
-    let opponentDirection = "-X";
-
-    if (haunter.id == socketId) {
-      this.player.role = "haunter";
-      this.player.tag.value = "Tú";
-
-      this.opponent.switchRole();
-      this.opponent.tag.value = pursued.playerName;
-      this.skillButton.switchSkill(images.ice_skill);
-    } else {
-      let aux = this.player;
-      this.player = this.opponent;
-      playerDirection = "-X";
-      this.player.tag.value = "Tú";
-      this.player.switchRole();
-
-      this.opponent = aux;
-      opponentDirection = "X";
-      this.opponent.tag.value = haunter.playerName;
+    if (this.finished) {
+      this.results.paint();
     }
-
-    this.loadMap(state.map);
-    this.countdown.start();
-    setTimeout(() => {
-      this.player.addDirection(playerDirection);
-      this.opponent.addDirection(opponentDirection);
-    }, 3000);
   }
 
   processControls() {
+    if (this.finished) {
+      this.results.processControls();
+    }
+
     let nextDirection = 0;
     // Eje X
     if (controls.moveX > 0) {
@@ -146,37 +120,69 @@ class GameLayer extends Layer {
     }
   }
 
+  calculateTaps(taps) {
+    if (this.finished) {
+      this.results.calculateTaps(taps);
+    }
+  }
+
+  start(state) {
+    disableKeyboardInput();
+
+    let pursued = state.players.find((p) => p.role == "pursued");
+    let haunter = state.players.find((p) => p.role == "haunter");
+    let playerDirection = "X";
+    let opponentDirection = "-X";
+
+    if (haunter.id == socketId) {
+      this.player.role = "haunter";
+      this.player.tag.value = "Tú";
+
+      this.opponent.switchRole();
+      this.opponent.tag.value = pursued.playerName;
+      this.skillButton.switchSkill(images.ice_skill);
+    } else {
+      let aux = this.player;
+      this.player = this.opponent;
+      playerDirection = "-X";
+      this.player.tag.value = "Tú";
+      this.player.switchRole();
+
+      this.opponent = aux;
+      opponentDirection = "X";
+      this.opponent.tag.value = haunter.playerName;
+    }
+
+    this.loadMap(state.map);
+    this.countdown.start();
+    setTimeout(() => {
+      this.player.addDirection(playerDirection);
+      this.opponent.addDirection(opponentDirection);
+    }, 3000);
+  }
+
   updateGameState(state) {
-    switch (state.result.status) {
-      case Statuses.WAITING:
-        this.status.value = "Esperando jugadores...";
-        break;
-      case Statuses.PLAYING: {
-        let opponentState = state.players.find((p) => p.id != socketId);
+    if (state.result.status == Statuses.PLAYING) {
+      let opponentState = state.players.find((p) => p.id != socketId);
 
-        if (opponentState.nextDirection != null) {
-          this.opponent.addDirection(opponentState.nextDirection);
-          this.checkOpponentPosition(opponentState.x, opponentState.y);
-        }
-
-        if (opponentState.skill) {
-          this.useSkill();
-        }
-        if (state.invert) {
-          this.invertRoles();
-        }
-        break;
+      if (opponentState.nextDirection != null) {
+        this.opponent.addDirection(opponentState.nextDirection);
+        this.checkOpponentPosition(opponentState.x, opponentState.y);
       }
-      case Statuses.WIN:
-        disableKeyboardInput();
-        this.player.stop();
-        this.opponent.stop();
-        this.status.value =
-          "Ha ganado " + state.result.winner.playerName + "! ";
-        this.isTurn = false;
-        break;
-      default:
-        break;
+
+      if (opponentState.skill) {
+        this.useSkill();
+      }
+      if (state.invert) {
+        this.invertRoles();
+      }
+    } else if (state.result.status == Statuses.WIN) {
+      disableKeyboardInput();
+      this.player.stop();
+      this.opponent.stop();
+      this.isTurn = false;
+      this.finished = true;
+      this.results.updateGameState(state);
     }
   }
 
@@ -250,8 +256,7 @@ class GameLayer extends Layer {
         if (this.player.pursued) {
           this.opponent.x = x;
           this.opponent.y = y - this.opponent.height / 2;
-        }
-        else {
+        } else {
           this.player.x = x;
           this.player.y = y - this.player.height / 2;
         }
@@ -262,8 +267,7 @@ class GameLayer extends Layer {
         if (this.player.pursued) {
           this.player.x = x;
           this.player.y = y - this.player.height / 2;
-        }
-        else {
+        } else {
           this.opponent.x = x;
           this.opponent.y = y - this.opponent.height / 2;
         }

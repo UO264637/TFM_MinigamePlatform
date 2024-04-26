@@ -20,7 +20,7 @@ class ResultsLayer extends Layer {
       originalCanvasWidth * 0.4,
       originalCanvasHeight * 0.8
     );
-    this.result = new Text(
+    this.result = new CenteredText(
       "",
       "#563F2E",
       canvas.width * 0.5,
@@ -45,7 +45,7 @@ class ResultsLayer extends Layer {
         (p) => p.value == player.playerName
       );
       if (playerText == null) {
-        playerText = new Text(
+        playerText = new CenteredText(
           player.playerName,
           "#563F2E",
           this.listX,
@@ -83,6 +83,7 @@ class ResultsLayer extends Layer {
 
   paint() {
     this.background.paint();
+    this.result.paint();
 
     for (let playerText of this.playerTexts) {
       playerText.paint();
@@ -103,7 +104,8 @@ class ResultsLayer extends Layer {
       if (this.rematchButton.containsPoint(tap.x, tap.y)) {
         this.rematchButton.pressed = true;
         if (tap.type == tapType.start) {
-          controls.ready = true;
+          //controls.ready = true;
+          console.log("A")
         }
       }
     }

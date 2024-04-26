@@ -1,6 +1,7 @@
 class GameLayer extends Layer {
   constructor() {
     super();
+    this.results = new ResultsLayer();
     this.initialize();
   }
 
@@ -70,9 +71,22 @@ class GameLayer extends Layer {
     }
 
     this.countdown.paint();
+    if (this.finished) {
+      this.results.paint();
+    }
+  }
+
+  processControls() {
+    if (this.finished) {
+      this.results.processControls();
+    }
   }
 
   calculateTaps(taps) {
+    if (this.finished) {
+      this.results.calculateTaps(taps);
+    }
+
     for (let i = 0; i < 9; i++) {
       this.board[i].pressed = false;
     }
@@ -109,28 +123,23 @@ class GameLayer extends Layer {
       }
     }
 
-    switch (state.result.status) {
-      case Statuses.PLAYING:
-        if (state.currentPlayer.id == socketId) {
-          this.currentTurn = "Tu turno! ";
-          this.isTurn = true;
-        } else {
-          let opponent = state.players.find((p) => p.id != socketId).playerName;
-          this.currentTurn = "Turno de " + opponent + ": ";
-          this.isTurn = false;
-        }
-        break;
-      case Statuses.DRAW:
-        this.status.value = "Empate!";
+    if (state.result.status == Statuses.PLAYING) {
+      if (state.currentPlayer.id == socketId) {
+        this.currentTurn = "Tu turno! ";
+        this.isTurn = true;
+      } else {
+        let opponent = state.players.find((p) => p.id != socketId).playerName;
+        this.currentTurn = "Turno de " + opponent + ": ";
         this.isTurn = false;
-        break;
-      case Statuses.WIN:
-        this.status.value =
-          "Ha ganado " + state.result.winner.playerName + "! ";
-        this.isTurn = false;
-        break;
-      default:
-        break;
+      }
+    } else if (
+      state.result.status == Statuses.DRAW ||
+      state.result.status == Statuses.WIN
+    ) {
+      this.status.value = "";
+      this.isTurn = false;
+      this.finished = true;
+      this.results.updateGameState(state);
     }
   }
 

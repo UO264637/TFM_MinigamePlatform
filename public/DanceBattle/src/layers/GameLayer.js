@@ -1,16 +1,18 @@
 class GameLayer extends Layer {
   constructor() {
     super();
-    this.players = [];
-    this.round = 3;
-    this.isTurn = false;
-    this.numMoves = 0;
-    this.turnTimer = 0;
+    this.results = new ResultsLayer();
     this.initialize();
   }
 
   initialize() {
     this.countdown = new Countdown();
+    this.players = [];
+    this.round = 3;
+    this.isTurn = false;
+    this.numMoves = 0;
+    this.turnTimer = 0;
+
     this.background = new Background(
       images.background,
       originalCanvasWidth * 0.5,
@@ -84,25 +86,17 @@ class GameLayer extends Layer {
     this.status.paint();
     this.roundIndicator.paint();
     this.countdown.paint();
-  }
 
-  start(state) {
-    disableKeyboardInput();
-    this.round = state.round;
-
-    let player = state.players.find((p) => p.id == socketId);
-    let opponent = state.players.find((p) => p.id != socketId);
-    this.ownRole = player.role;
-
-    this[player.role] = this.backPlayer;
-    this[player.role].setName(player.playerName);
-    this[opponent.role] = this.frontPlayer;
-    this[opponent.role].setName(opponent.playerName);
-
-    this.countdown.start();
+    if (this.finished) {
+      this.results.paint();
+    }
   }
 
   processControls() {
+    if (this.finished) {
+      this.results.processControls();
+    }
+
     if (this.isTurn) {
       for (let i = 0; i < keysPressed.length; i++) {
         let key = keysPressed[i];
@@ -141,45 +135,59 @@ class GameLayer extends Layer {
     }
   }
 
+  calculateTaps(taps) {
+    if (this.finished) {
+      this.results.calculateTaps(taps);
+    }
+  }
+
+  start(state) {
+    disableKeyboardInput();
+    this.round = state.round;
+
+    let player = state.players.find((p) => p.id == socketId);
+    let opponent = state.players.find((p) => p.id != socketId);
+    this.ownRole = player.role;
+
+    this[player.role] = this.backPlayer;
+    this[player.role].setName(player.playerName);
+    this[opponent.role] = this.frontPlayer;
+    this[opponent.role].setName(opponent.playerName);
+
+    this.countdown.start();
+  }
+
   updateGameState(state) {
     let dancerRole = state.players.find(
       (p) => p.id !== state.currentPlayer?.id
     ).role;
     let imitated = state.players.find((p) => p.role === "imitated");
-    switch (state.result.status) {
-      case Statuses.WAITING:
-        this.status.value = "Esperando jugadores...";
-        break;
-      case Statuses.PLAYING:
-        this.isTurn = false;
-        this.round = state.round;
-        if (state.movementsToPlay.length > 0) {
-          this[dancerRole].playDance(
-            state.movementsToPlay,
-            imitated.movements,
-            () => {
-              this[dancerRole].movementsQueue.clear();
-              this.updateState(state);
-            }
-          );
-        } else {
-          this.updateState(state);
-        }
-        break;
-      case Statuses.WIN:
-        this.isTurn = false;
+    if (state.result.status == Statuses.PLAYING) {
+      this.isTurn = false;
+      this.round = state.round;
+      if (state.movementsToPlay.length > 0) {
         this[dancerRole].playDance(
           state.movementsToPlay,
-          imitated?.movements,
+          imitated.movements,
           () => {
             this[dancerRole].movementsQueue.clear();
-
-            this.status.value =
-              "Ha ganado " + state.result.winner.playerName + "! ";
-            this.isTurn = false;
+            this.updateState(state);
           }
         );
-        break;
+      } else {
+        this.updateState(state);
+      }
+    } else if (state.result.status == Statuses.WIN) {
+      this.isTurn = false;
+      this[dancerRole].playDance(
+        state.movementsToPlay,
+        imitated?.movements,
+        () => {
+          this[dancerRole].movementsQueue.clear();
+          this.finished = true;
+          this.results.updateGameState(state);
+        }
+      );
     }
   }
 

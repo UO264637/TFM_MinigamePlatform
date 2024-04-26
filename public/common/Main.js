@@ -28,7 +28,6 @@ socket.on("connect", function () {
 function startGame() {
   gameLayer = new GameLayer();
   lobbyLayer = new LobbyLayer();
-  resultsLayer = new ResultsLayer();
   layer = lobbyLayer;
   initWebSocket();
 
@@ -46,8 +45,7 @@ function startGame() {
   });
 
   socket.on("gameFinished", function (state) {
-    layer = resultsLayer;
-    layer.updateGameState(state);
+
   });
 
   setInterval(loop, 1000 / 30);
