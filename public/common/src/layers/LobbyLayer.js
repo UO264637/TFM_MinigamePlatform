@@ -18,24 +18,21 @@ class LobbyLayer extends Layer {
   }
 
   updateGameState(state) {
+    this.listY = originalCanvasHeight * 0.1;
     this.readySymbols = [];
+    this.playerTexts = [];
 
     for (let player of state.players) {
-      let playerText = this.playerTexts.find(
-        (p) => p.value == player.playerName
+      let playerText = new CenteredText(
+        player.playerName,
+        "#563F2E",
+        this.listX,
+        this.listY,
+        24
       );
-      if (playerText == null) {
-        playerText = new Text(
-          player.playerName,
-          "#563F2E",
-          this.listX,
-          this.listY,
-          24
-        );
 
-        this.playerTexts.push(playerText);
-        this.listY += 24;
-      }
+      this.playerTexts.push(playerText);
+      this.listY += 24;
 
       playerText.paint();
 

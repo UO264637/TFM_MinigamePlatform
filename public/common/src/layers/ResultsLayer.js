@@ -32,30 +32,25 @@ class ResultsLayer extends Layer {
   updateGameState(state) {
     if (state.result.status == Statuses.DRAW) {
       this.result.value = "Empate!";
-    }
-    else if (state.result.status == Statuses.WIN) {
-      this.result.value =
-      "Ha ganado " + state.result.winner.playerName + "! ";
+    } else if (state.result.status == Statuses.WIN) {
+      this.result.value = "Ha ganado " + state.result.winner.playerName + "! ";
     }
 
+    this.listY = originalCanvasHeight * 0.4;
     this.readySymbols = [];
+    this.playerTexts = [];
 
     for (let player of state.players) {
-      let playerText = this.playerTexts.find(
-        (p) => p.value == player.playerName
+      let playerText = new CenteredText(
+        player.playerName,
+        "#563F2E",
+        this.listX,
+        this.listY,
+        24
       );
-      if (playerText == null) {
-        playerText = new CenteredText(
-          player.playerName,
-          "#563F2E",
-          this.listX,
-          this.listY,
-          24
-        );
 
-        this.playerTexts.push(playerText);
-        this.listY += 24;
-      }
+      this.playerTexts.push(playerText);
+      this.listY += 24;
 
       playerText.paint();
 
@@ -105,7 +100,7 @@ class ResultsLayer extends Layer {
         this.rematchButton.pressed = true;
         if (tap.type == tapType.start) {
           //controls.ready = true;
-          console.log("A")
+          console.log("A");
         }
       }
     }
