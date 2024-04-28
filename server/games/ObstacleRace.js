@@ -9,6 +9,7 @@ class ObstacleRace extends BaseGame {
     const state = {
       obstacles: obstacles,
       players: [],
+      maxPlayers: 2,
       result: {
         status: Statuses.WAITING,
       },
@@ -33,7 +34,11 @@ class ObstacleRace extends BaseGame {
     const player = room.state.players.find((p) => p.id === socketId);
     player.position += 1;
 
-    this.checkForEndOfGame(room);
+    if (this.checkForEndOfGame(room)) {
+      setTimeout(() => {
+        this.updateGameState(room, "gameFinished");
+      }, 500);
+    }
 
     this.updateGameState(room, "gameState");
   }

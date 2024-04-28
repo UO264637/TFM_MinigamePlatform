@@ -168,14 +168,16 @@ class GameLayer extends Layer {
       if (state.invert) {
         this.invertRoles();
       }
-    } else if (state.result.status == Statuses.WIN) {
-      disableKeyboardInput();
-      this.player.stop();
-      this.opponent.stop();
-      this.isTurn = false;
-      this.finished = true;
-      this.results.updateGameState(state);
     }
+  }
+
+  finish(state) {
+    disableKeyboardInput();
+    this.player.stop();
+    this.opponent.stop();
+    this.isTurn = false;
+    this.finished = true;
+    this.results.updateGameState(state);
   }
 
   checkOpponentPosition(x, y) {

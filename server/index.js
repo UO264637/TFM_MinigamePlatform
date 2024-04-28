@@ -108,9 +108,14 @@ function action(socketId, data) {
 function disconnect(socketId) {
   console.log("Client disconnected:", socketId);
   const room = roomManager.getRoomBySocketId(socketId);
+  const roomId = roomManager.getRoomId(socketId);
 
   if (room?.game != null) {
     room.game.handleDisconnect(room, socketId);
+  }
+  
+  if (room.state.players.length == 0) {
+    roomManager.deleteRoom(roomId);
   }
 }
 

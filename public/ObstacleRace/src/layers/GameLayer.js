@@ -206,14 +206,13 @@ class GameLayer extends Layer {
   updateGameState(state) {
     if (state.result.status == Statuses.PLAYING) {
       this.hud.updatePlayerPositions(state);
-    } else if (
-      state.result.status == Statuses.DRAW ||
-      state.result.status == Statuses.WIN
-    ) {
-      this.player.stop();
-      this.speed = 0;
-      this.finished = true;
-      this.results.updateGameState(state);
     }
+  }
+
+  finish(state) {
+    this.player.stop();
+    this.speed = 0;
+    this.finished = true;
+    this.results.updateGameState(state);
   }
 }

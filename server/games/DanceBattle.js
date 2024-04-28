@@ -18,6 +18,7 @@ class DanceBattle extends BaseGame {
       currentPlayer: null,
       round: Rounds.FIRST,
       players: [],
+      maxPlayers: 2,
       result: {
         status: Statuses.WAITING,
       },
@@ -42,7 +43,7 @@ class DanceBattle extends BaseGame {
     room.state.currentPlayer = room.state.players.find(
       (player) => player.role == Roles.IMITATED
     );
-    
+
     if (room.state.result.status == Statuses.WAITING) {
       this.updateGameState(room, "gameStart");
       room.state.result.status = Statuses.PLAYING;
@@ -62,8 +63,8 @@ class DanceBattle extends BaseGame {
       if (this.verifyMovements(room)) {
         this.checkForEndOfTurn(room);
       }
+      this.updateGameState(room, "gameState");
     }
-    this.updateGameState(room, "gameState");
   }
 
   verifyMovements(room) {
@@ -85,8 +86,7 @@ class DanceBattle extends BaseGame {
       room.state.movementsToPlay = room.state.currentPlayer.movements;
       this.switchPlayer(room);
       clearInterval(room.turnTimer);
-      room.state.result.status = Statuses.WIN;
-      room.state.result.winner = imitated;
+      this.finishGame(room, imitated);
       return false;
     }
   }
@@ -108,8 +108,7 @@ class DanceBattle extends BaseGame {
 
         this.startTurnTimer(room, 10 + room.state.round);
       } else {
-        room.state.result.status = Statuses.WIN;
-        room.state.result.winner = imitator;
+        this.finishGame(room, imitator);
       }
     } else {
       room.state.currentPlayer = imitator;
@@ -132,10 +131,17 @@ class DanceBattle extends BaseGame {
       this.switchPlayer(room);
       this.startTurnTimer(room, 10 + room.state.round);
     } else if (imitator.movements.length < imitated.movements.length) {
-      room.state.result.status = Statuses.WIN;
-      room.state.result.winner = imitated;
+      this.finishGame(imitated);
     }
     this.updateGameState(room, "gameState");
+  }
+
+  finishGame(room, winner) {
+    room.state.result.status = Statuses.WIN;
+    room.state.result.winner = winner
+    setTimeout(() => {
+      this.updateGameState(room, "gameFinished");
+    }, 1000);
   }
 }
 

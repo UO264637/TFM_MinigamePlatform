@@ -46,6 +46,9 @@ class BaseGame {
 
     if (room.state.players.length >= 2 && allReady) {
       this.handleGameStart(room, null, null);
+      room.state.players.forEach((p) => {
+        p.ready = false;
+      });
     }
     this.updateGameState(room, "gameState");
   }
@@ -60,15 +63,16 @@ class BaseGame {
   handleDisconnect(room, socketId) {
     room.state.players = room.state.players.filter((p) => p.id != socketId);
     if (
-      room.state.result.status != Statuses.WIN &&
-      room.state.result.status != Statuses.DRAW
+      room.state.result.status == Statuses.PLAYING
     ) {
       room.state.result.status = Statuses.WIN;
       room.state.result.winner = room.state.players[0];
+      clearInterval(room.turnTimer);
+      this.updateGameState(room, "gameFinished");
     }
-
-    clearInterval(room.turnTimer);
-    this.updateGameState(room, "gameFinished");
+    else {
+      this.updateGameState(room, "gameState");
+    }
   }
 
   startTurnTimer(room, time) {

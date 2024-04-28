@@ -10,6 +10,7 @@ class MazeChase extends BaseGame {
     const state = {
       map: Math.floor(Math.random() * 3) + 1,
       players: [],
+      maxPlayers: 2,
       result: {
         status: Statuses.WAITING,
       },
@@ -96,6 +97,9 @@ class MazeChase extends BaseGame {
     room.state.result.status = Statuses.WIN;
     room.state.result.winner = pursued;
 
+    setTimeout(() => {
+      this.updateGameState(room, "gameFinished");
+    }, 1000);
     this.updateGameState(room, "gameState");
   }
 }

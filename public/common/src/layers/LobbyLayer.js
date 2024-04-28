@@ -1,8 +1,8 @@
 class LobbyLayer extends Layer {
   constructor() {
     super();
-    this.listX = originalCanvasWidth * 0.1;
-    this.listY = originalCanvasHeight * 0.1;
+    this.listX = 895;
+    this.symbolX = 1185;
     this.playerTexts = [];
     this.readySymbols = [];
     this.background = new Background(
@@ -10,56 +10,78 @@ class LobbyLayer extends Layer {
       canvas.width * 0.5,
       canvas.height * 0.5
     );
+    this.screenshot = new Background(
+      images.screenshot,
+      450,
+      275
+    );
+    this.controls = new Background(
+      images.controls,
+      1050,
+      250
+    );
+    this.explanation = new Background(
+      images.explanation,
+      450,
+      595
+    );
     this.readyButton = new Button(
       images.ready_button,
-      200,
-      originalCanvasHeight * 0.8
+      1050,
+      632.5
+    );
+    this.players = new CenteredText(
+      "Jugadores (0/X)",
+      "#563F2E",
+      1050,
+      437,
+      28
     );
   }
 
   updateGameState(state) {
-    this.listY = originalCanvasHeight * 0.1;
+    this.listY = 495;
     this.readySymbols = [];
     this.playerTexts = [];
 
     for (let player of state.players) {
-      let playerText = new CenteredText(
+      let playerText = new Text(
         player.playerName,
         "#563F2E",
         this.listX,
         this.listY,
         24
       );
-
       this.playerTexts.push(playerText);
-      this.listY += 24;
-
-      playerText.paint();
 
       if (player.ready) {
-        let symbol = new Text(
-          "✔",
-          "#C5DBC4",
-          this.listX + playerText.width,
-          playerText.y,
-          24
+        let symbol = new Background(
+          images.ready_symbol,
+          this.symbolX,
+          this.listY - 11
         );
         this.readySymbols.push(symbol);
       } else {
-        let symbol = new Text(
-          "✘",
-          "#FFADAD",
-          this.listX + playerText.width,
-          playerText.y,
-          24
+        let symbol = new Background(
+          images.waiting_symbol,
+          this.symbolX,
+          this.listY - 11
         );
         this.readySymbols.push(symbol);
       }
+      this.listY += 55;
     }
+
+    this.players.value = "Jugadores (" + state.players.length + "/" + state.maxPlayers + ")";
   }
 
   paint() {
     this.background.paint();
+    this.screenshot.paint();
+    this.controls.paint();
+    this.explanation.paint();
+    this.players.paint();
+    this.readyButton.paint();
 
     for (let playerText of this.playerTexts) {
       playerText.paint();
@@ -68,8 +90,6 @@ class LobbyLayer extends Layer {
     for (let symbol of this.readySymbols) {
       symbol.paint();
     }
-
-    this.readyButton.paint();
   }
 
   calculateTaps(taps) {

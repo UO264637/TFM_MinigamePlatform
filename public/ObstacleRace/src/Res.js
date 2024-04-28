@@ -1,7 +1,15 @@
 // Lista re recursos a precargar
 const images = {
   lobby_background: "../common/res/lobby_background.png",
+  ready_symbol: "../common/res/ready_symbol.png",
+  waiting_symbol: "../common/res/waiting_symbol.png",
   ready_button: "../common/res/ready_button.png",
+  screenshot: "res/lobby/screenshot.png",
+  controls: "res/lobby/controls.png",
+  explanation: "res/lobby/explanation.png",
+  results_background: "../common/res/results_background.png",
+  play_button: "../common/res/play_button.png",
+  back_button: "../common/res/back_button.png",
   background0: "res/background.png",
   background1: "res/background1.png",
   background2: "res/background2.png",

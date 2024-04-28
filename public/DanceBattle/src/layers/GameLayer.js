@@ -177,18 +177,24 @@ class GameLayer extends Layer {
       } else {
         this.updateState(state);
       }
-    } else if (state.result.status == Statuses.WIN) {
-      this.isTurn = false;
-      this[dancerRole].playDance(
-        state.movementsToPlay,
-        imitated?.movements,
-        () => {
-          this[dancerRole].movementsQueue.clear();
-          this.finished = true;
-          this.results.updateGameState(state);
-        }
-      );
     }
+  }
+
+  finish(state) {
+    let dancerRole = state.players.find(
+      (p) => p.id !== state.currentPlayer?.id
+    ).role;
+    let imitated = state.players.find((p) => p.role === "imitated");
+    this.isTurn = false;
+    this[dancerRole].playDance(
+      state.movementsToPlay,
+      imitated?.movements,
+      () => {
+        this[dancerRole].movementsQueue.clear();
+        this.finished = true;
+        this.results.updateGameState(state);
+      }
+    );
   }
 
   updateState(state) {

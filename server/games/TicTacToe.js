@@ -19,6 +19,7 @@ class TicTacToe extends BaseGame {
       board: new Array(9).fill(null),
       currentPlayer: null,
       players: [],
+      maxPlayers: 2,
       result: {
         status: Statuses.WAITING,
       },
@@ -40,7 +41,7 @@ class TicTacToe extends BaseGame {
     room.state.currentPlayer = room.state.players.find(
       (player) => player.symbol === "X"
     );
-    
+
     if (room.state.result.status == Statuses.WAITING) {
       this.updateGameState(room, "gameStart");
       room.state.result.status = Statuses.PLAYING;
@@ -58,23 +59,11 @@ class TicTacToe extends BaseGame {
       const player = room.state.players.find((p) => p.id === socketId);
       if (room.state.board[data.gridIndex] == null) {
         room.state.board[data.gridIndex] = player;
-        room.state.currentPlayer = room.state.players.find((p) => p !== player);
 
         clearInterval(room.turnTimer);
-
-        if (!this.checkForEndOfGame(room)) {
-          this.startTurnTimer(room, 15);
-        }
-        else {
-          this.updateGameState(room, "gameState");
-          setTimeout(() => {
-            this.updateGameState(room, "gameFinished");
-          }, 1000);
-          return;
-        }
+        this.checkForEndOfGame(room);
       }
     }
-    this.updateGameState(room, "gameState");
   }
 
   checkForEndOfGame(room) {
@@ -93,17 +82,24 @@ class TicTacToe extends BaseGame {
     });
 
     // Check for a draw
-    if (room.state.result.status != Statuses.WIN) {
+    if (room.state.result.status !== Statuses.WIN) {
       const emptyBlock = room.state.board.indexOf(null);
-      if (emptyBlock == -1) {
+      if (emptyBlock === -1) {
         room.state.result.status = Statuses.DRAW;
-        return true;
       }
-    } else {
-      return true;
     }
 
-    return false;
+    if (room.state.result.status == Statuses.WIN || room.state.result.status == Statuses.DRAW) {
+      //this.updateGameState(room, "gameState");
+      setTimeout(() => {
+        this.updateGameState(room, "gameFinished");
+      }, 1000);
+    }
+    else {
+      this.startTurnTimer(room, 15);
+      this.switchPlayer(room);
+    }
+    this.updateGameState(room, "gameState");
   }
 
   handleTurnTimeout(room) {
@@ -115,11 +111,7 @@ class TicTacToe extends BaseGame {
     }
 
     clearInterval(room.turnTimer);
-    if (!this.checkForEndOfGame(room)) {
-      this.startTurnTimer(room, 15);
-      this.switchPlayer(room);
-    }
-    this.updateGameState(room, "gameState");
+    this.checkForEndOfGame(room);
   }
 
   getRandomEmptyIndex(board) {

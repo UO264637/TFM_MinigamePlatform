@@ -1,30 +1,30 @@
 class ResultsLayer extends Layer {
   constructor() {
     super();
-    this.listX = originalCanvasWidth * 0.5;
-    this.listY = originalCanvasHeight * 0.4;
+    this.listX = 500;
+    this.symbolX = 790;
     this.playerTexts = [];
     this.readySymbols = [];
     this.background = new Background(
-      images.lobby_background,
+      images.results_background,
       canvas.width * 0.5,
       canvas.height * 0.5
     );
     this.rematchButton = new Button(
-      images.ready_button,
-      originalCanvasWidth * 0.6,
-      originalCanvasHeight * 0.8
+      images.play_button,
+      820,
+      500
     );
     this.backButton = new Button(
-      images.ready_button,
-      originalCanvasWidth * 0.4,
-      originalCanvasHeight * 0.8
+      images.back_button,
+      460,
+      500
     );
     this.result = new CenteredText(
       "",
       "#563F2E",
-      canvas.width * 0.5,
-      canvas.height * 0.2,
+      650,
+      225,
       40
     );
   }
@@ -36,43 +36,36 @@ class ResultsLayer extends Layer {
       this.result.value = "Ha ganado " + state.result.winner.playerName + "! ";
     }
 
-    this.listY = originalCanvasHeight * 0.4;
+    this.listY = 340;
     this.readySymbols = [];
     this.playerTexts = [];
 
     for (let player of state.players) {
-      let playerText = new CenteredText(
+      let playerText = new Text(
         player.playerName,
         "#563F2E",
         this.listX,
         this.listY,
         24
       );
-
       this.playerTexts.push(playerText);
-      this.listY += 24;
-
-      playerText.paint();
 
       if (player.ready) {
-        let symbol = new Text(
-          "✔",
-          "#C5DBC4",
-          this.listX + playerText.width,
-          playerText.y,
-          24
+        let symbol = new Background(
+          images.ready_symbol,
+          this.symbolX,
+          this.listY - 11
         );
         this.readySymbols.push(symbol);
       } else {
-        let symbol = new Text(
-          "✘",
-          "#FFADAD",
-          this.listX + playerText.width,
-          playerText.y,
-          24
+        let symbol = new Background(
+          images.waiting_symbol,
+          this.symbolX,
+          this.listY - 11
         );
         this.readySymbols.push(symbol);
       }
+      this.listY += 55;
     }
   }
 
@@ -101,6 +94,12 @@ class ResultsLayer extends Layer {
         if (tap.type == tapType.start) {
           //controls.ready = true;
           console.log("A");
+        }
+      }
+      if (this.backButton.containsPoint(tap.x, tap.y)) {
+        this.backButton.pressed = true;
+        if (tap.type == tapType.start) {
+          window.location.href = "../index.html";
         }
       }
     }

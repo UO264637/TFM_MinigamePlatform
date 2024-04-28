@@ -20,7 +20,7 @@ class RoomManager {
 
   getWaitingRooms() {
     const waitingRooms = Object.keys(this.rooms)
-      .filter((roomId) => this.rooms[roomId].state.result.status == "waiting")
+      .filter((roomId) => this.rooms[roomId].state.result.status == "waiting" && this.rooms[roomId].state.players.length < this.rooms[roomId].state.maxPlayers)
       .map((roomId) => ({
         roomId: roomId,
         gameType: this.rooms[roomId].gameType,
@@ -59,6 +59,12 @@ class RoomManager {
 
     return this.nextRoomId;
   }
+
+  deleteRoom(roomId) {
+    console.log("Deleted Room: " + roomId);
+    delete this.rooms[roomId];
+  }
+  
 }
 
 module.exports = new RoomManager();
