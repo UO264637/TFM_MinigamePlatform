@@ -10,7 +10,7 @@ class ResultsLayer extends Layer {
       canvas.width * 0.5,
       canvas.height * 0.5
     );
-    this.rematchButton = new Button(images.play_button, 820, 500);
+    this.playButton = new Button(images.play_button, 820, 500);
     this.backButton = new Button(images.back_button, 460, 500);
     this.result = new CenteredText("", "#563F2E", 650, 225, 40);
   }
@@ -67,29 +67,28 @@ class ResultsLayer extends Layer {
       symbol.paint();
     }
 
-    this.rematchButton.paint();
+    this.playButton.paint();
     this.backButton.paint();
   }
 
   calculateTaps(taps) {
-    this.rematchButton.pressed = false;
+    this.playButton.pressed = false;
 
     for (const tap of taps) {
-      if (this.rematchButton.containsPoint(tap.x, tap.y)) {
-        this.rematchButton.pressed = true;
-        if (tap.type == tapType.start) {
-          socket.emit("playAgain");
-        }
+      if (this.playButton.containsPoint(tap.x, tap.y) && tap.type == tapType.start) {
+        this.playButton.pressed = true;
+        controls.ready = true;
+        this.playButton.image.src = images.play_button_pressed;
+        socket.emit("playAgain");
       }
-      if (this.backButton.containsPoint(tap.x, tap.y)) {
+      if (this.backButton.containsPoint(tap.x, tap.y) && tap.type == tapType.start) {
         this.backButton.pressed = true;
-        if (tap.type == tapType.start) {
-          window.location.href = "../index.html";
-        }
+        window.location.href = "../index.html";
+        this.backButton.image.src = images.back_button_pressed;
       }
     }
 
-    if (!this.rematchButton.pressed) {
+    if (!this.playButton.pressed) {
       controls.ready = false;
     }
   }

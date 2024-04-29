@@ -20,7 +20,9 @@ class RoomManager {
 
   getWaitingRooms() {
     const waitingRooms = Object.keys(this.rooms)
-      .filter((roomId) => this.rooms[roomId].state.result.status == "waiting" && this.rooms[roomId].state.players.length < this.rooms[roomId].state.maxPlayers)
+      .filter((roomId) => this.rooms[roomId].state.result.status == "waiting" 
+        && this.rooms[roomId].state.players.length < this.rooms[roomId].state.maxPlayers
+        && this.rooms[roomId].state.players.length > 0)
       .map((roomId) => ({
         roomId: roomId,
         gameType: this.rooms[roomId].gameType,

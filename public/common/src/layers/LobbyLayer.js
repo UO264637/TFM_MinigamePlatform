@@ -100,6 +100,10 @@ class LobbyLayer extends Layer {
         this.readyButton.pressed = true;
         if (tap.type == tapType.start) {
           controls.ready = true;
+          this.readyButton.image.src = images.ready_button_pressed;
+          setTimeout(() => {
+            this.readyButton.image.src = images.ready_button;
+          }, 100);
         }
       }
     }
