@@ -53,7 +53,7 @@ class DanceBattle extends BaseGame {
       room.state.result.status === Statuses.PLAYING &&
       room.state.currentPlayer.id === socketId
     ) {
-      let newMovements = data.movements.slice(0, room.state.round); // Ensures there aren't more movements tha it should
+      let newMovements = data.movements.slice(0, room.state.round); // Ensures there aren't more movements than it should
       room.state.currentPlayer.movements = newMovements;
       if (this.verifyMovements(room)) {
         this.checkForEndOfTurn(room);
@@ -119,15 +119,11 @@ class DanceBattle extends BaseGame {
 
   handleTurnTimeout(room) {
     clearInterval(room.turnTimer);
-    const imitated = room.state.players.find((p) => p.role === Roles.IMITATED);
-    const imitator = room.state.players.find((p) => p.role === Roles.IMITATOR);
-
-    if (room.state.currentPlayer.role == Roles.IMITATED) {
-      this.switchPlayer(room);
-      this.startTurnTimer(room, 10 + room.state.round);
-    } else if (imitator.movements.length < imitated.movements.length) {
-      this.finishGame(imitated);
-    }
+    room.state.movementsToPlay = [];
+    
+    const winner = room.state.players.find((p) => p.role != room.state.currentPlayer.role);
+    this.finishGame(room, winner);
+      
     this.updateGameState(room, "gameState");
   }
 
