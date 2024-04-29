@@ -178,6 +178,9 @@ class GameLayer extends Layer {
         this.updateState(state);
       }
     }
+    if (this.finished) {
+      this.results.updateGameState(state);
+    }
   }
 
   finish(state) {

@@ -43,7 +43,7 @@ class GameLayer extends Layer {
       canvas.height * 0.53
     );
     this.status = new CenteredText(
-      0,
+      "",
       "#563F2E",
       canvas.width * 0.5,
       canvas.height * 0.1
@@ -132,6 +132,10 @@ class GameLayer extends Layer {
         this.currentTurn = "Turno de " + opponent + ": ";
         this.isTurn = false;
       }
+    }
+
+    if (this.finished) {
+      this.results.updateGameState(state);
     }
   }
 

@@ -10,23 +10,9 @@ class ResultsLayer extends Layer {
       canvas.width * 0.5,
       canvas.height * 0.5
     );
-    this.rematchButton = new Button(
-      images.play_button,
-      820,
-      500
-    );
-    this.backButton = new Button(
-      images.back_button,
-      460,
-      500
-    );
-    this.result = new CenteredText(
-      "",
-      "#563F2E",
-      650,
-      225,
-      40
-    );
+    this.rematchButton = new Button(images.play_button, 820, 500);
+    this.backButton = new Button(images.back_button, 460, 500);
+    this.result = new CenteredText("", "#563F2E", 650, 225, 40);
   }
 
   updateGameState(state) {
@@ -92,8 +78,7 @@ class ResultsLayer extends Layer {
       if (this.rematchButton.containsPoint(tap.x, tap.y)) {
         this.rematchButton.pressed = true;
         if (tap.type == tapType.start) {
-          //controls.ready = true;
-          console.log("A");
+          socket.emit("playAgain");
         }
       }
       if (this.backButton.containsPoint(tap.x, tap.y)) {

@@ -207,6 +207,10 @@ class GameLayer extends Layer {
     if (state.result.status == Statuses.PLAYING) {
       this.hud.updatePlayerPositions(state);
     }
+
+    if (this.finished) {
+      this.results.updateGameState(state);
+    }
   }
 
   finish(state) {

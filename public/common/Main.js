@@ -48,6 +48,10 @@ function startGame() {
     gameLayer.finish(state);
   });
 
+  socket.on("gameRestart", function (state) {
+    window.location.reload();
+  });
+
   setInterval(loop, 1000 / 30);
 }
 
@@ -58,7 +62,7 @@ function loop() {
   layer.calculateTaps(taps);
   layer.processControls();
   layer.paint();
-  
+
   updateTaps();
 }
 
@@ -79,14 +83,17 @@ function resize() {
   canvas.height = originalCanvasHeight;
 
   let widthScaling = parseFloat(window.innerWidth / canvas.width);
-  let heightScaling = parseFloat((window.innerHeight) / (canvas.height));
+  let heightScaling = parseFloat(window.innerHeight / canvas.height);
   minScale = Math.min(widthScaling, heightScaling);
 
   canvas.width = canvas.width * minScale - 162;
   canvas.height = canvas.height * minScale - 90;
 
-  minScale = Math.min(parseFloat(canvas.width / originalCanvasWidth), parseFloat(canvas.height / originalCanvasHeight));
-  header.style.width = canvas.width+"px";
+  minScale = Math.min(
+    parseFloat(canvas.width / originalCanvasWidth),
+    parseFloat(canvas.height / originalCanvasHeight)
+  );
+  header.style.width = canvas.width + "px";
 
   context.scale(minScale, minScale);
 }

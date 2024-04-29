@@ -169,6 +169,9 @@ class GameLayer extends Layer {
         this.invertRoles();
       }
     }
+    if (this.finished) {
+      this.results.updateGameState(state);
+    }
   }
 
   finish(state) {

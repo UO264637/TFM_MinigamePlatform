@@ -79,6 +79,10 @@ io.on("connection", function (socket) {
   socket.on("disconnect", function () {
     disconnect(socket.id);
   });
+
+  socket.on("playAgain", function () {
+    playAgain(socket.id);
+  });
 });
 
 function joinGame(socketId, data) {
@@ -113,9 +117,21 @@ function disconnect(socketId) {
   if (room?.game != null) {
     room.game.handleDisconnect(room, socketId);
   }
-  
+
   if (room?.state.players.length == 0) {
-    roomManager.deleteRoom(roomId);
+    setTimeout(() => {
+      if (room?.state.players.length == 0) {
+        roomManager.deleteRoom(roomId);
+      }
+    }, 1000);
+  }
+}
+
+function playAgain(socketId) {
+  let room = roomManager.getRoomBySocketId(socketId);
+
+  if (room != null) {
+    room.game.handlePlayAgain(room, socketId);
   }
 }
 
