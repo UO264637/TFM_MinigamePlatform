@@ -20,18 +20,13 @@ class MazeChase extends BaseGame {
     room[Roles.PURSUED + "timer"] = 0;
   }
 
-  handleOnePlayer(room, socketId, data) {
+  handleGameStart(room, socketId, data) {
     const rolesKeys = Object.keys(Roles);
     const randomIndex = Math.round(Math.random());
+
     room.state.players[0].role = Roles[rolesKeys[randomIndex]];
     room.state.players[0].timer = 0;
-  }
-
-  handleGameStart(room, socketId, data) {
-    let firstPlayerRole = room.state.players[0].role;
-    room.state.players[1].role = Object.values(Roles).find(
-      (role) => role !== firstPlayerRole
-    );
+    room.state.players[1].role = Roles[rolesKeys[1-randomIndex]];
     room.state.players[1].timer = 0;
 
     if (room.state.result.status == Statuses.WAITING) {

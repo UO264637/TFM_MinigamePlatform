@@ -114,7 +114,7 @@ function disconnect(socketId) {
     room.game.handleDisconnect(room, socketId);
   }
   
-  if (room.state.players.length == 0) {
+  if (room?.state.players.length == 0) {
     roomManager.deleteRoom(roomId);
   }
 }

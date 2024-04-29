@@ -11,31 +11,18 @@ class BaseGame {
   }
 
   handleJoinGame(room, socketId, data) {
-    let nPlayers = room.state.players.length;
-
     const newPlayer = {
       playerName: data.playerName,
       id: socketId,
     };
+    room.state.players.push(newPlayer);
 
-    if (nPlayers === 0) {
-      console.log(
-        "Room " + data.roomId + " (1/2): " + data.playerName + " joined"
-      );
+    let nPlayers = room.state.players.length;
+    console.log(
+      `Room ${data.roomId} (${nPlayers}/${room.state.maxPlayers}): ${data.playerName} joined`
+    );
 
-      room.state.players.push(newPlayer);
-      this.handleOnePlayer(room, socketId, data);
-    } else if (nPlayers === 1) {
-      console.log(
-        "Room " + data.roomId + " (2/2): " + data.playerName + " joined"
-      );
-      room.state.players.push(newPlayer);
-    }
     this.updateGameState(room, "gameState");
-  }
-
-  handleOnePlayer(room, socketId, data) {
-    throw new Error("Abstract method not implemented");
   }
 
   handleReadyPlayer(room, socketId) {
@@ -44,7 +31,7 @@ class BaseGame {
 
     const allReady = room.state.players.every((p) => p.ready);
 
-    if (room.state.players.length >= 2 && allReady) {
+    if (room.state.players.length >= room.state.maxPlayers && allReady) {
       this.handleGameStart(room, null, null);
       room.state.players.forEach((p) => {
         p.ready = false;
@@ -62,15 +49,12 @@ class BaseGame {
 
   handleDisconnect(room, socketId) {
     room.state.players = room.state.players.filter((p) => p.id != socketId);
-    if (
-      room.state.result.status == Statuses.PLAYING
-    ) {
+    if (room.state.result.status == Statuses.PLAYING) {
       room.state.result.status = Statuses.WIN;
       room.state.result.winner = room.state.players[0];
       clearInterval(room.turnTimer);
       this.updateGameState(room, "gameFinished");
-    }
-    else {
+    } else {
       this.updateGameState(room, "gameState");
     }
   }

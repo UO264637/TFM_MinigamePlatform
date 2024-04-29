@@ -17,12 +17,10 @@ class ObstacleRace extends BaseGame {
     room.state = state;
   }
 
-  handleOnePlayer(room, socketId, data) {
-    room.state.players[0].position = 0;
-  }
-
   handleGameStart(room, socketId, data) {
-    room.state.players[1].position = 0;
+    room.state.players.map(player => {
+      player.position = 0;
+    });
 
     if (room.state.result.status == Statuses.WAITING) {
       this.updateGameState(room, "gameStart");

@@ -27,16 +27,11 @@ class TicTacToe extends BaseGame {
     room.state = state;
   }
 
-  handleOnePlayer(room, socketId, data) {
+  handleGameStart(room, socketId, data) {
     let symbol = Math.round(Math.random());
     room.state.players[0].symbol = symbols[symbol];
-  }
-
-  handleGameStart(room, socketId, data) {
-    let symbol = symbols.find(
-      (symbol) => symbol !== room.state.players[0].symbol
-    ); // X or O
-    room.state.players[1].symbol = symbol;
+    symbol = 1 - symbol;
+    room.state.players[1].symbol = symbols[symbol];
 
     room.state.currentPlayer = room.state.players.find(
       (player) => player.symbol === "X"

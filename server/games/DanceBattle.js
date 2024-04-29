@@ -26,19 +26,14 @@ class DanceBattle extends BaseGame {
     room.state = state;
   }
 
-  handleOnePlayer(room, socketId, data) {
+  handleGameStart(room, socketId, data) {
     const rolesKeys = Object.keys(Roles);
     const randomIndex = Math.round(Math.random());
+    
     room.state.players[0].role = Roles[rolesKeys[randomIndex]];
+    room.state.players[1].role = Roles[rolesKeys[1-randomIndex]];
     room.state.players[0].movements = [];
-  }
-
-  handleGameStart(room, socketId, data) {
-    let firstPlayerRole = room.state.players[0].role;
-    room.state.players[1].role = Object.values(Roles).find(
-      (role) => role !== firstPlayerRole
-    );
-    room.state.players[1].movements = [];
+    room.state.players[0].movements = [];
 
     room.state.currentPlayer = room.state.players.find(
       (player) => player.role == Roles.IMITATED
