@@ -7,6 +7,7 @@ const TicTacToe = require("./games/TicTacToe");
 const ObstacleRace = require("./games/ObstacleRace");
 const DanceBattle = require("./games/DanceBattle");
 const MazeChase = require("./games/MazeChase");
+const CabooseCount = require("./games/CabooseCount");
 
 const app = express();
 app.use(cors());
@@ -32,6 +33,7 @@ const games = {
   ObstacleRace: new ObstacleRace(io),
   DanceBattle: new DanceBattle(io),
   MazeChase: new MazeChase(io),
+  CabooseCount: new CabooseCount(io),
 };
 
 app.get("/api/gameTypes", (req, res) => {

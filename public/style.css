@@ -224,6 +224,10 @@ button:hover {
   background-color: #DFE8D6;
 }
 
+.CabooseCount {
+  background-color: #F7D9C4;
+}
+
 .selected {
   font-weight: bold;
   border-width: 3px;
