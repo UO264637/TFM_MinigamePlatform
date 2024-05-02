@@ -37,7 +37,7 @@ class GameLayer extends Layer {
       canvas.height * 0.5
     );
     this.status = new Text(
-      0,
+      "",
       "#563F2E",
       originalCanvasWidth * 0.01,
       originalCanvasHeight * 0.1
@@ -47,7 +47,6 @@ class GameLayer extends Layer {
       originalCanvasWidth * 0.95,
       originalCanvasHeight * 0.9
     );
-    this.status.value = "";
   }
 
   update() {

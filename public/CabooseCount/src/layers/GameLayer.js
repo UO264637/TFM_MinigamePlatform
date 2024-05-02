@@ -21,28 +21,39 @@ class GameLayer extends Layer {
       this.backgrounds.push(this["background" + i]);
     }
 
-    this.floor_background = new Background(
-      images.floor_background,
-      originalCanvasWidth * 0.5,
-      originalCanvasHeight * 0.5
-    );
-    this.backgrounds.push(this.floor_background);
-
     this.background5 = new Background(
       images.background5,
       originalCanvasWidth * 0.5,
       originalCanvasHeight * 0.5
     );
+
+    this.status = new Text(
+      "",
+      "#563F2E",
+      originalCanvasWidth * 0.01,
+      originalCanvasHeight * 0.1
+    );
   }
 
   update() {
     this.countdown.update();
+
+    for (let car of this.cars) {
+      car.update();
+    }
   }
 
   paint() {
     for (let background of this.backgrounds) {
       background.paint();
     }
+
+    this.status.paint();
+
+    for (let car of this.cars) {
+      car.paint();
+    }
+
     this.countdown.paint();
 
     if (this.finished) {
@@ -71,18 +82,7 @@ class GameLayer extends Layer {
   start(state) {
     disableKeyboardInput();
 
-    for (let element of state.elements) {
-      switch (element) {
-        case 1:
-          break;
-        case 2:
-          break;
-        case 3:
-          break;
-        default:
-          break;
-      }
-    }
+    this.loadTrain(state.elements);
 
     this.countdown.start();
     setTimeout(() => {
@@ -99,5 +99,31 @@ class GameLayer extends Layer {
   finish(state) {
     this.finished = true;
     this.results.updateGameState(state);
+  }
+
+  loadTrain(passengers) {
+    let carX = 0;
+    let carY = 200;
+    let car = new Car(images.engine, carX, carY, 0);
+    //this.cars.push(car);
+    
+    
+    for (let element of passengers) {
+      if (car.isFull()) {
+        carX -= 1300;
+        this.cars.push(car);
+        car = new Car(images.car, carX, carY, 8);
+      }
+      car.addPassenger(element);
+    }
+
+    this.cars.push(car);
+    car = new Car(images.caboose, carX-1300, carY, 0);
+    this.cars.push(car);
+  }
+
+
+  updateTurnTimer(secondsLeft) {
+    this.status.value = secondsLeft + "s...";
   }
 }
