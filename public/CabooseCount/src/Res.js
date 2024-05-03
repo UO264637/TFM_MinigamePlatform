@@ -26,6 +26,7 @@ const images = {
   passenger1: "res/player.png",
   passenger2: "res/air_obstacle1.png",
   passenger3: "res/floor_obstacle1.png",
+  count_input: "res/player.png"
 };
 
 const imageRutes = Object.values(images);

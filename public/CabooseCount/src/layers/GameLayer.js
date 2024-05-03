@@ -10,7 +10,13 @@ class GameLayer extends Layer {
     this.backgrounds = [];
     this.cars = [];
     this.floorY = originalCanvasHeight - 200;
-    this.speed = 0;
+    this.inputTime = false;
+
+    this.countInput = new CountInput(
+      images.count_input,
+      originalCanvasWidth * 0.5,
+      originalCanvasHeight * 0.5
+    );
 
     for (let i = 0; i < 5; i++) {
       this["background" + i] = new Background(
@@ -64,12 +70,12 @@ class GameLayer extends Layer {
   processControls() {
     if (this.finished) {
       this.results.processControls();
-    }
-    // Eje Y
-    if (controls.moveY > 0) {
-    } else if (controls.moveY < 0) {
-      
-    } else {
+    } else if (this.inputTime) {
+      if (controls.moveY > 0) {
+        this.countInput.increase();
+      } else if (controls.moveY < 0) {
+        this.countInput.decrease();
+      }
     }
   }
 
@@ -85,12 +91,10 @@ class GameLayer extends Layer {
     this.loadTrain(state.elements);
 
     this.countdown.start();
-    setTimeout(() => {
-    }, 3000);
+    setTimeout(() => {}, 3000);
   }
 
   updateGameState(state) {
-
     if (this.finished) {
       this.results.updateGameState(state);
     }
@@ -106,8 +110,7 @@ class GameLayer extends Layer {
     let carY = 200;
     let car = new Car(images.engine, carX, carY, 0);
     //this.cars.push(car);
-    
-    
+
     for (let element of passengers) {
       if (car.isFull()) {
         carX -= 1300;
@@ -118,10 +121,9 @@ class GameLayer extends Layer {
     }
 
     this.cars.push(car);
-    car = new Car(images.caboose, carX-1300, carY, 0);
+    car = new Car(images.caboose, carX - 1300, carY, 0);
     this.cars.push(car);
   }
-
 
   updateTurnTimer(secondsLeft) {
     this.status.value = secondsLeft + "s...";
