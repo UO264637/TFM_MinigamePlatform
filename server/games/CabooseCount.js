@@ -3,12 +3,12 @@ const { BaseGame, Statuses } = require("./BaseGame");
 class CabooseCount extends BaseGame {
   initializeGameState(room) {
     const elements = Array.from({ length: 56 }, () =>
-      Math.round(Math.random() * 4)
+      Math.round(Math.random() * 3)
     );
 
     const state = {
       elements: elements,
-      toCount: Math.round(Math.random() * 3) + 1,
+      toCount: Math.round(Math.random() * 2) + 1,
       players: [],
       maxPlayers: 2,
       result: {
