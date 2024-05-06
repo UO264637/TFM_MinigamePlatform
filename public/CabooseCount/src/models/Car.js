@@ -1,18 +1,20 @@
 class Car extends Model {
-  constructor(image, x, y, seats) {
+  constructor(image, image_bg, x, y, seats) {
     super(image, x, y);
 
+    this.background = new Background(image_bg, x, y);
     this.yv = 0;
     this.xv = 15;
     this.seats = seats;
     this.passengers = [];
     this.numPassengers = 0;
-    this.passengerX = x + 560;
-    this.passengerY = 300;
+    this.passengerX = x + 475;
+    this.passengerY = 200;
   }
 
   update() {
     this.x += this.xv;
+    this.background.x = this.x;
 
     for (let passenger of this.passengers) {
       passenger.x += this.xv;
@@ -20,11 +22,12 @@ class Car extends Model {
   }
 
   paint() {
-    super.paint();
+    this.background.paint();
 
     for (let passenger of this.passengers) {
       passenger.paint();
     }
+    super.paint();
   }
 
   isFull() {
@@ -37,6 +40,6 @@ class Car extends Model {
       this.passengers.push(passenger);
     }
     this.numPassengers++;
-    this.passengerX -= 160;
+    this.passengerX -= 136.5;
   }
 }
