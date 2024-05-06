@@ -20,29 +20,38 @@ class CabooseCount extends BaseGame {
 
   handleGameStart(room, socketId, data) {
     room.state.players.map((player) => {
-      player.count = 0;
+      player.count = -1;
     });
 
     if (room.state.result.status == Statuses.WAITING) {
       this.updateGameState(room, "gameStart");
       room.state.result.status = Statuses.PLAYING;
-      setTimeout(() => {
-        this.startTurnTimer(room, 30);
-      }, 3000);
     }
   }
 
   handleAction(room, socketId, data) {
     const player = room.state.players.find((p) => p.id === socketId);
-    player.count = data.count;
-
-    this.checkForEndOfGame(room);
+    if (data.readyToCount) {
+      player.readyToCount = true;
+      let allReady = room.state.players.every((p) => p.readyToCount);
+      if (allReady) {
+        room.state.readyToCount = true;
+        this.startTurnTimer(room, 10);
+        this.updateGameState(room, "gameState");
+      }
+    }
+    else {
+      console.log(data.count);
+      player.count = data.count;
+      this.checkForEndOfGame(room);
+    }
   }
 
   checkForEndOfGame(room) {
-    let playerAnswers = room.state.players.filter((player) => player.count > 0);
+    let playerAnswers = room.state.players.filter((player) => player.count > -1);
     room.state.solution = room.state.elements.filter((element) => element == room.state.toCount).length;
     let possibleWinner = room.state.players.filter((player) => player.count == room.state.solution)[0];
+    console.log(room.state.solution);
 
     if (playerAnswers.length >= room.state.maxPlayers) {
       if (playerAnswers.every((answer) => answer == playerAnswers[0])) {
@@ -50,6 +59,8 @@ class CabooseCount extends BaseGame {
       } else if (possibleWinner != null) {
         room.state.result.status = Statuses.WIN;
         room.state.result.winner = possibleWinner;
+      } else {
+        room.state.result.status = Statuses.DRAW;
       }
     }
 
@@ -66,8 +77,6 @@ class CabooseCount extends BaseGame {
 
   handleTurnTimeout(room) {
     clearInterval(room.turnTimer);
-
-    this.checkForEndOfGame(room);
   }
 }
 

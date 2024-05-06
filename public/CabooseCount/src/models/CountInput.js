@@ -21,4 +21,10 @@ class CountInput extends Model {
       this.input.value--;
     }
   }
+
+  emitValue() {
+    socket.emit("action", {
+      count: this.input.value,
+    });
+  }
 }
