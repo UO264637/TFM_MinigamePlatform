@@ -20,17 +20,8 @@ class GameLayer extends Layer {
       originalCanvasHeight * 0.5
     );
 
-    for (let i = 0; i < 5; i++) {
-      this["background" + i] = new Background(
-        images["background" + i],
-        originalCanvasWidth * 0.5,
-        originalCanvasHeight * 0.5
-      );
-      this.backgrounds.push(this["background" + i]);
-    }
-
-    this.background5 = new Background(
-      images.background5,
+    this.background = new Background(
+      images.background,
       originalCanvasWidth * 0.5,
       originalCanvasHeight * 0.5
     );
@@ -58,9 +49,7 @@ class GameLayer extends Layer {
   }
 
   paint() {
-    for (let background of this.backgrounds) {
-      background.paint();
-    }
+    this.background.paint();
 
     this.status.paint();
 
@@ -129,8 +118,8 @@ class GameLayer extends Layer {
 
   loadTrain(passengers) {
     let carX = 0;
-    let carY = 200;
-    let car = new Car(images.car, images.car_bg, carX, carY, 0);
+    let carY = 400;
+    let car = new Car(images.engine, images.engine, carX, carY, 0);
 
     for (let element of passengers) {
       if (car.isFull()) {
@@ -141,7 +130,7 @@ class GameLayer extends Layer {
       car.addPassenger(element);
     }
     this.cars.push(car);
-    car.background.src = images.caboose;
+    car.image.src = images.caboose;
     this.caboose = car;
   }
 

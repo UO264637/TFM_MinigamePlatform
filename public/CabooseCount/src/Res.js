@@ -13,21 +13,15 @@ const images = {
   play_button_pressed: "../common/res/play_button_pressed.png",
   back_button: "../common/res/back_button.png",
   back_button_pressed: "../common/res/back_button_pressed.png",
-  background0: "res/background.png",
-  background1: "res/background1.png",
-  background2: "res/background2.png",
-  background3: "res/background3.png",
-  background4: "res/background4.png",
-  background5: "res/background5.png",
-  floor: "res/floor.png",
-  engine: "res/floor_background.png",
+  background: "res/background.png",
+  engine: "res/engine.png",
   car: "res/car.png",
   car_bg: "res/car_bg.png",
-  caboose: "res/car.png",
+  caboose: "res/caboose.png",
   passenger1: "res/player.png",
   passenger2: "res/air_obstacle1.png",
   passenger3: "res/floor_obstacle1.png",
-  count_input: "res/player.png"
+  count_input: "res/counter.png"
 };
 
 const imageRutes = Object.values(images);

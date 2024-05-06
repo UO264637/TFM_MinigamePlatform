@@ -4,12 +4,12 @@ class Car extends Model {
 
     this.background = new Background(image_bg, x, y);
     this.yv = 0;
-    this.xv = 15;
+    this.xv = 20;
     this.seats = seats;
     this.passengers = [];
     this.numPassengers = 0;
-    this.passengerX = x + 475;
-    this.passengerY = 200;
+    this.passengerX = x + 470;
+    this.passengerY = 400;
   }
 
   update() {
@@ -40,6 +40,6 @@ class Car extends Model {
       this.passengers.push(passenger);
     }
     this.numPassengers++;
-    this.passengerX -= 136.5;
+    this.passengerX -= 136.4;
   }
 }
