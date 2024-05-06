@@ -21,7 +21,7 @@ const images = {
   background5: "res/background5.png",
   floor: "res/floor.png",
   engine: "res/floor_background.png",
-  car: "res/floor_background.png",
+  car: "res/car.png",
   caboose: "res/floor_background.png",
   passenger1: "res/player.png",
   passenger2: "res/air_obstacle1.png",
