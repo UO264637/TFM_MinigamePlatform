@@ -48,7 +48,7 @@ function startGame() {
     gameLayer.finish(state);
   });
 
-  socket.on("gameRestart", function (state) {
+  socket.on("gameRestart", function () {
     window.location.reload();
   });
 

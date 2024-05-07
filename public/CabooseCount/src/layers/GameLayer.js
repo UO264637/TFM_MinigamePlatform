@@ -26,11 +26,25 @@ class GameLayer extends Layer {
       originalCanvasHeight * 0.5
     );
 
-    this.status = new Text(
+    this.status = new CenteredText(
       "",
       "#563F2E",
-      originalCanvasWidth * 0.01,
+      originalCanvasWidth * 0.5,
       originalCanvasHeight * 0.1
+    );
+
+    this.solutionA = new CenteredText(
+      "",
+      "#563F2E",
+      originalCanvasWidth * 0.4,
+      originalCanvasHeight * 0.8
+    );
+
+    this.solutionB = new CenteredText(
+      "",
+      "#563F2E",
+      originalCanvasWidth * 0.6,
+      originalCanvasHeight * 0.8
     );
   }
 
@@ -106,6 +120,11 @@ class GameLayer extends Layer {
     if (state.readyToCount) {
       this.countingTime = true;
     }
+    if (this.resultsTime) {
+      this.status.value = "Result: " + state.solution;
+      this.solutionA.value = state.players[0].value;
+      this.solutionB.value = state.players[1].value;
+    }
     if (this.finished) {
       this.results.updateGameState(state);
     }
@@ -117,7 +136,7 @@ class GameLayer extends Layer {
   }
 
   loadTrain(passengers) {
-    let carX = 0;
+    let carX = -600;
     let carY = 400;
     let car = new Car(images.engine, images.engine, carX, carY, 0);
 

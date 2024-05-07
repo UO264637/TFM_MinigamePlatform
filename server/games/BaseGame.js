@@ -60,10 +60,8 @@ class BaseGame {
   }
 
   handlePlayAgain(room, socketId) {
-    let players = room.state.players;
     this.initializeGameState(room);
-    room.state.players = players;
-    this.io.to(socketId).emit("gameRestart", room.state);
+    this.io.to(socketId).emit("gameRestart");
   }
 
   startTurnTimer(room, time) {

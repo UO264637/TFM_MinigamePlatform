@@ -51,9 +51,9 @@ class CabooseCount extends BaseGame {
     let playerAnswers = room.state.players.filter((player) => player.count > -1);
     room.state.solution = room.state.elements.filter((element) => element == room.state.toCount).length;
     let possibleWinner = room.state.players.filter((player) => player.count == room.state.solution)[0];
-    console.log(room.state.solution);
 
     if (playerAnswers.length >= room.state.maxPlayers) {
+      console.log(room.state.solution);
       if (playerAnswers.every((answer) => answer == playerAnswers[0])) {
         room.state.result.status = Statuses.DRAW;
       } else if (possibleWinner != null) {
@@ -70,7 +70,7 @@ class CabooseCount extends BaseGame {
     ) {
       setTimeout(() => {
         this.updateGameState(room, "gameFinished");
-      }, 500);
+      }, 4000);
       this.updateGameState(room, "gameState");
     }
   }

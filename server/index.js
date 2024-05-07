@@ -135,6 +135,9 @@ function playAgain(socketId) {
   if (room != null) {
     room.game.handlePlayAgain(room, socketId);
   }
+  else {
+    io.to(socketId).emit("gameRestart");
+  }
 }
 
 server.listen(3000, () => {
