@@ -50,6 +50,7 @@ class GameLayer extends Layer {
 
   update() {
     this.countdown.update();
+    this.countInput.update();
 
     for (let car of this.cars) {
       car.update();
@@ -95,7 +96,9 @@ class GameLayer extends Layer {
       } else if (controls.moveY < 0) {
         this.countInput.decrease();
       }
-      controls.moveY = 0;
+      else if (controls.moveY == 0) {
+        this.countInput.stop();
+      }
     }
   }
 
@@ -122,8 +125,8 @@ class GameLayer extends Layer {
     }
     if (this.resultsTime) {
       this.status.value = "Result: " + state.solution;
-      this.solutionA.value = state.players[0].value;
-      this.solutionB.value = state.players[1].value;
+      this.solutionA.value = state.players[0].count;
+      this.solutionB.value = state.players[1].count;
     }
     if (this.finished) {
       this.results.updateGameState(state);
