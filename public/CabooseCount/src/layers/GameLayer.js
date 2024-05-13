@@ -33,18 +33,16 @@ class GameLayer extends Layer {
       originalCanvasHeight * 0.1
     );
 
-    this.solutionA = new CenteredText(
-      "",
-      "#563F2E",
-      originalCanvasWidth * 0.4,
-      originalCanvasHeight * 0.8
+    this.player = new Player(
+      originalCanvasWidth * 0.40,
+      originalCanvasHeight * 0.96,
+      "left"
     );
 
-    this.solutionB = new CenteredText(
-      "",
-      "#563F2E",
-      originalCanvasWidth * 0.6,
-      originalCanvasHeight * 0.8
+    this.opponent = new Player(
+      originalCanvasWidth * 0.60,
+      originalCanvasHeight * 0.96,
+      "right"
     );
   }
 
@@ -72,13 +70,16 @@ class GameLayer extends Layer {
       car.paint();
     }
 
+    this.player.paint();
+    this.opponent.paint();
+
     if (this.countdown.value != null) {
       this.passengerToCount.paint();
     }
 
     this.countdown.paint();
 
-    if (this.countingTime) {
+    if (this.countingTime && !this.resultsTime) {
       this.countInput.paint();
     }
 
@@ -113,6 +114,11 @@ class GameLayer extends Layer {
 
     this.passengerToCount = new Background(images["passenger" + state.toCount], 640, 200);
 
+    let player = state.players.find((p) => p.id == socketId);
+    let opponent = state.players.find((p) => p.id != socketId);
+    this.player.setName(player.playerName);
+    this.opponent.setName(opponent.playerName);
+
     this.countdown.start();
     setTimeout(() => {
       this.loadTrain(state.elements);
@@ -124,9 +130,12 @@ class GameLayer extends Layer {
       this.countingTime = true;
     }
     if (this.resultsTime) {
+      let player = state.players.find((p) => p.id == socketId);
+      let opponent = state.players.find((p) => p.id != socketId);
+
       this.status.value = "Result: " + state.solution;
-      this.solutionA.value = state.players[0].count;
-      this.solutionB.value = state.players[1].count;
+      this.player.showResult(player.count);
+      this.opponent.showResult(opponent.count);
     }
     if (this.finished) {
       this.results.updateGameState(state);

@@ -1,4 +1,6 @@
 class CountInput extends Model {
+  static DEFAULT_DELAY = 5;
+
   constructor(image, x, y, seats) {
     super(image, x, y);
 
@@ -7,7 +9,7 @@ class CountInput extends Model {
     this.increaseBg = new Background(images.counter_up, x, y);
     this.decreaseBg = new Background(images.counter_down, x, y);
 
-    this.delay = 50;
+    this.delay = CountInput.DEFAULT_DELAY;
     this.input = new CenteredText(0, "#000000", x, y + 20, 40);
   }
 
@@ -17,7 +19,7 @@ class CountInput extends Model {
     }
     if (this.delay <= 0) {
       this.stop();
-      this.delay = 50;
+      this.delay = CountInput.DEFAULT_DELAY;
     }
   }
 
@@ -41,8 +43,8 @@ class CountInput extends Model {
   }
 
   decrease() {
-    if (!this.increasing && this.input.value > 0) {
-      this.decreasing = false;
+    if (!this.decreasing && this.input.value > 0) {
+      this.increasing = false;
       this.decreasing = true;
       this.input.value--;
     }
@@ -51,6 +53,7 @@ class CountInput extends Model {
   stop() {
     this.increasing = false;
     this.decreasing = false;
+    this.delay = CountInput.DEFAULT_DELAY;
   }
 
   emitValue() {

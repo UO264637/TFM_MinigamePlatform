@@ -23,7 +23,8 @@ const images = {
   passenger3: "res/floor_obstacle1.png",
   count_input: "res/counter.png",
   counter_up: "res/counter_up.png",
-  counter_down: "res/counter_down.png"
+  counter_down: "res/counter_down.png",
+  player_back: "res/player_back.png"
 };
 
 const imageRutes = Object.values(images);
