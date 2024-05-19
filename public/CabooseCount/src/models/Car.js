@@ -8,7 +8,7 @@ class Car extends Model {
     this.seats = seats;
     this.passengers = [];
     this.numPassengers = 0;
-    this.passengerX = x + 470;
+    this.passengerX = x + 450;
     this.passengerY = 400;
   }
 
@@ -40,6 +40,6 @@ class Car extends Model {
       this.passengers.push(passenger);
     }
     this.numPassengers++;
-    this.passengerX -= 136.4;
+    this.passengerX -= 130;
   }
 }

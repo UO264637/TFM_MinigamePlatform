@@ -18,13 +18,17 @@ const images = {
   car: "res/car.png",
   car_bg: "res/car_bg.png",
   caboose: "res/caboose.png",
-  passenger1: "res/player.png",
-  passenger2: "res/air_obstacle1.png",
-  passenger3: "res/floor_obstacle1.png",
+  passenger1: "res/passenger1.png",
+  passenger2: "res/passenger2.png",
+  passenger3: "res/passenger3.png",
   count_input: "res/counter.png",
   counter_up: "res/counter_up.png",
   counter_down: "res/counter_down.png",
-  player_back: "res/player_back.png"
+  player: "res/player.png",
+  player_solution: "res/player_solution.png",
+  opponent: "res/opponent.png",
+  opponent_solution: "res/opponent_solution.png",
+  character_background: "res/character_background.png"
 };
 
 const imageRutes = Object.values(images);

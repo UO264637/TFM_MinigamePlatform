@@ -1,15 +1,22 @@
 class Player extends Model {
-  constructor(x, y, position) {
-    super(images.player_back, x, y);
+  constructor(image, resultsImage, x, y, position) {
+    super(image, x, y);
 
     this.tag = new CenteredText("", "#FFFFFF", x, y);
 
-    let resultX = position == "left" ? x - 125 : x + 125;
-    this.result = new CenteredText("", "#FFFFFF", resultX, y - 50);
+    let resultX = position == "left" ? x - 115 : x + 115;
+    this.result = new CenteredText("", "#563F2E", resultX, y - 5);
+
+    this.resultsPose = new Background(resultsImage, x, y);
   }
 
   paint() {
     super.paint();
+
+    if (this.resultTime) {
+      this.resultsPose.paint();
+    }
+
     this.tag.paint();
     this.result.paint();
   }
@@ -20,5 +27,6 @@ class Player extends Model {
 
   showResult(result) {
     this.result.value = result;
+    this.resultTime = true;
   }
 }

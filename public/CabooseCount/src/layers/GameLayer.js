@@ -30,19 +30,28 @@ class GameLayer extends Layer {
       "",
       "#563F2E",
       originalCanvasWidth * 0.5,
-      originalCanvasHeight * 0.1
+      originalCanvasHeight * 0.1,
+      32
     );
 
     this.player = new Player(
+      images.player,
+      images.player_solution,
       originalCanvasWidth * 0.40,
       originalCanvasHeight * 0.96,
       "left"
     );
 
     this.opponent = new Player(
+      images.opponent,
+      images.opponent_solution,
       originalCanvasWidth * 0.60,
       originalCanvasHeight * 0.96,
       "right"
+    );
+
+    this.characterBg = new CountInput(
+      images.character_background, 640, 200
     );
   }
 
@@ -73,7 +82,8 @@ class GameLayer extends Layer {
     this.player.paint();
     this.opponent.paint();
 
-    if (this.countdown.value != null) {
+    if (this.countdown.value != null || this.resultsTime) {
+      this.characterBg.paint();
       this.passengerToCount.paint();
     }
 
@@ -133,7 +143,7 @@ class GameLayer extends Layer {
       let player = state.players.find((p) => p.id == socketId);
       let opponent = state.players.find((p) => p.id != socketId);
 
-      this.status.value = "Result: " + state.solution;
+      this.status.value = "Resultado: " + state.solution;
       this.player.showResult(player.count);
       this.opponent.showResult(opponent.count);
     }

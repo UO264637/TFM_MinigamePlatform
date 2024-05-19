@@ -10,7 +10,7 @@ class CountInput extends Model {
     this.decreaseBg = new Background(images.counter_down, x, y);
 
     this.delay = CountInput.DEFAULT_DELAY;
-    this.input = new CenteredText(0, "#000000", x, y + 20, 40);
+    this.input = new CenteredText(0, "#563F2E", x, y + 20, 40);
   }
 
   update() {
