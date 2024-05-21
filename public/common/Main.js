@@ -29,29 +29,8 @@ function startGame() {
   gameLayer = new GameLayer();
   lobbyLayer = new LobbyLayer();
   layer = lobbyLayer;
+
   initWebSocket();
-
-  socket.on("gameStart", function (state) {
-    gameLayer.start(state);
-    layer = gameLayer;
-  });
-
-  socket.on("gameState", function (state) {
-    layer.updateGameState(state);
-  });
-
-  socket.on("turnTimer", function (secondsLeft) {
-    gameLayer.updateTurnTimer(secondsLeft);
-  });
-
-  socket.on("gameFinished", function (state) {
-    gameLayer.finish(state);
-  });
-
-  socket.on("gameRestart", function () {
-    window.location.reload();
-  });
-
   setInterval(loop, 1000 / 30);
 }
 
@@ -106,5 +85,26 @@ function initWebSocket() {
   socket.emit("joinGame", {
     playerName: playerName,
     roomId: roomId,
+  });
+
+  socket.on("gameStart", function (state) {
+    gameLayer.start(state);
+    layer = gameLayer;
+  });
+
+  socket.on("gameState", function (state) {
+    layer.updateGameState(state);
+  });
+
+  socket.on("turnTimer", function (secondsLeft) {
+    gameLayer.updateTurnTimer(secondsLeft);
+  });
+
+  socket.on("gameFinished", function (state) {
+    gameLayer.finish(state);
+  });
+
+  socket.on("gameRestart", function () {
+    window.location.reload();
   });
 }
