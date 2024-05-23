@@ -5,7 +5,7 @@ window.onload = function () {
   loadRoomList();
 };
 
-setInterval(loadRoomList, 5000);
+setInterval({loadRoomList, filterRooms}, 5000);
 
 function loadGameList() {
   fetch(baseUrl + "/api/gameTypes")
@@ -60,7 +60,7 @@ function createRoomElement(room) {
   const p = document.createElement("p");
   const div = document.createElement("div");
 
-  listHeader.innerHTML = `${room.players.join(" vs ")} - ${room.status}`;
+  listHeader.innerHTML = `${room.players.join(" vs ")} - esperando`;
   p.innerHTML = room.gameType.replace(/([A-Z]+)*([A-Z][a-z])/g, "$1 $2");
   div.innerHTML = "Sala " + room.roomId;
 
@@ -116,7 +116,7 @@ function filterRooms() {
     let roomName = room
       .querySelector("h3")
       .textContent.toLowerCase()
-      .replace("- waiting", "");
+      .replace("- esperando", "");
     let roomDescription = room.querySelector("p").textContent.toLowerCase();
     let roomNumber = room
       .querySelector("div")
