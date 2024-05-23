@@ -5,7 +5,7 @@ window.onload = function () {
   loadRoomList();
 };
 
-setInterval({loadRoomList, filterRooms}, 5000);
+setInterval(loadRoomList, 5000);
 
 function loadGameList() {
   fetch(baseUrl + "/api/gameTypes")
@@ -50,6 +50,8 @@ function loadRoomList() {
         const listItem = createRoomElement(room);
         roomList.appendChild(listItem);
       });
+
+      filterRooms();
     })
     .catch((error) => console.error("Error loading room list:", error));
 }
@@ -60,7 +62,7 @@ function createRoomElement(room) {
   const p = document.createElement("p");
   const div = document.createElement("div");
 
-  listHeader.innerHTML = `${room.players.join(" vs ")} - esperando`;
+  listHeader.textContent = `${room.players.join(" vs ")} - esperando`;
   p.innerHTML = room.gameType.replace(/([A-Z]+)*([A-Z][a-z])/g, "$1 $2");
   div.innerHTML = "Sala " + room.roomId;
 
@@ -133,6 +135,14 @@ function filterRooms() {
     room.style.display = displayStyle;
   }
 }
+
+
+const submitFilter = document.getElementById("filterForm");
+
+submitFilter.addEventListener("submit", function(event) {
+  event.preventDefault();
+  filterRooms();
+});
 
 const gameList = document.getElementById("gameList");
 

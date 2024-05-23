@@ -19,7 +19,7 @@
         <ul id="gameList"></ul>
         <form id="createForm" onsubmit="createNewRoom(event)">
           <label for="playerNameCreate">Elige un apodo  </label>
-          <input type="text" id="playerNameCreate" required />
+          <input type="text" id="playerNameCreate"  maxlength="12" required />
           <button type="submit">Crear sala</button>
         </form>
       </section>
@@ -27,7 +27,7 @@
       <section>
         <div class="hgroup">
           <h2>Salas existentes</h2>
-          <form>
+          <form id="filterForm">
             <input type="text" id="filter" oninput="filterRooms()"/>
             <button type="submit">Filtrar</button>
           </form>
