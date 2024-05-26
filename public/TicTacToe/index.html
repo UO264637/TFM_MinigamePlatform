@@ -1,24 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      http-equiv="Cache-Control"
-      content="no-cache, no-store, must-revalidate"
-    />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
-    <link rel="stylesheet" href="../common/style.css" />
-    <title>Tres en raya</title>
-  </head>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+  <link rel="stylesheet" href="../common/style.css" />
+  <title>Tres en raya</title>
+</head>
+
+<body>
+
   <body>
     <header>
-      <a href="../index.html"><h1>Ar<em>kame</em>Games</h1></a>
+      <a href="../index.html">
+        <h1>Ar<em>kame</em>Games</h1>
+      </a>
+      <div id="volume">
+        <span id="volume-icon">🔊</span>
+        <input type="range" id="volume-control" min="0" max="1" step="0.1" value="0.5">
+      </div>
     </header>
+
     <canvas id="canvas" width="1280" height="720"></canvas>
 
     <script src="../common/src/Global.js"></script>
+    <script src="../common/src/AudioManager.js"></script>
     <script src="../common/src/models/Model.js"></script>
     <script src="../common/src/models/Text.js"></script>
     <script src="../common/src/models/CenteredText.js"></script>
@@ -34,4 +43,5 @@
     <script src="../common/src/TapEvents.js"></script>
     <script src="../common/Main.js"></script>
   </body>
+
 </html>

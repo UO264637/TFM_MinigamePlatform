@@ -25,7 +25,7 @@ header {
   box-shadow: 0px 5px 5px 0px rgb(0 0 0 / 0.2);
 
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -50,4 +50,21 @@ canvas {
   display: block;
   margin: 0 auto;
   box-shadow: 0px 5px 5px 0px rgb(0 0 0 / 0.2);
+}
+
+#volume {
+  padding: 15px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+}
+
+#volume-icon {
+  font-size: 28px;
+}
+
+#volume-control {
+  width: 100px;
+  height: 8;
 }

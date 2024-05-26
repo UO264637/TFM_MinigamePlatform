@@ -200,6 +200,7 @@ class GameLayer extends Layer {
     setTimeout(() => {
       this.speed = this.baseSpeed;
       this.player.run();
+      playMusic();
     }, 3000);
   }
 

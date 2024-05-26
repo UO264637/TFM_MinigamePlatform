@@ -1,3 +1,7 @@
+const soundEffects = {
+  beep: "../common/res/beep.wav",
+}
+
 let cache = {};
 let images = {
   lobby_background: "../common/res/lobby_background.png",

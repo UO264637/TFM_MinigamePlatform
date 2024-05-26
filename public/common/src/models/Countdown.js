@@ -19,6 +19,7 @@ class Countdown {
         enableKeyboardInput();
         enableTapInput();
       } else {
+        playEffect(soundEffects.beep);
         this.value--;
         this.oppacity = 1;
         setTimeout(() => {

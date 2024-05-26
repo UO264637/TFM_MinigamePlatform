@@ -149,6 +149,7 @@ class GameLayer extends Layer {
     setTimeout(() => {
       this.player.startMoving();
       this.opponent.startMoving();
+      playMusic();
     }, 3000);
   }
 
@@ -174,6 +175,7 @@ class GameLayer extends Layer {
   }
 
   finish(state) {
+    stopMusic();
     disableKeyboardInput();
     this.player.stop();
     this.opponent.stop();

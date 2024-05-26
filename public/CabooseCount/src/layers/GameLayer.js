@@ -132,6 +132,7 @@ class GameLayer extends Layer {
     this.countdown.start();
     setTimeout(() => {
       this.loadTrain(state.elements);
+      playMusic();
     }, 3000);
   }
 
@@ -153,6 +154,7 @@ class GameLayer extends Layer {
   }
 
   finish(state) {
+    stopMusic();
     this.finished = true;
     this.results.updateGameState(state);
   }

@@ -155,6 +155,9 @@ class GameLayer extends Layer {
     this[opponent.role].setName(opponent.playerName);
 
     this.countdown.start();
+    setTimeout(() => {
+      playMusic();
+    }, 3000);
   }
 
   updateGameState(state) {
@@ -184,6 +187,7 @@ class GameLayer extends Layer {
   }
 
   finish(state) {
+    stopMusic();
     let dancerRole = state.players.find(
       (p) => p.id !== state.currentPlayer?.id
     ).role;

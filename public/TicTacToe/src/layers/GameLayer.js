@@ -113,6 +113,9 @@ class GameLayer extends Layer {
     this.player2.value =
       state.players[1].symbol + ": " + state.players[1].playerName;
     this.countdown.start();
+    setTimeout(() => {
+      playMusic();
+    }, 3000);
   }
 
   updateGameState(state) {
@@ -140,6 +143,7 @@ class GameLayer extends Layer {
   }
 
   finish(state) {
+    stopMusic();
     this.status.value = "";
     this.isTurn = false;
     this.finished = true;

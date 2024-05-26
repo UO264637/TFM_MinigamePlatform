@@ -1,3 +1,7 @@
+const soundEffects = {
+  beep: "../common/res/beep.wav",
+}
+
 // Lista re recursos a precargar
 const images = {
   lobby_background: "../common/res/lobby_background.png",

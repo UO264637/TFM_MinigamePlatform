@@ -1,42 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
-    <link rel="stylesheet" href="../common/style.css" />
-    <title>Caboose Count</title>
-  </head>
-  <body>
-    <header>
-      <a href="../index.html"><h1>Ar<em>kame</em>Games</h1></a>
-    </header>
+  <meta charset="utf-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+  <link rel="stylesheet" href="../common/style.css" />
+  <title>Caboose Count</title>
+</head>
 
-<canvas id="canvas" width="1280" height="720"></canvas>
+<body>
+  <header>
+    <a href="../index.html">
+      <h1>Ar<em>kame</em>Games</h1>
+    </a>
+    <div id="volume">
+      <span id="volume-icon">🔊</span>
+      <input type="range" id="volume-control" min="0" max="1" step="0.1" value="0.5">
+    </div>
+  </header>
 
-<script src="../common/src/Space.js"></script>
-<script src="../common/src/Global.js"></script>
-<script src="../common/src/models/Model.js"></script>
-<script src="src/models/Player.js"></script>
-<script src="../common/src/models/Text.js"></script>
-<script src="../common/src/models/CenteredText.js"></script>
-<script src="../common/src/models/Countdown.js"></script>
-<script src="../common/src/models/Button.js"></script>
-<script src="../common/src/models/Background.js"></script>
-<script src="src/models/Car.js"></script>
-<script src="src/models/CountInput.js"></script>
-<script src="../common/src/layers/Layer.js"></script>
-<script src="../common/src/layers/LobbyLayer.js"></script>
-<script src="../common/src/layers/ResultsLayer.js"></script>
-<script src="src/layers/GameLayer.js"></script>
-<script src="src/Res.js"></script>
-<script src="../common/src/KeyboardEvents.js"></script>
-<script src="../common/src/TapEvents.js"></script>
-<script src="../common/src/graphics/Animation.js"></script>
-<script src="../common/Main.js"></script>
+  <canvas id="canvas" width="1280" height="720"></canvas>
+
+  <script src="../common/src/AudioManager.js"></script>
+  <script src="../common/src/Global.js"></script>
+  <script src="../common/src/models/Model.js"></script>
+  <script src="src/models/Player.js"></script>
+  <script src="../common/src/models/Text.js"></script>
+  <script src="../common/src/models/CenteredText.js"></script>
+  <script src="../common/src/models/Countdown.js"></script>
+  <script src="../common/src/models/Button.js"></script>
+  <script src="../common/src/models/Background.js"></script>
+  <script src="src/models/Car.js"></script>
+  <script src="src/models/CountInput.js"></script>
+  <script src="../common/src/layers/Layer.js"></script>
+  <script src="../common/src/layers/LobbyLayer.js"></script>
+  <script src="../common/src/layers/ResultsLayer.js"></script>
+  <script src="src/layers/GameLayer.js"></script>
+  <script src="src/Res.js"></script>
+  <script src="../common/src/KeyboardEvents.js"></script>
+  <script src="../common/src/TapEvents.js"></script>
+  <script src="../common/src/graphics/Animation.js"></script>
+  <script src="../common/Main.js"></script>
 
 </body>
-</html>
 
+</html>
