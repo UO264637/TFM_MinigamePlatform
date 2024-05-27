@@ -1,5 +1,8 @@
 const soundEffects = {
   beep: "../common/res/beep.wav",
+  freeze: "res/freeze.wav",
+  dash: "res/dash.mp3",
+  haunted: "res/hit.mp3"
 }
 
 let cache = {};

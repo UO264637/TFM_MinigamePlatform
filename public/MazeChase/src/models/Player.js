@@ -187,6 +187,7 @@ class Player extends Model {
   }
 
   haunt() {
+    playEffect(soundEffects.haunted);
     this.stop();
     disableKeyboardInput();
     this.invulnerable = true;
@@ -207,6 +208,7 @@ class Player extends Model {
   }
 
   freeze() {
+    playEffect(soundEffects.freeze);
     this.stop();
     disableKeyboardInput();
     this.frozen = true;
@@ -218,6 +220,7 @@ class Player extends Model {
   }
 
   speedUp() {
+    playEffect(soundEffects.dash);
     this.dashX = this.x;
     this.dashY = this.y;
     this.dashing = true;
