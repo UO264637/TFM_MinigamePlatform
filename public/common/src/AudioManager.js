@@ -5,37 +5,39 @@ ambientMusic.loop = true;
 let globalVolume = 0.5;
 
 volumeIcon.addEventListener("click", () => {
-    if (ambientMusic.muted) {
-        ambientMusic.muted = false;
-        volumeIcon.textContent = "🔊";
-    } else {
-        ambientMusic.muted = true;
-        volumeIcon.textContent = "🔇";
-    }
+  if (ambientMusic.muted) {
+    ambientMusic.muted = false;
+    volumeIcon.textContent = "🔊";
+  } else {
+    ambientMusic.muted = true;
+    volumeIcon.textContent = "🔇";
+  }
 });
 
 volumeControl.addEventListener("input", (event) => {
-    const volume = event.target.value;
-    globalVolume = volume;
-    ambientMusic.volume = volume;
-    if (volume == 0) {
-        volumeIcon.textContent = "🔇";
-    } else {
-        volumeIcon.textContent = "🔊";
-    }
+  const volume = event.target.value;
+  globalVolume = volume;
+  ambientMusic.volume = volume;
+  if (volume == 0) {
+    volumeIcon.textContent = "🔇";
+  } else {
+    volumeIcon.textContent = "🔊";
+  }
 });
 
 function playMusic() {
-    ambientMusic.play();
-    ambientMusic.volume = globalVolume;
+  ambientMusic.play();
+  ambientMusic.volume = globalVolume;
 }
 
 function stopMusic() {
-    ambientMusic.pause();
+  ambientMusic.pause();
 }
 
 function playEffect(effectSrc) {
+  if (!ambientMusic.muted) {
     let effect = new Audio(effectSrc);
     effect.volume = globalVolume;
     effect.play();
+  }
 }

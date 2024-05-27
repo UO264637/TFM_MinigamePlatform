@@ -11,6 +11,8 @@ class MovementsQueue {
         break;
     }
 
+    this.position = position;
+
     this.movementsPlaceholder = new MovementsPlaceholder(this.x, this.y);
 
     this.up = new Background(images.up, this.x, this.y);
@@ -51,8 +53,17 @@ class MovementsQueue {
     this.movementsIcons.push(movementIcon);
 
     if (rightMovement != null && movement != rightMovement) {
-      let wrongIcon = { ...this.wrong, paint: this[movement].paint, x:xpos, y: this.y };;
+      playEffect(soundEffects.wrong);
+      let wrongIcon = { ...this.wrong, paint: this[movement].paint, x:xpos, y: this.y };
       this.wrongIcons.push(wrongIcon);
+    }
+    else {
+      if (this.position == "back") {
+        playEffect(soundEffects.key);
+      }
+      else {
+        playEffect(soundEffects.correct);
+      }
     }
   }
 
@@ -62,9 +73,18 @@ class MovementsQueue {
       this.movements.length > 0 &&
       this.movements[moveIndex] != rightMovement
     ) {
+      playEffect(soundEffects.wrong);
       let moveIcon = this.movementsIcons[moveIndex];
       let wrongIcon = new Background(images.wrong, moveIcon.x, moveIcon.y);
       this.wrongIcons.push(wrongIcon);
+    }
+    else {
+      if (this.position == "back") {
+        playEffect(soundEffects.correct);
+      }
+      else {
+        playEffect(soundEffects.correct);
+      }
     }
   }
 

@@ -44,7 +44,7 @@ class Player extends Model {
       this.width,
       this.height,
       3,
-      4,
+      8,
       this.endHitAnim.bind(this)
     );
 
@@ -99,13 +99,15 @@ class Player extends Model {
 
   jump() {
     if (!this.inTheAir) {
+      playEffect(soundEffects.jump);
       this.yv = -20;
       this.inTheAir = true;
     }
   }
 
   crouch() {
-    if (!this.inTheAir) {
+    if (!this.inTheAir && this.state != PlayerStatuses.CROUCHED) {
+      playEffect(soundEffects.crouch);
       this.state = PlayerStatuses.CROUCHED;
     }
   }
@@ -118,6 +120,7 @@ class Player extends Model {
 
   hit() {
     if (this.state != PlayerStatuses.HIT) {
+      playEffect(soundEffects.hit);
       this.state = PlayerStatuses.HIT;
     }
   }

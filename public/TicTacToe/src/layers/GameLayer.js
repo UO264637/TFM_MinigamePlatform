@@ -119,6 +119,7 @@ class GameLayer extends Layer {
   }
 
   updateGameState(state) {
+    playEffect(soundEffects.wood_sound);
     for (let i = 0; i < state.board.length; i++) {
       const player = state.board[i];
       if (player != null) {

@@ -1,5 +1,8 @@
 const soundEffects = {
   beep: "../common/res/beep.wav",
+  jump: "res/jump.mp3",
+  hit: "res/hit.mp3",
+  crouch: "res/crouch.wav"
 }
 
 // Lista re recursos a precargar

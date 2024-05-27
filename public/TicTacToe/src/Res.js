@@ -1,5 +1,6 @@
 const soundEffects = {
   beep: "../common/res/beep.wav",
+  wood_sound: "res/wood_sound.mp3",
 }
 
 // Lista re recursos a precargar

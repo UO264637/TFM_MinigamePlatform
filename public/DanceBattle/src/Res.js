@@ -1,5 +1,8 @@
 const soundEffects = {
   beep: "../common/res/beep.wav",
+  correct: "res/correct.wav",
+  wrong: "res/wrong.wav",
+  key: "res/key.wav",
 }
 
 // Lista re recursos a precargar
