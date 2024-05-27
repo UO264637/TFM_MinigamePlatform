@@ -98,40 +98,26 @@ class GameLayer extends Layer {
     }
 
     if (this.isTurn) {
-      for (let i = 0; i < keysPressed.length; i++) {
-        let key = keysPressed[i];
-        switch (key) {
-          case "Space":
-            this.movementsWheel.middle();
-            this[this.ownRole].movementsQueue.addMovement("space");
-            this.numMoves++;
-            break;
-          case "ArrowUp":
-            this.movementsWheel.up();
-            this[this.ownRole].movementsQueue.addMovement("up");
-            this.numMoves++;
-            break;
-          case "ArrowDown":
-            this.movementsWheel.down();
-            this[this.ownRole].movementsQueue.addMovement("down");
-            this.numMoves++;
-            break;
-          case "ArrowRight":
-            this.movementsWheel.right();
-            this[this.ownRole].movementsQueue.addMovement("right");
-            this.numMoves++;
-            break;
-          case "ArrowLeft":
-            this.movementsWheel.left();
-            this[this.ownRole].movementsQueue.addMovement("left");
-            this.numMoves++;
-            break;
+      const wheelFunctions = {
+        Space: () => this.movementsWheel.middle(),
+        ArrowUp: () => this.movementsWheel.up(),
+        ArrowDown: () => this.movementsWheel.down(),
+        ArrowRight: () => this.movementsWheel.right(),
+        ArrowLeft: () => this.movementsWheel.left(),
+      };
+
+      for (let key of pressedKeys) {
+        if (wheelFunctions[key]) {
+          wheelFunctions[key]();
+          let formattedKey = key.replace("Arrow", "").toLowerCase();
+          this[this.ownRole].movementsQueue.addMovement(formattedKey);
+          this.numMoves++;
         }
-        keysPressed.splice(i, 1);
-        i--;
       }
+
+      pressedKeys.splice(0, pressedKeys.length);
     } else {
-      keysPressed.length = 0;
+      pressedKeys.length = 0;
     }
   }
 
@@ -187,7 +173,6 @@ class GameLayer extends Layer {
   }
 
   finish(state) {
-    stopMusic();
     let dancerRole = state.players.find(
       (p) => p.id !== state.currentPlayer?.id
     ).role;
@@ -197,6 +182,7 @@ class GameLayer extends Layer {
       state.movementsToPlay,
       imitated?.movements,
       () => {
+        stopMusic();
         this[dancerRole].movementsQueue.clear();
         this.finished = true;
         this.results.updateGameState(state);

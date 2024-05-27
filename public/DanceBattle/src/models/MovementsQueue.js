@@ -79,12 +79,7 @@ class MovementsQueue {
       this.wrongIcons.push(wrongIcon);
     }
     else {
-      if (this.position == "back") {
-        playEffect(soundEffects.correct);
-      }
-      else {
-        playEffect(soundEffects.correct);
-      }
+      playEffect(soundEffects.correct);
     }
   }
 
