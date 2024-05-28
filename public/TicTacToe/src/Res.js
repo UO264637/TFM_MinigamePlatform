@@ -3,6 +3,7 @@ const soundEffects = {
   wood_sound: "res/wood_sound.mp3",
 }
 
+const cache = {};
 // Lista re recursos a precargar
 let images = {
   lobby_background: "../common/res/lobby_background.png",
@@ -25,19 +26,28 @@ let images = {
   turnIndicator: "res/turn_indicator.png",
 };
 
-let imageRutes = Object.values(images);
+let imageRoutes = Object.values(images);
+let allImagesLoaded = false;
 
 loadImages(0);
 
 function loadImages(index) {
-  let image = new Image();
-  image.src = imageRutes[index];
-  image.onload = function () {
-    if (index < imageRutes.length - 1) {
-      index++;
-      loadImages(index);
-    } else {
+  if (index >= imageRoutes.length) {
+    if (!allImagesLoaded) {
+      allImagesLoaded = true;
       startGame();
     }
+    return;
+  }
+
+  const img = new Image();
+  img.src = imageRoutes[index];
+  img.onload = function () {
+    cache[imageRoutes[index]] = img;
+    loadImages(index + 1);
+  };
+  img.onerror = function () {
+    console.error(`Error loading image: ${imageRoutes[index]}`);
+    loadImages(index + 1);
   };
 }

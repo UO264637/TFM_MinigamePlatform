@@ -90,19 +90,28 @@ let images = {
   dash_particles: "res/dash_particles.png",
 };
 
-let imageRutes = Object.values(images);
+let imageRoutes = Object.values(images);
+let allImagesLoaded = false;
 
 loadImages(0);
 
 function loadImages(index) {
-  cache[imageRutes[index]] = new Image();
-  cache[imageRutes[index]].src = imageRutes[index];
-  cache[imageRutes[index]].onload = function () {
-    if (index < imageRutes.length - 1) {
-      index++;
-      loadImages(index);
-    } else {
+  if (index >= imageRoutes.length) {
+    if (!allImagesLoaded) {
+      allImagesLoaded = true;
       startGame();
     }
+    return;
+  }
+
+  const img = new Image();
+  img.src = imageRoutes[index];
+  img.onload = function () {
+    cache[imageRoutes[index]] = img;
+    loadImages(index + 1);
+  };
+  img.onerror = function () {
+    console.error(`Error loading image: ${imageRoutes[index]}`);
+    loadImages(index + 1);
   };
 }

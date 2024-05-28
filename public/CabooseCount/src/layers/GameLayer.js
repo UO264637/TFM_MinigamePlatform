@@ -37,7 +37,7 @@ class GameLayer extends Layer {
     this.player = new Player(
       images.player,
       images.player_solution,
-      originalCanvasWidth * 0.40,
+      originalCanvasWidth * 0.4,
       originalCanvasHeight * 0.96,
       "left"
     );
@@ -45,14 +45,13 @@ class GameLayer extends Layer {
     this.opponent = new Player(
       images.opponent,
       images.opponent_solution,
-      originalCanvasWidth * 0.60,
+      originalCanvasWidth * 0.6,
       originalCanvasHeight * 0.96,
       "right"
     );
 
-    this.characterBg = new CountInput(
-      images.character_background, 640, 200
-    );
+    this.characterBg = new CountInput(images.character_background, 640, 200);
+    this.loadTrain();
   }
 
   update() {
@@ -106,8 +105,7 @@ class GameLayer extends Layer {
         this.countInput.increase();
       } else if (controls.moveY < 0) {
         this.countInput.decrease();
-      }
-      else if (controls.moveY == 0) {
+      } else if (controls.moveY == 0) {
         this.countInput.stop();
       }
     }
@@ -121,8 +119,14 @@ class GameLayer extends Layer {
 
   start(state) {
     disableKeyboardInput();
+    this.fillTrain(state.elements);
+    playEffect(soundEffects.train);
 
-    this.passengerToCount = new Background(images["passenger" + state.toCount], 640, 200);
+    this.passengerToCount = new Background(
+      images["passenger" + state.toCount],
+      640,
+      200
+    );
 
     let player = state.players.find((p) => p.id == socketId);
     let opponent = state.players.find((p) => p.id != socketId);
@@ -131,7 +135,9 @@ class GameLayer extends Layer {
 
     this.countdown.start();
     setTimeout(() => {
-      this.loadTrain(state.elements);
+      for (let car of this.cars) {
+        car.startUp();
+      }
       playMusic();
     }, 3000);
   }
@@ -159,22 +165,32 @@ class GameLayer extends Layer {
     this.results.updateGameState(state);
   }
 
-  loadTrain(passengers) {
+  loadTrain() {
     let carX = -600;
     let carY = 400;
     let car = new Car(images.engine, images.engine, carX, carY, 0);
+    this.cars.push(car);
+
+    for (let i = 0; i < 6; i++) {
+      carX -= 1095;
+      car = new Car(images.car, images.car_bg, carX, carY, 8);
+      this.cars.push(car);
+    }
+    carX -= 1095;
+    car = new Car(images.caboose, images.car_bg, carX, carY, 8);
+    this.cars.push(car);
+    this.caboose = car;
+  }
+
+  fillTrain(passengers) {
+    let car = 0;
 
     for (let element of passengers) {
-      if (car.isFull()) {
-        carX -= 1095;
-        this.cars.push(car);
-        car = new Car(images.car, images.car_bg, carX, carY, 8);
+      if (this.cars[car].isFull()) {
+        car++;
       }
-      car.addPassenger(element);
+      this.cars[car].addPassenger(element);
     }
-    this.cars.push(car);
-    car.image.src = images.caboose;
-    this.caboose = car;
   }
 
   updateTurnTimer(secondsLeft) {

@@ -123,7 +123,11 @@ class GameLayer extends Layer {
     for (let i = 0; i < state.board.length; i++) {
       const player = state.board[i];
       if (player != null) {
-        this.board[i].image.src = images[player.symbol];
+        let x = this.board[i].x;
+        let y = this.board[i].y;
+        this.board[i] = new Button(
+          images[player.symbol], x, y
+        );
       }
     }
 

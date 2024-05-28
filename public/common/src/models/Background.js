@@ -1,13 +1,14 @@
 class Background extends Model {
   constructor(imageRoute, x, y) {
     super(imageRoute, x, y);
+    this.imageRoute = imageRoute;
     this.xv = 0;
   }
 
   update() {
     if (this.xv != 0) {
       if (this.auxBackground == null) {
-        this.auxBackground = new Background(this.image.src, this.x, this.y);
+        this.auxBackground = new Background(this.imageRoute, this.x, this.y);
       }
 
       this.x = this.x + this.xv;

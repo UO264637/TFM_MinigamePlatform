@@ -1,7 +1,10 @@
 class Model {
-  constructor(imagenRuta, x, y) {
-    this.image = new Image();
-    this.image.src = imagenRuta;
+  constructor(imageRoute, x, y) {
+    this.image = cache[imageRoute];
+    if (!this.image) {
+      console.error(`Image not found in cache: ${imageRoute}`);
+      return;
+    }
     this.x = x;
     this.y = y;
     this.width = this.image.width;

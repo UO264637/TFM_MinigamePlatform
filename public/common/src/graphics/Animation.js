@@ -9,8 +9,7 @@ class Animation {
   ) {
     this.callback = callback;
 
-    this.image = new Image();
-    this.image.src = imageSrc;
+    this.image = cache[imageSrc];
 
     this.modelWidth = modelWidth;
     this.modelHeight = modelHeight;

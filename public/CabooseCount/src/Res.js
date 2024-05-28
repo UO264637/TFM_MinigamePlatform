@@ -1,7 +1,9 @@
 const soundEffects = {
   beep: "../common/res/beep.wav",
-}
+  train: "res/train.mp3",
+};
 
+const cache = {};
 // Lista re recursos a precargar
 const images = {
   lobby_background: "../common/res/lobby_background.png",
@@ -32,22 +34,31 @@ const images = {
   player_solution: "res/player_solution.png",
   opponent: "res/opponent.png",
   opponent_solution: "res/opponent_solution.png",
-  character_background: "res/character_background.png"
+  character_background: "res/character_background.png",
 };
 
-const imageRutes = Object.values(images);
+const imageRoutes = Object.values(images);
+let allImagesLoaded = false;
 
 loadImages(0);
 
 function loadImages(index) {
-  let image = new Image();
-  image.src = imageRutes[index];
-  image.onload = function () {
-    if (index < imageRutes.length - 1) {
-      index++;
-      loadImages(index);
-    } else {
+  if (index >= imageRoutes.length) {
+    if (!allImagesLoaded) {
+      allImagesLoaded = true;
       startGame();
     }
+    return;
+  }
+
+  const img = new Image();
+  img.src = imageRoutes[index];
+  img.onload = function () {
+    cache[imageRoutes[index]] = img;
+    loadImages(index + 1);
+  };
+  img.onerror = function () {
+    console.error(`Error loading image: ${imageRoutes[index]}`);
+    loadImages(index + 1);
   };
 }

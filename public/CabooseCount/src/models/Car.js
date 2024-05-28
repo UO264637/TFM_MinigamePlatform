@@ -4,7 +4,7 @@ class Car extends Model {
 
     this.background = new Background(image_bg, x, y);
     this.yv = 0;
-    this.xv = 20;
+    this.xv = 0;
     this.seats = seats;
     this.passengers = [];
     this.numPassengers = 0;
@@ -41,5 +41,9 @@ class Car extends Model {
     }
     this.numPassengers++;
     this.passengerX -= 130;
+  }
+
+  startUp () {
+    this.xv = 20;
   }
 }
