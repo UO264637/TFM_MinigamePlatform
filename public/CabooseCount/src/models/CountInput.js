@@ -36,6 +36,7 @@ class CountInput extends Model {
 
   increase() {
     if (!this.increasing && this.input.value < 99) {
+      playEffect(soundEffects.key);
       this.decreasing = false;
       this.increasing = true;
       this.input.value++;
@@ -44,6 +45,7 @@ class CountInput extends Model {
 
   decrease() {
     if (!this.decreasing && this.input.value > 0) {
+      playEffect(soundEffects.key);
       this.increasing = false;
       this.decreasing = true;
       this.input.value--;

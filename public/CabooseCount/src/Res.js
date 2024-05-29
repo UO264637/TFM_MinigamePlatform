@@ -1,6 +1,7 @@
 const soundEffects = {
   beep: "../common/res/beep.wav",
   train: "res/train.mp3",
+  key: "res/key.wav",
 };
 
 const cache = {};
