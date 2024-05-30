@@ -196,6 +196,7 @@ class GameLayer extends Layer {
   updateTurnTimer(secondsLeft) {
     this.status.value = secondsLeft + "s...";
     if (secondsLeft <= 0) {
+      playEffect(soundEffects.wood_sound);
       this.resultsTime = true;
       this.countInput.emitValue();
     }

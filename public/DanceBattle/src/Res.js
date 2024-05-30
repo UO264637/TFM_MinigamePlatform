@@ -1,8 +1,11 @@
 const soundEffects = {
+  win: "../common/res/win.mp3",
+  loss: "../common/res/loss.mp3",
+  draw: "../common/res/draw.mp3",
   beep: "../common/res/beep.wav",
   correct: "res/correct.wav",
   wrong: "res/wrong.wav",
-  key: "res/key.wav",
+  key: "res/key.wav"
 }
 
 const cache = {}

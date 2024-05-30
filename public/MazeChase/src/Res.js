@@ -1,4 +1,7 @@
 const soundEffects = {
+  win: "../common/res/win.mp3",
+  loss: "../common/res/loss.mp3",
+  draw: "../common/res/draw.mp3",
   beep: "../common/res/beep.wav",
   freeze: "res/freeze.wav",
   dash: "res/dash.mp3",

@@ -13,13 +13,24 @@ class ResultsLayer extends Layer {
     this.playButton = new Button(images.play_button, 820, 500);
     this.backButton = new Button(images.back_button, 460, 500);
     this.result = new CenteredText("", "#563F2E", 650, 225, 40);
+    this.update = false;
   }
 
   updateGameState(state) {
-    if (state.result.status == Statuses.DRAW) {
-      this.result.value = "Empate!";
-    } else if (state.result.status == Statuses.WIN) {
-      this.result.value = "Ha ganado " + state.result.winner.playerName + "! ";
+    if (!this.update) {
+      if (state.result.status == Statuses.DRAW) {
+        playEffect(soundEffects.draw);
+        this.result.value = "Empate!";
+      } else if (state.result.status == Statuses.WIN) {
+        this.result.value =
+          "Ha ganado " + state.result.winner.playerName + "! ";
+        if (state.result.winner.id == socketId) {
+          playEffect(soundEffects.win);
+        } else {
+          playEffect(soundEffects.loss);
+        }
+      }
+      this.update = true;
     }
 
     this.listY = 340;
@@ -75,13 +86,19 @@ class ResultsLayer extends Layer {
     this.playButton.pressed = false;
 
     for (const tap of taps) {
-      if (this.playButton.containsPoint(tap.x, tap.y) && tap.type == tapType.start) {
+      if (
+        this.playButton.containsPoint(tap.x, tap.y) &&
+        tap.type == tapType.start
+      ) {
         this.playButton.pressed = true;
         controls.ready = true;
         this.playButton.image.src = images.play_button_pressed;
         socket.emit("playAgain");
       }
-      if (this.backButton.containsPoint(tap.x, tap.y) && tap.type == tapType.start) {
+      if (
+        this.backButton.containsPoint(tap.x, tap.y) &&
+        tap.type == tapType.start
+      ) {
         this.backButton.pressed = true;
         window.location.href = "../index.html";
         this.backButton.image.src = images.back_button_pressed;
