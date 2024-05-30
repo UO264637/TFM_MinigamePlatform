@@ -81,6 +81,8 @@ function initWebSocket() {
   const urlParams = new URLSearchParams(window.location.search);
   const playerName = urlParams.get("playerName");
   const roomId = urlParams.get("roomId");
+  const pathParts = window.location.pathname.split('/');
+  const gameType = pathParts[pathParts.length - 2];
 
   socket.emit("joinGame", {
     playerName: playerName,
@@ -106,5 +108,20 @@ function initWebSocket() {
 
   socket.on("gameRestart", function () {
     window.location.reload();
+  });
+
+  socket.on("error", function (message) {
+    fetch(baseUrl + "/api/createRoom", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ gameType: gameType }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        window.location.href = `./index.html?roomId=${data.roomId}&playerName=${playerName}`;
+      })
+      .catch((error) => console.error("Error creating new room:", error));
   });
 }

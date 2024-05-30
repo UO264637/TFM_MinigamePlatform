@@ -103,7 +103,6 @@ function createNewRoom(event) {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(selectedGameType);
       window.location.href = `./${selectedGameType}/index.html?roomId=${data.roomId}&playerName=${playerName}`;
     })
     .catch((error) => console.error("Error creating new room:", error));

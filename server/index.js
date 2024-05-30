@@ -92,6 +92,8 @@ function joinGame(socketId, data) {
 
   if (room != null) {
     room.game.handleJoinGame(room, socketId, data);
+  } else {
+    io.to(socketId).emit("error", { message: "Room does not exist" });
   }
 }
 
