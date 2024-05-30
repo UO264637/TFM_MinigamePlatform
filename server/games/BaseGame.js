@@ -74,6 +74,11 @@ class BaseGame {
     this.initializeGameState(room);
     room.state.result.status = Statuses.RESTARTING;
     this.io.to(socketId).emit("gameRestart");
+    setTimeout(() => {
+      if (room.state.result.status == Statuses.RESTARTING) {
+        room.state.result.status = Statuses.WAITING;
+      }
+    }, 10000);
   }
 
   startTurnTimer(room, time) {

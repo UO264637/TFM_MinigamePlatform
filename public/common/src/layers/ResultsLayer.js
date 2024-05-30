@@ -47,21 +47,13 @@ class ResultsLayer extends Layer {
       );
       this.playerTexts.push(playerText);
 
-      if (player.ready) {
-        let symbol = new Background(
-          images.ready_symbol,
-          this.symbolX,
-          this.listY - 11
-        );
-        this.readySymbols.push(symbol);
-      } else {
-        let symbol = new Background(
-          images.waiting_symbol,
-          this.symbolX,
-          this.listY - 11
-        );
-        this.readySymbols.push(symbol);
-      }
+      let symbol = new Background(
+        images.waiting_symbol,
+        this.symbolX,
+        this.listY - 11
+      );
+      this.readySymbols.push(symbol);
+
       this.listY += 55;
     }
   }
