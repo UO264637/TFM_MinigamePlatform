@@ -33,7 +33,7 @@ class MazeChase extends BaseGame {
       this.updateGameState(room, "gameStart");
       room.state.result.status = Statuses.PLAYING;
       setTimeout(() => {
-        this.startTurnTimer(room, 10);
+        this.startTurnTimer(room, 60);
       }, 3000);
     }
   }

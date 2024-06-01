@@ -185,8 +185,10 @@ class GameLayer extends Layer {
 
   useSkill() {
     if (this.player.pursued) {
+      console.log("self freeze")
       this.player.freeze();
     } else {
+      console.log("opponent dash")
       this.opponent.speedUp();
     }
   }
@@ -196,9 +198,11 @@ class GameLayer extends Layer {
     this.opponent.switchRole();
 
     if (!this.player.pursued) {
+      console.log("haunted");
       this.player.haunt();
       this.skillButton.switchSkill(images.ice_skill);
     } else {
+      console.log("haunt");
       this.opponent.makeInvulnerable();
       this.skillButton.switchSkill(images.speed_skill);
     }

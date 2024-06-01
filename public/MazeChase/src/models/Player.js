@@ -175,8 +175,10 @@ class Player extends Model {
 
   useSkill(opponent) {
     if (this.pursued) {
+      console.log("self dash");
       this.speedUp();
     } else {
+      console.log("freeze oponent");
       opponent.stop();
       opponent.frozen = true;
 
@@ -194,7 +196,9 @@ class Player extends Model {
 
     setTimeout(() => {
       this.invulnerable = false;
-      enableKeyboardInput();
+      if (!this.frozen) {
+        enableKeyboardInput();
+      }
     }, 3000);
   }
 
@@ -215,7 +219,9 @@ class Player extends Model {
 
     setTimeout(() => {
       this.frozen = false;
-      enableKeyboardInput();
+      if (!this.invulnerable) {
+        enableKeyboardInput();
+      }
     }, 2000);
   }
 
