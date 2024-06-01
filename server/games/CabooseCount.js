@@ -67,6 +67,7 @@ class CabooseCount extends BaseGame {
       room.state.result.status == Statuses.WIN ||
       room.state.result.status == Statuses.DRAW
     ) {
+      clearInterval(room.turnTimer);
       setTimeout(() => {
         this.updateGameState(room, "gameFinished");
         this.updateGameState(room, "gameState");
