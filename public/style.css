@@ -259,6 +259,18 @@ a{
   text-align: right;
 }
 
+#gameList li.placeholder, #roomList li.placeholder{
+  min-width: 100%;
+  border-style: dashed;
+  border-color: #BAAE9A;
+  cursor: default;
+  grid-column: 1 / -1;
+}
+
+#gameList li.placeholder:hover{
+  cursor: default;
+}
+
 @media screen and (max-width: 1400px) {
   body {
     padding: 0% 10% 0% 10% ;
@@ -283,8 +295,4 @@ a{
   #roomList {
     grid-template-columns: 1fr;
   }
-}
-
-@media screen and (max-width: 480px) {
-
 }
