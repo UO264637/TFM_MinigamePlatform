@@ -8,6 +8,7 @@ let minScale = 1;
 let layer;
 let lobbyLayer;
 let gameLayer;
+let resultsLayer;
 
 // Controles
 const controls = {};
@@ -28,6 +29,7 @@ socket.on("connect", function () {
 function startGame() {
   gameLayer = new GameLayer();
   lobbyLayer = new LobbyLayer();
+  resultsLayer = new ResultsLayer();
   layer = lobbyLayer;
 
   initWebSocket();
@@ -92,6 +94,7 @@ function initWebSocket() {
   socket.on("gameStart", function (state) {
     gameLayer.start(state);
     layer = gameLayer;
+    resultsLayer.updated = false;
   });
 
   socket.on("gameState", function (state) {
@@ -104,10 +107,7 @@ function initWebSocket() {
 
   socket.on("gameFinished", function (state) {
     gameLayer.finish(state);
-  });
-
-  socket.on("gameRestart", function () {
-    window.location.reload();
+    layer = resultsLayer;
   });
 
   socket.on("error", function (message) {

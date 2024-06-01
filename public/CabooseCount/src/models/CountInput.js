@@ -63,4 +63,8 @@ class CountInput extends Model {
       count: this.input.value,
     });
   }
+
+  clear() {
+    this.input.value = 0;
+  }
 }

@@ -128,11 +128,13 @@ class DanceBattle extends BaseGame {
   }
 
   finishGame(room, winner) {
+    let timeout = room.state.round * 700 + 500;
     room.state.result.status = Statuses.WIN;
     room.state.result.winner = winner
     setTimeout(() => {
       this.updateGameState(room, "gameFinished");
-    }, 1000);
+      this.updateGameState(room, "gameState");
+    }, timeout);
   }
 }
 

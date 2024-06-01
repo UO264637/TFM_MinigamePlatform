@@ -10,15 +10,15 @@ class Player extends Model {
     this.resultsPose = new Background(resultsImage, x, y);
   }
 
-  paint() {
+  paint(resultTime) {
     super.paint();
 
-    if (this.resultTime) {
-      this.resultsPose.paint();
-    }
-
     this.tag.paint();
-    this.result.paint();
+
+    if (resultTime) {
+      this.resultsPose.paint();
+      this.result.paint();
+    }
   }
 
   setName(name) {
@@ -27,6 +27,5 @@ class Player extends Model {
 
   showResult(result) {
     this.result.value = result;
-    this.resultTime = true;
   }
 }

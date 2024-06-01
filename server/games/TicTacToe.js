@@ -85,9 +85,9 @@ class TicTacToe extends BaseGame {
     }
 
     if (room.state.result.status == Statuses.WIN || room.state.result.status == Statuses.DRAW) {
-      //this.updateGameState(room, "gameState");
       setTimeout(() => {
         this.updateGameState(room, "gameFinished");
+        this.updateGameState(room, "gameState");
       }, 1000);
     }
     else {

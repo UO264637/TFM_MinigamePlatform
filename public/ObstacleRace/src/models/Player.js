@@ -100,7 +100,7 @@ class Player extends Model {
   jump() {
     if (!this.inTheAir) {
       playEffect(soundEffects.jump);
-      this.yv = -20;
+      this.yv = -30;
       this.inTheAir = true;
     }
   }

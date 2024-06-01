@@ -1,7 +1,6 @@
 class GameLayer extends Layer {
   constructor() {
     super();
-    this.results = new ResultsLayer();
     this.initialize();
   }
 
@@ -11,6 +10,7 @@ class GameLayer extends Layer {
     this.cars = [];
     this.floorY = originalCanvasHeight - 200;
     this.countingTime = false;
+    this.resultsTime = false;
 
     this.caboose = new Car(images.caboose, images.car_bg, 0, 0, 0);
 
@@ -78,8 +78,8 @@ class GameLayer extends Layer {
       car.paint();
     }
 
-    this.player.paint();
-    this.opponent.paint();
+    this.player.paint(this.resultsTime);
+    this.opponent.paint(this.resultsTime);
 
     if (this.countdown.value != null || this.resultsTime) {
       this.characterBg.paint();
@@ -91,16 +91,10 @@ class GameLayer extends Layer {
     if (this.countingTime && !this.resultsTime) {
       this.countInput.paint();
     }
-
-    if (this.finished) {
-      this.results.paint();
-    }
   }
 
   processControls() {
-    if (this.finished) {
-      this.results.processControls();
-    } else if (this.countingTime) {
+    if (this.countingTime) {
       if (controls.moveY > 0) {
         this.countInput.increase();
       } else if (controls.moveY < 0) {
@@ -108,12 +102,6 @@ class GameLayer extends Layer {
       } else if (controls.moveY == 0) {
         this.countInput.stop();
       }
-    }
-  }
-
-  calculateTaps(taps) {
-    if (this.finished) {
-      this.results.calculateTaps(taps);
     }
   }
 
@@ -154,15 +142,18 @@ class GameLayer extends Layer {
       this.player.showResult(player.count);
       this.opponent.showResult(opponent.count);
     }
-    if (this.finished) {
-      this.results.updateGameState(state);
-    }
   }
 
   finish(state) {
     stopMusic();
-    this.finished = true;
-    this.results.updateGameState(state);
+
+    this.countdown = new Countdown();
+    this.cars = [];
+    this.countingTime = false;
+    this.resultsTime = false;
+    this.countInput.clear();
+    this.status.value = "";
+    this.loadTrain();
   }
 
   loadTrain() {

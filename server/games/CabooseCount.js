@@ -69,6 +69,7 @@ class CabooseCount extends BaseGame {
     ) {
       setTimeout(() => {
         this.updateGameState(room, "gameFinished");
+        this.updateGameState(room, "gameState");
       }, 4000);
       this.updateGameState(room, "gameState");
     }

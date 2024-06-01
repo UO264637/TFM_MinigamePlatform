@@ -1,7 +1,6 @@
 class GameLayer extends Layer {
   constructor() {
     super();
-    this.results = new ResultsLayer();
     this.initialize();
   }
 
@@ -86,17 +85,9 @@ class GameLayer extends Layer {
     this.status.paint();
     this.roundIndicator.paint();
     this.countdown.paint();
-
-    if (this.finished) {
-      this.results.paint();
-    }
   }
 
   processControls() {
-    if (this.finished) {
-      this.results.processControls();
-    }
-
     if (this.isTurn) {
       const wheelFunctions = {
         Space: () => this.movementsWheel.middle(),
@@ -118,12 +109,6 @@ class GameLayer extends Layer {
       pressedKeys.splice(0, pressedKeys.length);
     } else {
       pressedKeys.length = 0;
-    }
-  }
-
-  calculateTaps(taps) {
-    if (this.finished) {
-      this.results.calculateTaps(taps);
     }
   }
 
@@ -151,43 +136,33 @@ class GameLayer extends Layer {
       (p) => p.id !== state.currentPlayer?.id
     ).role;
     let imitated = state.players.find((p) => p.role === "imitated");
-    if (state.result.status == Statuses.PLAYING) {
-      this.isTurn = false;
-      this.round = state.round;
-      if (state.movementsToPlay.length > 0) {
-        this[dancerRole].playDance(
-          state.movementsToPlay,
-          imitated.movements,
-          () => {
-            this[dancerRole].movementsQueue.clear();
-            this.updateState(state);
-          }
-        );
-      } else {
-        this.updateState(state);
-      }
-    }
-    if (this.finished) {
-      this.results.updateGameState(state);
+    this.isTurn = false;
+    this.round = state.round;
+    if (state.movementsToPlay.length > 0) {
+      this[dancerRole].playDance(
+        state.movementsToPlay,
+        imitated.movements,
+        () => {
+          this[dancerRole].movementsQueue.clear();
+          this.updateState(state);
+        }
+      );
+    } else {
+      this.updateState(state);
     }
   }
 
   finish(state) {
-    let dancerRole = state.players.find(
-      (p) => p.id !== state.currentPlayer?.id
-    ).role;
-    let imitated = state.players.find((p) => p.role === "imitated");
+    stopMusic();
+    for (let player of this.players) {
+      player.movementsQueue.clear();
+    }
+
+    this.countdown = new Countdown();
+    this.round = 3;
     this.isTurn = false;
-    this[dancerRole].playDance(
-      state.movementsToPlay,
-      imitated?.movements,
-      () => {
-        stopMusic();
-        this[dancerRole].movementsQueue.clear();
-        this.finished = true;
-        this.results.updateGameState(state);
-      }
-    );
+    this.numMoves = 0;
+    this.turnTimer = 0;
   }
 
   updateState(state) {

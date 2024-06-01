@@ -33,7 +33,7 @@ class MazeChase extends BaseGame {
       this.updateGameState(room, "gameStart");
       room.state.result.status = Statuses.PLAYING;
       setTimeout(() => {
-        this.startTurnTimer(room, 60);
+        this.startTurnTimer(room, 10);
       }, 3000);
     }
   }
@@ -94,6 +94,7 @@ class MazeChase extends BaseGame {
 
     setTimeout(() => {
       this.updateGameState(room, "gameFinished");
+      this.updateGameState(room, "gameState");
     }, 1000);
     this.updateGameState(room, "gameState");
   }

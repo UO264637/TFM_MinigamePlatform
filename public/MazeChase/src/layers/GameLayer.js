@@ -1,7 +1,6 @@
 class GameLayer extends Layer {
   constructor() {
     super();
-    this.results = new ResultsLayer();
     this.initialize();
   }
 
@@ -75,17 +74,9 @@ class GameLayer extends Layer {
     if (this.player.frozen) {
       this.iceEffect.paint();
     }
-
-    if (this.finished) {
-      this.results.paint();
-    }
   }
 
   processControls() {
-    if (this.finished) {
-      this.results.processControls();
-    }
-
     let nextDirection = 0;
     // Eje X
     if (controls.moveX > 0) {
@@ -116,12 +107,6 @@ class GameLayer extends Layer {
       socket.emit("action", {
         skill: true,
       });
-    }
-  }
-
-  calculateTaps(taps) {
-    if (this.finished) {
-      this.results.calculateTaps(taps);
     }
   }
 
@@ -169,9 +154,6 @@ class GameLayer extends Layer {
         this.invertRoles();
       }
     }
-    if (this.finished) {
-      this.results.updateGameState(state);
-    }
   }
 
   finish(state) {
@@ -180,8 +162,12 @@ class GameLayer extends Layer {
     this.player.stop();
     this.opponent.stop();
     this.isTurn = false;
-    this.finished = true;
-    this.results.updateGameState(state);
+
+    this.countdown = new Countdown();
+    this.wallTiles = [];
+    this.player = new Player(-50, 0, "p1");
+    this.opponent = new Player(-50, 50, "p2");
+    this.turnTimer = 0;
   }
 
   checkOpponentPosition(x, y) {
