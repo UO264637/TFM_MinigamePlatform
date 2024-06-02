@@ -67,6 +67,7 @@ class GameLayer extends Layer {
         movements: this[this.ownRole].movementsQueue.movements,
       });
       this.numMoves = 0;
+      this.isTurn = false;
     }
     this.countdown.update();
   }
