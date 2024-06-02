@@ -147,13 +147,14 @@ class GameLayer extends Layer {
   finish(state) {
     stopMusic();
 
-    this.countdown = new Countdown();
+    this.caboose.x = -600;
     this.cars = [];
-    this.countingTime = false;
-    this.resultsTime = false;
+    this.loadTrain();
+    this.countdown = new Countdown();
     this.countInput.clear();
     this.status.value = "";
-    this.loadTrain();
+    this.countingTime = false;
+    this.resultsTime = false;
   }
 
   loadTrain() {
