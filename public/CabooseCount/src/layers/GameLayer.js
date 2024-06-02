@@ -63,7 +63,6 @@ class GameLayer extends Layer {
     }
 
     if (!this.countingTime && !this.resultsTime && this.caboose.x > originalCanvasWidth) {
-      console.log("a")
       socket.emit("action", {
         readyToCount: true,
       });
@@ -107,6 +106,7 @@ class GameLayer extends Layer {
 
   start(state) {
     disableKeyboardInput();
+    this.resultsTime = false;
     this.fillTrain(state.elements);
     playEffect(soundEffects.train);
 
@@ -126,8 +126,7 @@ class GameLayer extends Layer {
       for (let car of this.cars) {
         car.startUp();
       }
-      playMusic();
-      this.resultsTime = false;
+      playMusic();      
     }, 3000);
   }
 
