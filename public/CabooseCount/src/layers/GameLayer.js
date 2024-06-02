@@ -63,6 +63,7 @@ class GameLayer extends Layer {
     }
 
     if (!this.countingTime && !this.resultsTime && this.caboose.x > originalCanvasWidth) {
+      console.log("a")
       socket.emit("action", {
         readyToCount: true,
       });
@@ -72,8 +73,6 @@ class GameLayer extends Layer {
   paint() {
     this.background.paint();
 
-    this.status.paint();
-
     for (let car of this.cars) {
       car.paint();
     }
@@ -82,6 +81,7 @@ class GameLayer extends Layer {
     this.opponent.paint(this.resultsTime);
 
     if (this.countdown.value != null || this.resultsTime) {
+      this.status.paint();
       this.characterBg.paint();
       this.passengerToCount.paint();
     }
