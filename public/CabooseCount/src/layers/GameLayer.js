@@ -62,7 +62,7 @@ class GameLayer extends Layer {
       car.update();
     }
 
-    if (!this.countingTime && this.caboose.x > originalCanvasWidth) {
+    if (!this.countingTime && !this.resultsTime && this.caboose.x > originalCanvasWidth) {
       socket.emit("action", {
         readyToCount: true,
       });
