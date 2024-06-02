@@ -31,9 +31,7 @@ class BaseGame {
   }
 
   handleReadyPlayer(room, socketId) {
-    console.log("a");
     if (room.state.result.status != Statuses.PLAYING) {
-      console.log("b");
       const player = room.state.players.find((p) => p.id === socketId);
       player.ready = true;
 
@@ -69,8 +67,6 @@ class BaseGame {
   }
 
   handlePlayAgain(room, socketId) {
-    console.log("Playagain -------------");
-    console.log(room.state.players);
     if (room.state.result.status != Statuses.WAITING) {
       let players = room.state.players;
       this.initializeGameState(room);

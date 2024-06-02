@@ -116,6 +116,7 @@ class LobbyLayer extends Layer {
   processControls() {
     if (controls.ready) {
       socket.emit("ready");
+      controls.ready = false;
     }
   }
 }

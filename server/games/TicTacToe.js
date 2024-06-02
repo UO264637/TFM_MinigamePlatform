@@ -47,8 +47,6 @@ class TicTacToe extends BaseGame {
   }
 
   handleAction(room, socketId, data) {
-    console.log("Action -------------");
-    console.log(room.state.players);
     if (
       room.state.result.status === Statuses.PLAYING &&
       room.state.currentPlayer.id === socketId

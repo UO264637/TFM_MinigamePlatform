@@ -99,7 +99,7 @@ class GameLayer extends Layer {
       };
 
       for (let key of pressedKeys) {
-        if (wheelFunctions[key]) {
+        if (wheelFunctions[key] && this.numMoves < this.round) {
           wheelFunctions[key]();
           let formattedKey = key.replace("Arrow", "").toLowerCase();
           this[this.ownRole].movementsQueue.addMovement(formattedKey);
