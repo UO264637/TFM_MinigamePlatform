@@ -55,6 +55,7 @@ class GameLayer extends Layer {
 
     if (!this.player.pursued && this.player.collides(this.opponent)) {
       socket.emit("action", { haunted: true });
+      this.opponent.makeInvulnerable();
     }
     this.countdown.update();
   }
