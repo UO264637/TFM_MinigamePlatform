@@ -127,6 +127,7 @@ class GameLayer extends Layer {
         car.startUp();
       }
       playMusic();
+      this.resultsTime = false;
     }, 3000);
   }
 
@@ -154,7 +155,6 @@ class GameLayer extends Layer {
     this.countInput.clear();
     this.status.value = "";
     this.countingTime = false;
-    this.resultsTime = false;
   }
 
   loadTrain() {
