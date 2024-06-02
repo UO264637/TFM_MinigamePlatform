@@ -109,12 +109,14 @@ class Player extends Model {
     if (!this.inTheAir && this.state != PlayerStatuses.CROUCHED) {
       playEffect(soundEffects.crouch);
       this.state = PlayerStatuses.CROUCHED;
+      this.xv -= 3;
     }
   }
 
   standUp() {
     if (this.state == PlayerStatuses.CROUCHED) {
       this.state = PlayerStatuses.MOVING;
+      this.xv += 3;
     }
   }
 
