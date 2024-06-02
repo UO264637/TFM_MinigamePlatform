@@ -130,8 +130,10 @@ class GameLayer extends Layer {
       this.player.jump();
     } else if (controls.moveY < 0) {
       this.player.crouch();
+      this.speed += 3;
     } else {
       this.player.standUp();
+      this.speed -= 3;
     }
   }
 
