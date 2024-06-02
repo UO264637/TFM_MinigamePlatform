@@ -31,19 +31,23 @@ class BaseGame {
   }
 
   handleReadyPlayer(room, socketId) {
-    const player = room.state.players.find((p) => p.id === socketId);
-    player.ready = true;
+    console.log("a");
+    if (room.state.result.status != Statuses.PLAYING) {
+      console.log("b");
+      const player = room.state.players.find((p) => p.id === socketId);
+      player.ready = true;
 
-    const allReady = room.state.players.every((p) => p.ready);
+      const allReady = room.state.players.every((p) => p.ready);
 
-    if (room.state.players.length >= room.state.maxPlayers && allReady) {
-      room.state.result.status = Statuses.WAITING;
-      this.handleGameStart(room, null, null);
-      room.state.players.forEach((p) => {
-        p.ready = false;
-      });
+      if (room.state.players.length >= room.state.maxPlayers && allReady) {
+        room.state.result.status = Statuses.WAITING;
+        this.handleGameStart(room, null, null);
+        room.state.players.forEach((p) => {
+          p.ready = false;
+        });
+      }
+      this.updateGameState(room, "gameState");
     }
-    this.updateGameState(room, "gameState");
   }
 
   handleGameStart(room, socketId, data) {
@@ -65,6 +69,8 @@ class BaseGame {
   }
 
   handlePlayAgain(room, socketId) {
+    console.log("Playagain -------------");
+    console.log(room.state.players);
     if (room.state.result.status != Statuses.WAITING) {
       let players = room.state.players;
       this.initializeGameState(room);
