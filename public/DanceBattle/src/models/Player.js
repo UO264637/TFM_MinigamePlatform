@@ -85,7 +85,7 @@ class Player extends Model {
         });
       } else {
         this.setAnimation("idle");
-        if (callback) {
+        if (callback != null) {
           setTimeout(() => {
             callback();
           }, 1000);

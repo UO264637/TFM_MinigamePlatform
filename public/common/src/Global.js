@@ -20,6 +20,7 @@ const PlayerStatuses = {
 };
 
 const baseUrl = "http://localhost:3000";
+//const baseUrl = "http://156.35.98.70:3000";
 
 const originalCanvasWidth = 1280;
 const originalCanvasHeight = 720;

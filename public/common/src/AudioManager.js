@@ -34,6 +34,7 @@ volumeControl.addEventListener("input", (event) => {
 });
 
 function playMusic() {
+  ambientMusic.currentTime = 0;
   ambientMusic.play();
   ambientMusic.volume = globalVolume;
 }

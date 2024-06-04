@@ -1,5 +1,4 @@
 const Statuses = {
-  RESTARTING: "restarting",
   WAITING: "waiting",
   PLAYING: "playing",
   DRAW: "draw",
@@ -32,19 +31,21 @@ class BaseGame {
   }
 
   handleReadyPlayer(room, socketId) {
-    const player = room.state.players.find((p) => p.id === socketId);
-    player.ready = true;
+    if (room.state.result.status != Statuses.PLAYING) {
+      const player = room.state.players.find((p) => p.id === socketId);
+      player.ready = true;
 
-    const allReady = room.state.players.every((p) => p.ready);
+      const allReady = room.state.players.every((p) => p.ready);
 
-    if (room.state.players.length >= room.state.maxPlayers && allReady) {
-      room.state.result.status = Statuses.WAITING;
-      this.handleGameStart(room, null, null);
-      room.state.players.forEach((p) => {
-        p.ready = false;
-      });
+      if (room.state.players.length >= room.state.maxPlayers && allReady) {
+        room.state.result.status = Statuses.WAITING;
+        this.handleGameStart(room, null, null);
+        room.state.players.forEach((p) => {
+          p.ready = false;
+        });
+      }
+      this.updateGameState(room, "gameState");
     }
-    this.updateGameState(room, "gameState");
   }
 
   handleGameStart(room, socketId, data) {
@@ -61,24 +62,18 @@ class BaseGame {
       room.state.result.winner = room.state.players[0];
       clearInterval(room.turnTimer);
       this.updateGameState(room, "gameFinished");
-    } else if (room.state.players.length > 0 && room.state.result.status == Statuses.RESTARTING) {
-      room.state.result.status = Statuses.WAITING;
-      this.updateGameState(room, "gameState");
     }
-    else {
-      this.updateGameState(room, "gameState");
-    }
+    this.updateGameState(room, "gameState");
   }
 
   handlePlayAgain(room, socketId) {
-    this.initializeGameState(room);
-    room.state.result.status = Statuses.RESTARTING;
-    this.io.to(socketId).emit("gameRestart");
-    setTimeout(() => {
-      if (room.state.result.status == Statuses.RESTARTING) {
-        room.state.result.status = Statuses.WAITING;
-      }
-    }, 10000);
+    if (room.state.result.status != Statuses.WAITING) {
+      let players = room.state.players;
+      this.initializeGameState(room);
+      room.state.players = players;
+    }
+
+    this.handleReadyPlayer(room, socketId);
   }
 
   startTurnTimer(room, time) {

@@ -1,7 +1,6 @@
 class GameLayer extends Layer {
   constructor() {
     super();
-    this.results = new ResultsLayer();
     this.initialize();
   }
 
@@ -56,6 +55,7 @@ class GameLayer extends Layer {
 
     if (!this.player.pursued && this.player.collides(this.opponent)) {
       socket.emit("action", { haunted: true });
+      this.opponent.makeInvulnerable();
     }
     this.countdown.update();
   }
@@ -75,17 +75,9 @@ class GameLayer extends Layer {
     if (this.player.frozen) {
       this.iceEffect.paint();
     }
-
-    if (this.finished) {
-      this.results.paint();
-    }
   }
 
   processControls() {
-    if (this.finished) {
-      this.results.processControls();
-    }
-
     let nextDirection = 0;
     // Eje X
     if (controls.moveX > 0) {
@@ -116,12 +108,6 @@ class GameLayer extends Layer {
       socket.emit("action", {
         skill: true,
       });
-    }
-  }
-
-  calculateTaps(taps) {
-    if (this.finished) {
-      this.results.calculateTaps(taps);
     }
   }
 
@@ -169,9 +155,6 @@ class GameLayer extends Layer {
         this.invertRoles();
       }
     }
-    if (this.finished) {
-      this.results.updateGameState(state);
-    }
   }
 
   finish(state) {
@@ -180,8 +163,12 @@ class GameLayer extends Layer {
     this.player.stop();
     this.opponent.stop();
     this.isTurn = false;
-    this.finished = true;
-    this.results.updateGameState(state);
+
+    this.countdown = new Countdown();
+    this.wallTiles = [];
+    this.player = new Player(-50, 0, "p1");
+    this.opponent = new Player(-50, 50, "p2");
+    this.turnTimer = 0;
   }
 
   checkOpponentPosition(x, y) {
@@ -199,8 +186,10 @@ class GameLayer extends Layer {
 
   useSkill() {
     if (this.player.pursued) {
+      console.log("self freeze")
       this.player.freeze();
     } else {
+      console.log("opponent dash")
       this.opponent.speedUp();
     }
   }
@@ -210,9 +199,11 @@ class GameLayer extends Layer {
     this.opponent.switchRole();
 
     if (!this.player.pursued) {
+      console.log("haunted");
       this.player.haunt();
       this.skillButton.switchSkill(images.ice_skill);
     } else {
+      console.log("haunt");
       this.opponent.makeInvulnerable();
       this.skillButton.switchSkill(images.speed_skill);
     }

@@ -34,7 +34,7 @@ class CabooseCount extends BaseGame {
     if (data.readyToCount) {
       player.readyToCount = true;
       let allReady = room.state.players.every((p) => p.readyToCount);
-      if (allReady) {
+      if (allReady && !room.state.readyToCount) {
         room.state.readyToCount = true;
         this.startTurnTimer(room, 10);
         this.updateGameState(room, "gameState");
@@ -67,8 +67,10 @@ class CabooseCount extends BaseGame {
       room.state.result.status == Statuses.WIN ||
       room.state.result.status == Statuses.DRAW
     ) {
+      clearInterval(room.turnTimer);
       setTimeout(() => {
         this.updateGameState(room, "gameFinished");
+        this.updateGameState(room, "gameState");
       }, 4000);
       this.updateGameState(room, "gameState");
     }

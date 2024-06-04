@@ -94,6 +94,7 @@ class MazeChase extends BaseGame {
 
     setTimeout(() => {
       this.updateGameState(room, "gameFinished");
+      this.updateGameState(room, "gameState");
     }, 1000);
     this.updateGameState(room, "gameState");
   }

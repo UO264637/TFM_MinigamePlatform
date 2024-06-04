@@ -2,7 +2,7 @@ const { BaseGame, Statuses } = require("./BaseGame");
 
 class ObstacleRace extends BaseGame {
   initializeGameState(room) {
-    const obstacles = Array.from({ length: 25 }, () =>
+    const obstacles = Array.from({ length: 20 }, () =>
       Math.round(Math.random())
     );
 
@@ -35,6 +35,7 @@ class ObstacleRace extends BaseGame {
     if (this.checkForEndOfGame(room)) {
       setTimeout(() => {
         this.updateGameState(room, "gameFinished");
+        this.updateGameState(room, "gameState");
       }, 500);
     }
 
@@ -45,7 +46,7 @@ class ObstacleRace extends BaseGame {
     let playersAbove25 = 0;
 
     room.state.players.forEach((player) => {
-      if (player.position >= 25) {
+      if (player.position >= 20) {
         playersAbove25++;
         room.state.result.status = Statuses.WIN;
         room.state.result.winner = player;

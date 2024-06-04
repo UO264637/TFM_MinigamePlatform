@@ -100,7 +100,7 @@ class Player extends Model {
   jump() {
     if (!this.inTheAir) {
       playEffect(soundEffects.jump);
-      this.yv = -20;
+      this.yv = -30;
       this.inTheAir = true;
     }
   }
@@ -109,13 +109,17 @@ class Player extends Model {
     if (!this.inTheAir && this.state != PlayerStatuses.CROUCHED) {
       playEffect(soundEffects.crouch);
       this.state = PlayerStatuses.CROUCHED;
+      return +3;
     }
+    return 0;
   }
 
   standUp() {
     if (this.state == PlayerStatuses.CROUCHED) {
       this.state = PlayerStatuses.MOVING;
+      return -3;
     }
+    return 0;
   }
 
   hit() {

@@ -13,11 +13,11 @@ class ResultsLayer extends Layer {
     this.playButton = new Button(images.play_button, 820, 500);
     this.backButton = new Button(images.back_button, 460, 500);
     this.result = new CenteredText("", "#563F2E", 650, 225, 40);
-    this.update = false;
+    this.updated = false;
   }
 
   updateGameState(state) {
-    if (!this.update) {
+    if (!this.updated) {
       if (state.result.status == Statuses.DRAW) {
         playEffect(soundEffects.draw);
         this.result.value = "Empate!";
@@ -30,7 +30,7 @@ class ResultsLayer extends Layer {
           playEffect(soundEffects.loss);
         }
       }
-      this.update = true;
+      this.updated = true;
     }
 
     this.listY = 340;
@@ -47,12 +47,21 @@ class ResultsLayer extends Layer {
       );
       this.playerTexts.push(playerText);
 
-      let symbol = new Background(
-        images.waiting_symbol,
-        this.symbolX,
-        this.listY - 11
-      );
-      this.readySymbols.push(symbol);
+      if (player.ready) {
+        let symbol = new Background(
+          images.ready_symbol,
+          this.symbolX,
+          this.listY - 11
+        );
+        this.readySymbols.push(symbol);
+      } else {
+        let symbol = new Background(
+          images.waiting_symbol,
+          this.symbolX,
+          this.listY - 11
+        );
+        this.readySymbols.push(symbol);
+      }
 
       this.listY += 55;
     }
@@ -83,9 +92,11 @@ class ResultsLayer extends Layer {
         tap.type == tapType.start
       ) {
         this.playButton.pressed = true;
-        controls.ready = true;
         this.playButton.image.src = images.play_button_pressed;
         socket.emit("playAgain");
+        setTimeout(() => {
+          this.playButton.image.src = images.play_button;
+        }, 100);
       }
       if (
         this.backButton.containsPoint(tap.x, tap.y) &&
@@ -95,16 +106,6 @@ class ResultsLayer extends Layer {
         window.location.href = "../index.html";
         this.backButton.image.src = images.back_button_pressed;
       }
-    }
-
-    if (!this.playButton.pressed) {
-      controls.ready = false;
-    }
-  }
-
-  processControls() {
-    if (controls.ready) {
-      socket.emit("ready");
     }
   }
 }

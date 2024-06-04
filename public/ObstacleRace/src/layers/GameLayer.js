@@ -1,20 +1,19 @@
 class GameLayer extends Layer {
   constructor() {
     super();
-    this.results = new ResultsLayer();
     this.initialize();
   }
 
   initialize() {
     this.countdown = new Countdown();
-    this.space = new Space(1);
+    this.space = new Space(2);
     this.backgrounds = [];
     this.obstacles = [];
     this.obstacleIndicators = [];
     this.floorY = originalCanvasHeight - 200;
     this.airY = originalCanvasHeight - 290;
     this.speed = 0;
-    this.baseSpeed = -8;
+    this.baseSpeed = -10;
 
     this.player = new Player(150, originalCanvasHeight - 182);
     this.space.addDinamicCorp(this.player);
@@ -78,17 +77,14 @@ class GameLayer extends Layer {
     this.goal.update();
     this.player.update();
 
-    for (const obstacle of this.obstacles) {
-      obstacle.xv = this.speed;
-      obstacle.update();
-    }
-
     for (const obstacle_indicator of this.obstacleIndicators) {
       obstacle_indicator.xv = this.speed;
       obstacle_indicator.update();
     }
 
     for (const obstacle of this.obstacles) {
+      obstacle.xv = this.speed;
+      obstacle.update();
       if (this.player.collidesCircle(obstacle)) {
         this.speed = this.baseSpeed;
         this.player.hit();
@@ -97,7 +93,9 @@ class GameLayer extends Layer {
 
     for (const obstacleIndicator of this.obstacleIndicators) {
       if (this.player.collides(obstacleIndicator)) {
-        this.speed -= 1;
+        if (this.speed > -20) {
+          this.speed -= 1;
+        }
         this.obstacleIndicators.splice(0, 1);
         socket.emit("action", {
           obstaclesLeft: this.obstacleIndicators.length,
@@ -124,29 +122,16 @@ class GameLayer extends Layer {
     this.background5.paint();
     this.hud.paint();
     this.countdown.paint();
-
-    if (this.finished) {
-      this.results.paint();
-    }
   }
 
   processControls() {
-    if (this.finished) {
-      this.results.processControls();
-    }
     // Eje Y
     if (controls.moveY > 0) {
       this.player.jump();
     } else if (controls.moveY < 0) {
-      this.player.crouch();
+      this.speed += this.player.crouch();
     } else {
-      this.player.standUp();
-    }
-  }
-
-  calculateTaps(taps) {
-    if (this.finished) {
-      this.results.calculateTaps(taps);
+      this.speed += this.player.standUp();
     }
   }
 
@@ -165,7 +150,7 @@ class GameLayer extends Layer {
         this.obstacles.push(obstacle);
         let obstacleIndicator = new Obstacle(
           images.obstacle_indicator,
-          xPos + 270,
+          xPos + 200,
           originalCanvasHeight / 2
         );
         this.obstacleIndicators.push(obstacleIndicator);
@@ -179,12 +164,12 @@ class GameLayer extends Layer {
         this.obstacles.push(obstacle);
         let obstacleIndicator = new Obstacle(
           images.obstacle_indicator,
-          xPos + 270,
+          xPos + 200,
           originalCanvasHeight / 2
         );
         this.obstacleIndicators.push(obstacleIndicator);
       }
-      xPos += 1000;
+      xPos += 600;
     }
     this.obstacles.pop();
     let lastIndicator =
@@ -208,16 +193,17 @@ class GameLayer extends Layer {
     if (state.result.status == Statuses.PLAYING) {
       this.hud.updatePlayerPositions(state);
     }
-
-    if (this.finished) {
-      this.results.updateGameState(state);
-    }
   }
 
   finish(state) {
+    stopMusic();
     this.player.stop();
     this.speed = 0;
-    this.finished = true;
-    this.results.updateGameState(state);
+    
+    this.countdown = new Countdown();
+    this.obstacles = [];
+    this.obstacleIndicators = [];
+    this.hud = new HUDLayer();
+    this.goal.x = 10000;
   }
 }

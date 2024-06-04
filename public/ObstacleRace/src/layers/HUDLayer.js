@@ -1,5 +1,5 @@
 class HUDLayer extends Layer {
-  STEP = 19;
+  STEP = 23.75;
   START = 85;
 
   constructor() {

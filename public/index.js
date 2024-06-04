@@ -36,7 +36,13 @@ function loadGameList() {
         .childNodes[0].classList.add("selected");
       selectedGameType = data[0];
     })
-    .catch((error) => console.error("Error loading game list:", error));
+    .catch((error) => {
+      const li = document.createElement("li");
+      li.classList.add("placeholder");
+      li.textContent = "No hay juegos disponibles en este momento, vuelve más tarde";
+      gameList.appendChild(li);
+    }
+    );
 }
 
 function loadRoomList() {
@@ -51,9 +57,16 @@ function loadRoomList() {
         roomList.appendChild(listItem);
       });
 
+      if (roomList.innerHTML == "") {
+        const li = document.createElement("li");
+        li.classList.add("placeholder");
+        li.textContent = "Parece que no hay salas disponibles en este momento ¡prueba a crear una!";
+        roomList.appendChild(li);
+      }
+
       filterRooms();
     })
-    .catch((error) => console.error("Error loading room list:", error));
+    .catch();
 }
 
 function createRoomElement(room) {
@@ -111,7 +124,7 @@ function createNewRoom(event) {
 function filterRooms() {
   const filterValue = document.getElementById("filter").value.toLowerCase();
   const roomList = document.getElementById("roomList");
-  const rooms = roomList.getElementsByTagName("li");
+  const rooms = Array.from(roomList.getElementsByTagName("li")).filter(li => !li.classList.contains("placeholder"));
 
   for (const room of rooms) {
     let roomName = room
@@ -126,8 +139,8 @@ function filterRooms() {
 
     let displayStyle =
       roomName.includes(filterValue) ||
-      roomDescription.includes(filterValue) ||
-      roomNumber.includes(filterValue)
+        roomDescription.includes(filterValue) ||
+        roomNumber.includes(filterValue)
         ? "block"
         : "none";
 
@@ -138,7 +151,7 @@ function filterRooms() {
 
 const submitFilter = document.getElementById("filterForm");
 
-submitFilter.addEventListener("submit", function(event) {
+submitFilter.addEventListener("submit", function (event) {
   event.preventDefault();
   filterRooms();
 });

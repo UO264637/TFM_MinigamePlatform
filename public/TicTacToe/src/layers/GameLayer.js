@@ -1,7 +1,6 @@
 class GameLayer extends Layer {
   constructor() {
     super();
-    this.results = new ResultsLayer();
     this.initialize();
   }
 
@@ -71,22 +70,9 @@ class GameLayer extends Layer {
     }
 
     this.countdown.paint();
-    if (this.finished) {
-      this.results.paint();
-    }
-  }
-
-  processControls() {
-    if (this.finished) {
-      this.results.processControls();
-    }
   }
 
   calculateTaps(taps) {
-    if (this.finished) {
-      this.results.calculateTaps(taps);
-    }
-
     for (let i = 0; i < 9; i++) {
       this.board[i].pressed = false;
     }
@@ -122,11 +108,17 @@ class GameLayer extends Layer {
     playEffect(soundEffects.wood_sound);
     for (let i = 0; i < state.board.length; i++) {
       const player = state.board[i];
-      if (player != null) {
-        let x = this.board[i].x;
+      let x = this.board[i].x;
         let y = this.board[i].y;
+      if (player != null) {
+        
         this.board[i] = new Button(
           images[player.symbol], x, y
+        );
+      }
+      else {
+        this.board[i] = new Button(
+          images.tttButton, x, y
         );
       }
     }
@@ -141,18 +133,15 @@ class GameLayer extends Layer {
         this.isTurn = false;
       }
     }
-
-    if (this.finished) {
-      this.results.updateGameState(state);
-    }
   }
 
   finish(state) {
     stopMusic();
     this.status.value = "";
     this.isTurn = false;
-    this.finished = true;
-    this.results.updateGameState(state);
+
+    this.countdown = new Countdown();
+    this.turnTimer = 0;
   }
 
   updateTurnTimer(secondsLeft) {

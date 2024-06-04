@@ -1,7 +1,6 @@
 class GameLayer extends Layer {
   constructor() {
     super();
-    this.results = new ResultsLayer();
     this.initialize();
   }
 
@@ -11,6 +10,7 @@ class GameLayer extends Layer {
     this.cars = [];
     this.floorY = originalCanvasHeight - 200;
     this.countingTime = false;
+    this.resultsTime = false;
 
     this.caboose = new Car(images.caboose, images.car_bg, 0, 0, 0);
 
@@ -62,7 +62,7 @@ class GameLayer extends Layer {
       car.update();
     }
 
-    if (!this.countingTime && this.caboose.x > originalCanvasWidth) {
+    if (!this.countingTime && !this.resultsTime && this.caboose.x > originalCanvasWidth) {
       socket.emit("action", {
         readyToCount: true,
       });
@@ -72,16 +72,15 @@ class GameLayer extends Layer {
   paint() {
     this.background.paint();
 
-    this.status.paint();
-
     for (let car of this.cars) {
       car.paint();
     }
 
-    this.player.paint();
-    this.opponent.paint();
+    this.player.paint(this.resultsTime);
+    this.opponent.paint(this.resultsTime);
 
     if (this.countdown.value != null || this.resultsTime) {
+      this.status.paint();
       this.characterBg.paint();
       this.passengerToCount.paint();
     }
@@ -91,16 +90,10 @@ class GameLayer extends Layer {
     if (this.countingTime && !this.resultsTime) {
       this.countInput.paint();
     }
-
-    if (this.finished) {
-      this.results.paint();
-    }
   }
 
   processControls() {
-    if (this.finished) {
-      this.results.processControls();
-    } else if (this.countingTime) {
+    if (this.countingTime) {
       if (controls.moveY > 0) {
         this.countInput.increase();
       } else if (controls.moveY < 0) {
@@ -111,14 +104,9 @@ class GameLayer extends Layer {
     }
   }
 
-  calculateTaps(taps) {
-    if (this.finished) {
-      this.results.calculateTaps(taps);
-    }
-  }
-
   start(state) {
     disableKeyboardInput();
+    this.resultsTime = false;
     this.fillTrain(state.elements);
     playEffect(soundEffects.train);
 
@@ -138,7 +126,7 @@ class GameLayer extends Layer {
       for (let car of this.cars) {
         car.startUp();
       }
-      playMusic();
+      playMusic();      
     }, 3000);
   }
 
@@ -154,15 +142,18 @@ class GameLayer extends Layer {
       this.player.showResult(player.count);
       this.opponent.showResult(opponent.count);
     }
-    if (this.finished) {
-      this.results.updateGameState(state);
-    }
   }
 
   finish(state) {
     stopMusic();
-    this.finished = true;
-    this.results.updateGameState(state);
+
+    this.caboose.x = -600;
+    this.cars = [];
+    this.loadTrain();
+    this.countdown = new Countdown();
+    this.countInput.clear();
+    this.status.value = "";
+    this.countingTime = false;
   }
 
   loadTrain() {
