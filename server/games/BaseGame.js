@@ -38,7 +38,7 @@ class BaseGame {
       const allReady = room.state.players.every((p) => p.ready);
 
       if (room.state.players.length >= room.state.maxPlayers && allReady) {
-        room.state.result.status = Statuses.WAITING;s
+        room.state.result.status = Statuses.WAITING;
         this.handleGameStart(room);
         room.state.players.forEach((p) => {
           p.ready = false;
