@@ -27,7 +27,7 @@ class TicTacToe extends BaseGame {
     room.state = state;
   }
 
-  handleGameStart(room, socketId, data) {
+  handleGameStart(room) {
     let symbol = Math.round(Math.random());
     room.state.players[0].symbol = symbols[symbol];
     symbol = 1 - symbol;

@@ -18,7 +18,7 @@ class CabooseCount extends BaseGame {
     room.state = state;
   }
 
-  handleGameStart(room, socketId, data) {
+  handleGameStart(room) {
     room.state.players.map((player) => {
       player.count = -1;
     });

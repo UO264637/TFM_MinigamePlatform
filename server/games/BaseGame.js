@@ -38,8 +38,8 @@ class BaseGame {
       const allReady = room.state.players.every((p) => p.ready);
 
       if (room.state.players.length >= room.state.maxPlayers && allReady) {
-        room.state.result.status = Statuses.WAITING;
-        this.handleGameStart(room, null, null);
+        room.state.result.status = Statuses.WAITING;s
+        this.handleGameStart(room);
         room.state.players.forEach((p) => {
           p.ready = false;
         });
@@ -48,7 +48,7 @@ class BaseGame {
     }
   }
 
-  handleGameStart(room, socketId, data) {
+  handleGameStart(room) {
     if (room.state.result.status == Statuses.WAITING) {
       this.updateGameState(room, "gameStart");
       room.state.result.status = Statuses.PLAYING;

@@ -20,7 +20,7 @@ class MazeChase extends BaseGame {
     room[Roles.PURSUED + "timer"] = 0;
   }
 
-  handleGameStart(room, socketId, data) {
+  handleGameStart(room) {
     const rolesKeys = Object.keys(Roles);
     const randomIndex = Math.round(Math.random());
 

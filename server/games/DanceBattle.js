@@ -26,7 +26,7 @@ class DanceBattle extends BaseGame {
     room.state = state;
   }
 
-  handleGameStart(room, socketId, data) {
+  handleGameStart(room) {
     const rolesKeys = Object.keys(Roles);
     const randomIndex = Math.round(Math.random());
     
