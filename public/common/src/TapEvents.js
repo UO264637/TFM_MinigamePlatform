@@ -2,6 +2,12 @@ window.addEventListener("mousedown", mousedown);
 window.addEventListener("mousemove", mousemove);
 window.addEventListener("mouseup", mouseup);
 
+const taps = []; // actuales registradas
+const tapType = {}; // tipos
+tapType.start = 1;
+tapType.mantain = 2;
+
+
 function mousedown(event) {
   addTap(1, tapType.start, event);
 }

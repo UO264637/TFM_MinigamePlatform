@@ -1,9 +1,3 @@
-const taps = []; // actuales registradas
-
-const tapType = {}; // tipos
-tapType.start = 1;
-tapType.mantain = 2;
-
 const Statuses = {
   WAITING: "waiting",
   PLAYING: "playing",
