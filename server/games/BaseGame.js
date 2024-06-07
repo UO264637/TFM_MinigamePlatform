@@ -17,7 +17,7 @@ class BaseGame {
     }
 
     const newPlayer = {
-      playerName: data.playerName,
+      playerName: data.playerName.substring(0, 12),
       id: socketId,
     };
     room.state.players.push(newPlayer);
