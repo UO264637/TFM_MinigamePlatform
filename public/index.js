@@ -3,6 +3,9 @@ let selectedGameType = "";
 window.onload = function () {
   loadGameList();
   loadRoomList();
+
+  let playerNameInput = document.getElementById("playerNameCreate");
+  playerNameInput.value = localStorage.getItem("playerName") !== null ? localStorage.getItem("playerName") : "";
 };
 
 setInterval(loadRoomList, 5000);
@@ -107,6 +110,12 @@ function createNewRoom(event) {
   event.preventDefault();
   const playerName = document.getElementById("playerNameCreate").value;
 
+  if (playerName.trim() === "") {
+    return;
+  }
+
+  localStorage.setItem("playerName", playerName);
+
   fetch(baseUrl + "/api/createRoom", {
     method: "POST",
     headers: {
@@ -147,7 +156,6 @@ function filterRooms() {
     room.style.display = displayStyle;
   }
 }
-
 
 const submitFilter = document.getElementById("filterForm");
 
