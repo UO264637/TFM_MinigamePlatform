@@ -13,12 +13,12 @@ class Player extends Model {
   paint(resultTime) {
     super.paint();
 
-    this.tag.paint();
-
     if (resultTime) {
       this.resultsPose.paint();
       this.result.paint();
     }
+
+    this.tag.paint();
   }
 
   setName(name) {

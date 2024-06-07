@@ -80,16 +80,19 @@ class GameLayer extends Layer {
     this.opponent.paint(this.resultsTime);
 
     if (this.countdown.value != null || this.resultsTime) {
-      this.status.paint();
       this.characterBg.paint();
       this.passengerToCount.paint();
     }
 
-    this.countdown.paint();
+    if (this.countingTime || this.resultsTime) {
+      this.status.paint();
+    }
 
     if (this.countingTime && !this.resultsTime) {
       this.countInput.paint();
     }
+
+    this.countdown.paint();
   }
 
   processControls() {
