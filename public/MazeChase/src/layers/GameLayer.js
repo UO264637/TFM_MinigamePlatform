@@ -39,7 +39,8 @@ class GameLayer extends Layer {
       "",
       "#563F2E",
       originalCanvasWidth * 0.01,
-      originalCanvasHeight * 0.1
+      originalCanvasHeight * 0.1,
+      28
     );
     this.skillButton = new SkillButton(
       images.speed_skill,
@@ -166,6 +167,8 @@ class GameLayer extends Layer {
 
     this.countdown = new Countdown();
     this.wallTiles = [];
+    this.space.static = [];
+    this.space.dynamic = [];
     this.player = new Player(-50, 0, "p1");
     this.opponent = new Player(-50, 50, "p2");
     this.turnTimer = 0;
@@ -210,7 +213,7 @@ class GameLayer extends Layer {
   }
 
   updateTurnTimer(secondsLeft) {
-    this.status.value = secondsLeft + "s...";
+    this.status.value = "Tiempo: " + secondsLeft + "s...";
   }
 
   loadMap(map) {
