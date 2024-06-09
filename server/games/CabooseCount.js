@@ -19,8 +19,9 @@ class CabooseCount extends BaseGame {
   }
 
   handleGameStart(room) {
-    room.state.players.map((player) => {
+    room.state.players.forEach((player) => {
       player.count = -1;
+      player.readyToCount = false;
     });
 
     if (room.state.result.status == Statuses.WAITING) {
