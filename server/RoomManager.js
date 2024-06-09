@@ -63,10 +63,12 @@ class RoomManager {
   }
 
   deleteRoom(roomId) {
-    console.log("Deleted Room: " + roomId);
+    let now = new Date();
+    console.log(
+      `[${now.toLocaleDateString()} ${now.toLocaleTimeString()}] Deleted Room ${roomId} - ${this.rooms[roomId].gameType}`
+    );
     delete this.rooms[roomId];
   }
-  
 }
 
 module.exports = new RoomManager();

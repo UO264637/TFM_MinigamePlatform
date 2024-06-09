@@ -64,8 +64,6 @@ app.post("/api/createRoom", (req, res) => {
 });
 
 io.on("connection", function (socket) {
-  console.log("Client connected:", socket.id);
-
   socket.on("joinGame", function (data) {
     joinGame(socket.id, data);
   });
@@ -114,7 +112,6 @@ function action(socketId, data) {
 }
 
 function disconnect(socketId) {
-  console.log("Client disconnected:", socketId);
   const room = roomManager.getRoomBySocketId(socketId);
   const roomId = roomManager.getRoomId(socketId);
 

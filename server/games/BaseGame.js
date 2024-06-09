@@ -23,8 +23,9 @@ class BaseGame {
     room.state.players.push(newPlayer);
 
     let nPlayers = room.state.players.length;
+    let now = new Date();
     console.log(
-      `Room ${data.roomId} (${nPlayers}/${room.state.maxPlayers}): ${data.playerName} joined`
+      `[${now.toLocaleDateString()} ${now.toLocaleTimeString()}] Room ${data.roomId} - ${room.gameType} (${nPlayers}/${room.state.maxPlayers}): ${data.playerName}`
     );
 
     this.updateGameState(room, "gameState");
