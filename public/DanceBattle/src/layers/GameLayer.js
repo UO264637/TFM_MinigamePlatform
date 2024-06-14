@@ -183,13 +183,13 @@ class GameLayer extends Layer {
     }
     switch (this.round) {
       case 3:
-        this.roundIndicator.value = "Round 1";
+        this.roundIndicator.value = "Ronda 1";
         break;
       case 5:
-        this.roundIndicator.value = "Round 2";
+        this.roundIndicator.value = "Ronda 2";
         break;
       case 7:
-        this.roundIndicator.value = "Round 3";
+        this.roundIndicator.value = "Ronda 3";
         break;
     }
   }
