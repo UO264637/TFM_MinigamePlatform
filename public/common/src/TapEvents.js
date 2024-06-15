@@ -7,18 +7,23 @@ const tapType = {}; // tipos
 tapType.start = 1;
 tapType.mantain = 2;
 
+let isMouseDown = false; // Variable para rastrear el estado del botón del ratón
 
 function mousedown(event) {
+  isMouseDown = true; // Indica que el botón del ratón está presionado
   addTap(1, tapType.start, event);
 }
 
 function mousemove(event) {
-  if (taps.length == 0 || event.timeStamp - taps[0].timeStamp > 10) {
-    addTap(1, tapType.mantain, event);
+  if (isMouseDown) { // Solo registra el movimiento si el botón está presionado
+    if (taps.length == 0 || event.timeStamp - taps[0].timeStamp > 10) {
+      addTap(1, tapType.mantain, event);
+    }
   }
 }
 
 function mouseup(event) {
+  isMouseDown = false; // Indica que el botón del ratón ha sido soltado
   deleteTap(1);
 }
 

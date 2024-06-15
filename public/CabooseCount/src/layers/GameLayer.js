@@ -95,6 +95,12 @@ class GameLayer extends Layer {
     this.countdown.paint();
   }
 
+  calculateTaps(taps) {
+    if (this.countingTime && !this.resultsTime) {
+      this.countInput.calculateTaps(taps);
+    }
+  }
+
   processControls() {
     if (this.countingTime) {
       if (controls.moveY > 0) {

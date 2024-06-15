@@ -8,6 +8,12 @@ class CountInput extends Model {
     this.decreasing = false;
     this.increaseBg = new Background(images.counter_up, x, y);
     this.decreaseBg = new Background(images.counter_down, x, y);
+    this.increaseBtn = new Button(
+      images.counter_button, x, y - 90
+    );
+    this.decreaseBtn = new Button(
+      images.counter_button, x, y + 90
+    );
 
     this.delay = CountInput.DEFAULT_DELAY;
     this.input = new CenteredText(0, "#563F2E", x, y + 20, 40);
@@ -32,6 +38,17 @@ class CountInput extends Model {
       super.paint();
     }
     this.input.paint();
+  }
+
+  calculateTaps(taps) {
+    for (const tap of taps) {
+      if (this.increaseBtn.containsPoint(tap.x, tap.y)) {
+        this.increase();
+      }
+      else if (this.decreaseBtn.containsPoint(tap.x, tap.y)) {
+        this.decrease();
+      }
+    }
   }
 
   increase() {

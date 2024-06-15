@@ -40,4 +40,5 @@ const images = {
   opponent: "res/opponent.png",
   opponent_solution: "res/opponent_solution.png",
   character_background: "res/character_background.png",
+  counter_button: "res/counter_button.png"
 };
