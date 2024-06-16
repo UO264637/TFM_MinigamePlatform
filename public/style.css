@@ -271,6 +271,10 @@ a{
   cursor: default;
 }
 
+.visually-hidden {
+  display: none;
+}
+
 @media screen and (max-width: 1400px) {
   body {
     padding: 0% 10% 0% 10% ;

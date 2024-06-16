@@ -10,7 +10,7 @@
 
 <body>
   <header>
-    <a href="index.html" alt="Enlace a la página principal">
+    <a href="index.html">
       <h1>Ar<em>kame</em>Games</h1>
     </a>
   </header>
@@ -31,10 +31,9 @@
       <div class="hgroup">
         <h2>Unirse a una sala</h2>
         <form id="filterForm">
-          <input type="text" id="filter" oninput="filterRooms()">
-          <label for="filter">
-            <button type="submit">Filtrar</button>
-          </label>
+          <label for="filter" class="visually-hidden">Filtrar</label>
+          <input type="text" id="filter" oninput="filterRooms()" placeholder="Filtrar...">
+          <button type="submit">Filtrar</button>
         </form>
       </div>
 

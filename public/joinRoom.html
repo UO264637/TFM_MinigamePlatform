@@ -9,7 +9,7 @@
 
   <body>
     <header>
-      <a href="index.html"  alt="Enlace a la página principal"><h1>Ar<em>kame</em>Games</h1></a>
+      <a href="index.html"><h1>Ar<em>kame</em>Games</h1></a>
     </header>
 
     <main>
@@ -17,7 +17,8 @@
         <h2>Unirse a la sala</h2>
 
         <form id="joinForm" onsubmit="joinRoom(event)">
-          <input type="text" id="roomId" readonly required style="display: none">
+          <label for="roomId" class="visually-hidden">Id sala</label>
+          <input type="text" id="roomId" class="visually-hidden" readonly required>
           <label for="playerNameJoin">Elige un apodo</label>
           <input type="text" id="playerNameJoin" maxlength="12" required>
           <button type="submit">Aceptar</button>          
