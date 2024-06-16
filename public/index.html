@@ -1,42 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Arkame Games</title>
-  </head>
 
-  <body>
-    <header>
-      <a href="index.html"><h1>Ar<em>kame</em>Games</h1></a>
-    </header>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Arkame Games</title>
+</head>
 
-    <main>
-      <section>
-        <h2>Crear una sala</h2>
+<body>
+  <header>
+    <a href="index.html" alt="Enlace a la página principal">
+      <h1>Ar<em>kame</em>Games</h1>
+    </a>
+  </header>
 
-        <ul id="gameList"></ul>
-        <form id="createForm" onsubmit="createNewRoom(event)">
-          <label for="playerNameCreate">Elige un apodo  </label>
-          <input type="text" id="playerNameCreate"  maxlength="12" required>
-          <button type="submit">Crear sala</button>
-        </form>
-      </section>
+  <main>
+    <section>
+      <h2>Crear una sala</h2>
 
-      <section>
-        <div class="hgroup">
-          <h2>Unirse a una sala</h2>
-          <form id="filterForm">
-            <input type="text" id="filter" oninput="filterRooms()">
+      <ul id="gameList"></ul>
+      <form id="createForm" onsubmit="createNewRoom(event)">
+        <label for="playerNameCreate">Elige un apodo </label>
+        <input type="text" id="playerNameCreate" maxlength="12" required>
+        <button type="submit">Crear sala</button>
+      </form>
+    </section>
+
+    <section>
+      <div class="hgroup">
+        <h2>Unirse a una sala</h2>
+        <form id="filterForm">
+          <input type="text" id="filter" oninput="filterRooms()">
+          <label for="filter">
             <button type="submit">Filtrar</button>
-          </form>
-        </div>
+          </label>
+        </form>
+      </div>
 
-        <ul id="roomList"></ul>
-      </section>
-    </main>
-    <script src="./common/src/Global.js"></script>
-    <script src="index.js"></script>
-  </body>
+      <ul id="roomList"></ul>
+    </section>
+  </main>
+  <script src="./common/src/Global.js"></script>
+  <script src="index.js"></script>
+</body>
 </html>

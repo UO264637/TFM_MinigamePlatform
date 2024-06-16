@@ -30,6 +30,7 @@ function loadGameList() {
 
         const gameIcon = document.createElement("img");
         gameIcon.src = "./common/res/icons/" + gameType + "Icon.png";
+        gameIcon.alt = gameType + " icon";
 
         listItem.appendChild(gameIcon);
         gameList.appendChild(listItem);
