@@ -175,10 +175,8 @@ class Player extends Model {
 
   useSkill(opponent) {
     if (this.pursued) {
-      console.log("self dash");
       this.speedUp();
     } else {
-      console.log("freeze oponent");
       opponent.stop();
       opponent.frozen = true;
 
