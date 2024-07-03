@@ -20,32 +20,33 @@
   </header>
 
   <canvas id="canvas" width="1280" height="720"></canvas>
-  <div id="game-status">
-    <h2>Estado de la Sala</h2>
-    <div>
-      <strong>Reglas:</strong>
-      <ul>
-        <li>Regla 1</li>
-        <li>Regla 2</li>
-        <li>Regla 3</li>
-      </ul>
-    </div>
-    <div>
-      <strong>Controles:</strong>
-      <ul>
-        <li>Control 1</li>
-        <li>Control 2</li>
-      </ul>
-    </div>
-    <div>
-      <strong>Jugadores en la sala:</strong>
-      <ul id="players-list">
-        <li>Jugador 1</li>
-        <li>Jugador 2</li>
-      </ul>
-    </div>
-    <button id="ready-button">Listo</button>
-  </div>
+  
+  <section id="game-status">
+    <article class="left-column">
+      <h2>Título del Minijuego</h2>
+      <div id="screenshot" class="screenshot-placeholder">[Captura de Pantalla]</div>
+      <div id="game-description">
+        <p>Explicación del juego...</p>
+      </div>
+    </article>
+    <article class="right-column">
+      <div>
+        <strong>Controles:</strong>
+        <ul>
+          <li>Control 1</li>
+          <li>Control 2</li>
+        </ul>
+      </div>
+      <div>
+        <strong>Jugadores en la sala:</strong>
+        <ul id="players-list">
+          <li>Jugador 1</li>
+          <li>Jugador 2</li>
+        </ul>
+      </div>
+      <button id="ready-button">Listo</button>
+    </article>
+  </section>
 
   <script src="../common/src/Global.js"></script>
   <script src="../common/src/AudioManager.js"></script>

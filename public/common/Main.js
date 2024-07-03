@@ -58,27 +58,25 @@ function updateTaps() {
 // Cambio de escalado
 window.addEventListener("load", resize, false);
 window.addEventListener("resize", resize, false);
+const gameStatus = document.getElementById('game-status');
 
 function resize() {
-  canvas.width = originalCanvasWidth;
-  canvas.height = originalCanvasHeight;
+  const headerHeight = header.offsetHeight;
 
-  let widthScaling = parseFloat(window.innerWidth / canvas.width);
-  let heightScaling = parseFloat(window.innerHeight / canvas.height);
-  minScale = Math.min(widthScaling, heightScaling);
+  let widthScaling = parseFloat(window.innerWidth / originalCanvasWidth);
+  let heightScaling = parseFloat((window.innerHeight - headerHeight) / originalCanvasHeight);
+  let minScale = Math.min(widthScaling, heightScaling);
 
-  canvas.width = canvas.width * minScale - 162;
-  canvas.height = canvas.height * minScale - 90;
+  header.style.width = `${originalCanvasWidth * minScale}px`;
 
-  minScale = Math.min(
-    parseFloat(canvas.width / originalCanvasWidth),
-    parseFloat(canvas.height / originalCanvasHeight)
-  );
-  header.style.width = canvas.width + "px";
+  canvas.style.width = `${originalCanvasWidth * minScale}px`;
+  canvas.style.height = `${originalCanvasHeight * minScale}px`;
 
-  context.scale(minScale, minScale);
+  gameStatus.style.width = `${originalCanvasWidth * minScale}px`;
+  gameStatus.style.height = `${originalCanvasHeight * minScale}px`;
+  gameStatus.style.top = `${headerHeight}px`;
 }
-
+ 
 function initWebSocket() {
   const urlParams = new URLSearchParams(window.location.search);
   const playerName = urlParams.get("playerName");
