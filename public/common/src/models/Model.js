@@ -46,3 +46,5 @@ class Model {
     return distance < this.width / 2 + model.width / 2;
   }
 }
+
+module.exports = { Model };

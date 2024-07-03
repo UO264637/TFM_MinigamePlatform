@@ -6,7 +6,7 @@ describe('Space', () => {
   let staticModel;
 
   beforeEach(() => {
-    space = new Space(9.81);
+    space = new Space(5);
 
     dynamicModel = {
       x: 0,
@@ -15,33 +15,32 @@ describe('Space', () => {
       height: 10,
       xv: 0,
       yv: 0,
-      hitsBottom: false,
     };
 
     staticModel = {
       x: 0,
-      y: 20,
+      y: 0,
       width: 10,
       height: 10,
     };
   });
 
   describe('addDinamicCorp', () => {
-    it('should add a dynamic model to the space', () => {
+    it('add a dynamic model to the space', () => {
       space.addDinamicCorp(dynamicModel);
       expect(space.dynamic).toContain(dynamicModel);
     });
   });
 
   describe('addStaticCorp', () => {
-    it('should add a static model to the space', () => {
+    it('add a static model to the space', () => {
       space.addStaticCorp(staticModel);
       expect(space.static).toContain(staticModel);
     });
   });
 
   describe('removeDinamicCorp', () => {
-    it('should remove a dynamic model from the space', () => {
+    it('remove a dynamic model from the space', () => {
       space.addDinamicCorp(dynamicModel);
       space.removeDinamicCorp(dynamicModel);
       expect(space.dynamic).not.toContain(dynamicModel);
@@ -49,78 +48,63 @@ describe('Space', () => {
   });
 
   describe('removeStaticCorp', () => {
-    it('should remove a static model from the space', () => {
+    it('remove a static model from the space', () => {
       space.addStaticCorp(staticModel);
       space.removeStaticCorp(staticModel);
       expect(space.static).not.toContain(staticModel);
     });
   });
 
-  describe('update', () => {
-    it('should update the position of dynamic models applying gravity', () => {
-      dynamicModel.yv = 0;
-      space.addDinamicCorp(dynamicModel);
-      space.update();
-      expect(dynamicModel.yv).toBe(9.81);
-    });
-
-    it('should not exceed the maximum fall speed', () => {
-      dynamicModel.yv = 19;
-      space.addDinamicCorp(dynamicModel);
-      space.update();
-      expect(dynamicModel.yv).toBe(20);
-    });
-
-    it('should detect collision and adjust the position accordingly', () => {
-      dynamicModel.yv = 10;
+  describe('moveRight', () => {
+    it('move dynamic model to the right without collision', () => {
+      dynamicModel.xv = 10;
+      staticModel.x = 25;
       space.addDinamicCorp(dynamicModel);
       space.addStaticCorp(staticModel);
-      space.update();
-      expect(dynamicModel.y).toBe(staticModel.y - staticModel.height / 2 - dynamicModel.height / 2);
-      expect(dynamicModel.hitsBottom).toBe(true);
-    });
-  });
-
-  describe('moveRight', () => {
-    it('should move dynamic model to the right without collision', () => {
-      dynamicModel.xv = 10;
-      space.addDinamicCorp(dynamicModel);
       space.moveRight(0);
       expect(dynamicModel.x).toBe(10);
     });
 
-    it('should stop at the static model when moving right', () => {
+    it('stop at the static model when moving right', () => {
       dynamicModel.xv = 10;
       staticModel.x = 15;
       space.addDinamicCorp(dynamicModel);
       space.addStaticCorp(staticModel);
       space.moveRight(0);
-      expect(dynamicModel.x).toBe(staticModel.x - staticModel.width / 2 - dynamicModel.width / 2);
+      expect(dynamicModel.x).toBe(5);
+      space.moveRight(0);
+      expect(dynamicModel.x).toBe(5);
     });
   });
 
   describe('moveLeft', () => {
-    it('should move dynamic model to the left without collision', () => {
+    it('move dynamic model to the left without collision', () => {
       dynamicModel.xv = -10;
+      staticModel.x = -25;
       space.addDinamicCorp(dynamicModel);
+      space.addStaticCorp(staticModel);
       space.moveLeft(0);
       expect(dynamicModel.x).toBe(-10);
     });
 
-    it('should stop at the static model when moving left', () => {
+    it('stop at the static model when moving left', () => {
       dynamicModel.xv = -10;
       staticModel.x = -15;
       space.addDinamicCorp(dynamicModel);
       space.addStaticCorp(staticModel);
       space.moveLeft(0);
-      expect(dynamicModel.x).toBe(staticModel.x + staticModel.width / 2 + dynamicModel.width / 2);
+      expect(dynamicModel.x).toBe(-5);
+      space.moveLeft(0);
+      expect(dynamicModel.x).toBe(-5);
     });
   });
 
   describe('moveDown', () => {
-    it('should move dynamic model down without collision', () => {
+    it('move dynamic model down without collision', () => {
       dynamicModel.yv = 10;
+      staticModel.y = 25;
       space.addDinamicCorp(dynamicModel);
+      space.addStaticCorp(staticModel);
       space.moveDown(0);
       expect(dynamicModel.y).toBe(10);
     });
@@ -131,7 +115,7 @@ describe('Space', () => {
       space.addDinamicCorp(dynamicModel);
       space.addStaticCorp(staticModel);
       space.moveDown(0);
-      expect(dynamicModel.y).toBe(staticModel.y - staticModel.height / 2 - dynamicModel.height / 2);
+      expect(dynamicModel.y).toBe(5);
       expect(dynamicModel.hitsBottom).toBe(true);
     });
   });
@@ -139,7 +123,9 @@ describe('Space', () => {
   describe('moveUp', () => {
     it('should move dynamic model up without collision', () => {
       dynamicModel.yv = -10;
+      staticModel.y = -25;
       space.addDinamicCorp(dynamicModel);
+      space.addStaticCorp(staticModel);
       space.moveUp(0);
       expect(dynamicModel.y).toBe(-10);
     });
@@ -150,7 +136,32 @@ describe('Space', () => {
       space.addDinamicCorp(dynamicModel);
       space.addStaticCorp(staticModel);
       space.moveUp(0);
-      expect(dynamicModel.y).toBe(staticModel.y + staticModel.height / 2 + dynamicModel.height / 2);
+      expect(dynamicModel.y).toBe(-5);
+    });
+  });
+
+  describe('update', () => {
+    it('update the position of dynamic models applying gravity', () => {
+      dynamicModel.yv = 0;
+      space.addDinamicCorp(dynamicModel);
+      space.update();
+      expect(dynamicModel.yv).toBe(5);
+    });
+
+    it('not exceed the maximum fall speed', () => {
+      dynamicModel.yv = 19;
+      space.addDinamicCorp(dynamicModel);
+      space.update();
+      expect(dynamicModel.yv).toBe(20);
+    });
+
+    it('detect collision and adjust the position accordingly', () => {
+      dynamicModel.yv = 10;
+      space.addDinamicCorp(dynamicModel);
+      space.addStaticCorp(staticModel);
+      space.update();
+      expect(dynamicModel.y).toBe(staticModel.y - staticModel.height / 2 - dynamicModel.height / 2);
+      expect(dynamicModel.hitsBottom).toBe(true);
     });
   });
 });
