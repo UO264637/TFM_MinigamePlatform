@@ -51,7 +51,6 @@ class Space {
   moveRight(i) {
     if (this.dynamic[i].xv > 0) {
       let possibleMovement = this.dynamic[i].xv;
-      console.log(possibleMovement);
       // El mejor "idealmente" xv partimos de ese
 
       for (const staticElement of this.static) {
@@ -78,7 +77,7 @@ class Space {
           }
         }
       }
-      console.log(possibleMovement);
+      
       // Ya se han comprobado todos los estáticos
       this.dynamic[i].x = this.dynamic[i].x + possibleMovement;
       this.dynamic[i].xv = possibleMovement;

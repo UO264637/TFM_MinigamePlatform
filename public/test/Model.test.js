@@ -23,6 +23,8 @@ describe('Model', () => {
     expect(model1.collides(model2)).toBe(true, "Top left collision");
     model2.x = 50;
     expect(model1.collides(model2)).toBe(true, "Top right collision");
+    model2 = new Model('image2.png', 100, 0);
+    expect(model1.collides(model2)).toBe(true, "Edge collision");
   });
 
   test('no rectangular collision between models', () => {
