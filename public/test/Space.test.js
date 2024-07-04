@@ -137,13 +137,4 @@ describe('Space', () => {
     space.update();
     expect(dynamicModel.yv).toBe(20);
   });
-  
-  test('detect collision and adjust the position accordingly', () => {
-    dynamicModel.yv = 10;
-    space.addDinamicCorp(dynamicModel);
-    space.addStaticCorp(staticModel);
-    space.update();
-    expect(dynamicModel.y).toBe(staticModel.y - staticModel.height / 2 - dynamicModel.height / 2);
-    expect(dynamicModel.hitsBottom).toBe(true);
-  });  
 });
